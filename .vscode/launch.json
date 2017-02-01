@@ -19,6 +19,19 @@
         },
         {
             "type": "node",
+            "request": "launch",
+            "name": "Run Mocha Tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "stopOnEntry": false,
+            "args": [
+                "test",
+                "--recursive"
+            ],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null
+        },
+        {
+            "type": "node",
             "request": "attach",
             "name": "Attach to Process",
             "port": 5858

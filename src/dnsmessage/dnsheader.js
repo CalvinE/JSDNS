@@ -22,6 +22,8 @@ function DNSMesageHeader(){
     let nscount = null; //an unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
     let arcount = null; //an unsigned 16 bit integer specifying the number of resource records in the additional records section.
 
+    const headerLength = 12;
+
     function getId(){
         return id;
     }
@@ -30,12 +32,20 @@ function DNSMesageHeader(){
         id = _id;
     }
 
+    function decodeId(highByte, lowByte){
+        return ((highByte << 8) | lowByte);
+    }
+
     function getQr(){
         return qr;
     }
 
     function setQr(_qr){
         qr = _qr;
+    }
+    
+    function decodeQr(byte){
+        return (byte & 0x80) != 0x00 ? 0x01 : 0x00
     }
 
     function getOpcode(){
@@ -51,12 +61,20 @@ function DNSMesageHeader(){
         opcode = _opcode;
     }
 
+    function decodeOpcode(byte){
+        return ((byte & 0x78) << 3);
+    }
+
     function getAa(){
         return aa;
     }
 
     function setAa(_aa){
         aa = _aa;
+    }
+
+    function decodeAa(byte){
+        return (byte & 0x04) != 0x00 ? 0x01 : 0x00
     }
 
     function getTc(){
@@ -67,6 +85,10 @@ function DNSMesageHeader(){
         tc = _tc;
     }
 
+    function decodeTc(byte){
+        return (byte & 0x02) != 0x00 ? 0x01 : 0x00
+    }
+
     function getRd(){
         return rd;
     }
@@ -75,12 +97,20 @@ function DNSMesageHeader(){
         rd = _rd;
     }
 
+    function decodeRd(byte){
+        return (byte & 0x01) != 0x00 ? 0x01 : 0x00
+    }
+
     function getRa(){
         return ra;
     }
 
     function setRa(_ra){
         ra = _ra;
+    }
+
+    function decodeRa(byte){
+        return (byte & 0x80) != 0x00 ? 0x01 : 0x00
     }
 
     function getZ(){
@@ -105,12 +135,20 @@ function DNSMesageHeader(){
         rcode = _rcode;
     }
 
+    function decodeRcode(byte){
+        return 0x0F & byte;
+    }
+
     function getQdcount(){
         return qdcount;
     }
 
     function setQdcount(_qdcount){
         qdcount = _qdcount
+    }
+
+    function decodeQdcount(highByte, lowByte){
+        return ((highByte << 8) | lowByte);
     }
 
     function getAncount(){
@@ -121,12 +159,20 @@ function DNSMesageHeader(){
         ancount = _ancount
     }
 
+    function decodeAncount(highByte, lowByte){
+        return ((highByte << 8) | lowByte);
+    }
+
     function getNscount(){
         return nscount;
     }
 
     function setNscount(_nscount){
         nscount = _nscount;
+    }
+
+    function decodeNscount(highByte, lowByte){
+        return ((highByte << 8) | lowByte);
     }
 
     function getArcount(){
@@ -136,14 +182,33 @@ function DNSMesageHeader(){
     function setArcount(_arcount){
         arcount = _arcount;
     }
+
+    function decodeArcount(highByte, lowByte){
+        return ((highByte << 8) | lowByte);
+    }
     
     /**
      * 
      * 
-     * @param {any} data - This is the complete message from the DNS Server.
+     * @param {any} data - This is the complete message from the as an array of bytes.
      */
     function decodeDNSHeaderFromMessage(data){
-
+        let index = 0;
+        setId(decodeId(data[index++], data[index++]));
+        let flagHighByte = data[index++];
+        let flagLowByte = data[index++];
+        setQr(decodeQr(flagHighByte));
+        setOpcode(decodeOpcode(flagHighByte));
+        setAa(decodeAa(flagHighByte));
+        setTc(decodeTc(flagHighByte));
+        setRd(decodeRd(flagHighByte));
+        setRa(decodeRa(flagLowByte));      
+        //We do not deoce the Z value because it is always 0 per RFC 1035 4.1.1
+        setRcode(decodeRcode(flagLowByte));  
+        setQdcount(decodeQdcount(data[index++], data[index++]));
+        setAncount(decodeAncount(data[index++], data[index++]));
+        setNscount(decodeNscount(data[index++], data[index++]));
+        setArcount(decodeArcount(data[index++], data[index++]));
     }
 
     function encodeHeaderForMessage(){
