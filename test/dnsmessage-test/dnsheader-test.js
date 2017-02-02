@@ -37,7 +37,7 @@ function getTestResponseDNSPacketBuffer(){
 }
 
 describe("dns-header", function() {
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should return a byte array the length of the original message minus the header length.", function(){
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should return a byte array the length of the original message minus the header length.", function(){
     var dataOrigionalLength = testQuestionDNSPacket.length;
     var dataMinusHeader = header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     let postParsingLength = dataOrigionalLength - 0x0C;
@@ -48,108 +48,108 @@ describe("dns-header", function() {
     expect(id).to.be.at.most(0xFFFF);
   });
   //Query
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the ID field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the ID field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getId()).to.equal(0xb16a);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the QR field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the QR field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getQr()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the Opcode field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the Opcode field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getOpcode().value).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the AA field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the AA field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getAa()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the TC field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the TC field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getTc()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the RD field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the RD field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRd()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the RA field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the RA field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRa()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the Z field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the Z field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getZ()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the Rcode field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the Rcode field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRcode().value).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the QDcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the QDcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getQdcount()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the ANcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the ANcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getAncount()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the NScount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the NScount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getNscount()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a query above and populate the ARcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer)() should decode the byte array of a query above and populate the ARcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
   //Response
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the ID field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the ID field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getId()).to.equal(0xb16a);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the QR field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the QR field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getQr()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the Opcode field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the Opcode field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getOpcode().value).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the AA field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the AA field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getAa()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the TC field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the TC field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getTc()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the RD field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the RD field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRd()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the RA field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the RA field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRa()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the Z field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the Z field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getZ()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the Rcode field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the Rcode field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRcode().value).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the QDcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the QDcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getQdcount()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the ANcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the ANcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getAncount()).to.equal(0x01);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the NScount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the NScount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getNscount()).to.equal(0x00);
   });
-  it("header.decodeDNSHeaderFromMessage(testDNSPacket) should decode the byte array of a response above and populate the ARcount field.", function() {
+  it("header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer()) should decode the byte array of a response above and populate the ARcount field.", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
