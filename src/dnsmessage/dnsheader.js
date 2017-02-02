@@ -22,8 +22,6 @@ function DNSMesageHeader(){
     let nscount = null; //an unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
     let arcount = null; //an unsigned 16 bit integer specifying the number of resource records in the additional records section.
 
-    const headerLength = 12;
-
     function getId(){
         return id;
     }
@@ -209,6 +207,7 @@ function DNSMesageHeader(){
         setAncount(decodeAncount(data[index++], data[index++]));
         setNscount(decodeNscount(data[index++], data[index++]));
         setArcount(decodeArcount(data[index++], data[index++]));
+        return data.slice(index);
     }
 
     function encodeHeaderForMessage(){
