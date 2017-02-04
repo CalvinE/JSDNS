@@ -21,6 +21,7 @@ function DNSMesageHeader(){
     let ancount = null; //an unsigned 16 bit integer specifying the number of resource records in the answer section.
     let nscount = null; //an unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
     let arcount = null; //an unsigned 16 bit integer specifying the number of resource records in the additional records section.
+    let headerLength = null; // This is the length in bytes of the header.
 
     function getId(){
         return id;
@@ -184,7 +185,14 @@ function DNSMesageHeader(){
     function decodeArcount(highByte, lowByte){
         return ((highByte << 8) | lowByte);
     }
+
+    function getHeaderLength(){
+        return headerLength;
+    }
     
+    function setHeaderLength(length){
+        headerLength = length;
+    }
     /**
      * 
      * 
@@ -207,7 +215,7 @@ function DNSMesageHeader(){
         setAncount(decodeAncount(data[index++], data[index++]));
         setNscount(decodeNscount(data[index++], data[index++]));
         setArcount(decodeArcount(data[index++], data[index++]));
-        return data.slice(index);
+        setHeaderLength(index);
     }
 
     function encodeHeaderForMessage(){
@@ -245,6 +253,7 @@ function DNSMesageHeader(){
         setNscount: setNscount,
         getArcount: getArcount,
         setArcount: setArcount,
+        getHeaderLength: getHeaderLength,
         decodeDNSHeaderFromMessage: decodeDNSHeaderFromMessage,
         generateRandomID: generateRandomID
     };

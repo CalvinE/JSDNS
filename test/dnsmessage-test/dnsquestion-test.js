@@ -40,8 +40,9 @@ function getTestResponseDNSPacketBuffer(){
 
 describe("dns-question", function() {
   it("question.decodeDNSQuestionFromMessage(getTestQuestionDNSPacketBuffer()) should return a byte array the length of 0 because the whole thing has been read.", function() {
-    var data = header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer())
-    data = question.decodeDNSQuestionFromMessage(data)
-    expect(data.length).to.equal(0x00);
+    let data = getTestQuestionDNSPacketBuffer();
+    header.decodeDNSHeaderFromMessage(data)
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    expect(data.length).to.equal(testQuestionDNSPacket.length);
   });
 });
