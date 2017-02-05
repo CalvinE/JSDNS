@@ -28,7 +28,12 @@ const testResponseDNSPacket = [0xb1, 0x6a, //Id
                                0x00, 0x01, //Type
                                0x00, 0x01, //Class
                                //Answers
-                               0xc0, 0x0c, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x9a, 0x00, 0x04, 0xac, 0xd9, 0x00, 0x04];
+                               0xc0, 0x0c, //Domain name (compressed)
+                               0x00, 0x01, //Type
+                               0x00, 0x01, //Class
+                               0x00, 0x00, 0x00, 0x9a, //Time to live
+                               0x00, 0x04, //RData Length
+                               0xac, 0xd9, 0x00, 0x04]; //RData
 
 function getTestQuestionDNSPacketBuffer(){
   return Buffer.from(testQuestionDNSPacket.slice());
