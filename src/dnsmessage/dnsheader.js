@@ -682,7 +682,7 @@ function DNSMesageHeader(){
      * @access public
      * @type {Function}
      * 
-     * @description description
+     * @description This function takes the byte array containing the DNS message and populates the model with the messages header data.
      * 
      * @param {array} data This is an array containing the bytes of the complete DNS message.
      */
