@@ -6,6 +6,7 @@
 
 const QTYPES = require("../dnsmessage/constants/qtypes");
 const QCLASSES = require("../dnsmessage/constants/qclasses");
+const DNSUtils = require("../dnsmessage/dnsutilities");
 
 /**
  * @name DNSMesageQuestion
@@ -100,19 +101,14 @@ function DNSMesageQuestion(){
      * @access private
      * @type {Function}
      * 
-     * @description Decodes the domain name from the question data.
+     * @description Decodes the domain name from the question data. Also it advances the index variable to keep track of how to parse the message.
      * 
      * @param {Array} qNameBytes This is the array of bytes that represent the entire DNS message.
      */
     function decodeQname(qNameBytes){
-        let qName = [];
+        let qName = DNSUtils.decodeName(qNameBytes, index);
         let length = qNameBytes[index++];
-        while(length != 0x00){
-            let qNamePart = "";
-            for(var i = 0; i < length; i++){
-                qNamePart += String.fromCharCode(qNameBytes[index++]);
-            }
-            qName.push(qNamePart);
+        while(length != 0x00){            
             length = qNameBytes[index++];
         }
         return qName;
@@ -275,8 +271,8 @@ function DNSMesageQuestion(){
         setQuestionStartIndex(index);
         setQname(decodeQname(data));
         setQtype(decodeQtype(data[index++], data[index++]));
-        setQclass(decodeQtype(data[index++], data[index++]));
-        setQuestionLength(index);
+        setQclass(decodeQclass(data[index++], data[index++]));
+        setQuestionLength(index-offset);
     }
 
     return{

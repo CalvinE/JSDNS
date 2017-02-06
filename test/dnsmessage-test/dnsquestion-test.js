@@ -44,10 +44,25 @@ function getTestResponseDNSPacketBuffer(){
 }
 
 describe("dns-question", function() {
-  it("question.decodeDNSQuestionFromMessage(getTestQuestionDNSPacketBuffer()) should return a byte array the length of 0 because the whole thing has been read.", function() {
+  it("question.decodeDNSQuestionFromMessage(getTestQuestionDNSPacketBuffer()).getQuestionLength() should return the same value as testQuestionDNSPacket.length because there is only one question and after parsin the offset should be the same as the length of the message.", function() {
+    let data = getTestQuestionDNSPacketBuffer();
+    var offset = 0;
+    header.decodeDNSHeaderFromMessage(data)
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    offset += question.getQuestionLength();
+    expect(offset).to.equal(testQuestionDNSPacket.length);
+  });
+  it("question.decodeDNSQuestionFromMessage(getTestQuestionDNSPacketBuffer()) should decode the byte array of the response above and populate the QClass field.", function() {
     let data = getTestQuestionDNSPacketBuffer();
     header.decodeDNSHeaderFromMessage(data)
     question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-    expect(data.length).to.equal(testQuestionDNSPacket.length);
+    expect(question.getQclass().value).to.equal(0x01);
+  });
+  it("question.decodeDNSQuestionFromMessage(getTestQuestionDNSPacketBuffer()) should decode the byte array of the response above and populate the QType field.", function() {
+    let data = getTestQuestionDNSPacketBuffer();
+    header.decodeDNSHeaderFromMessage(data)
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    expect(question.getQtype().value).to.equal(0x01);
   });
 });
