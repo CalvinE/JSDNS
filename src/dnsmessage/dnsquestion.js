@@ -106,12 +106,9 @@ function DNSMesageQuestion(){
      * @param {Array} qNameBytes This is the array of bytes that represent the entire DNS message.
      */
     function decodeQname(qNameBytes){
-        let qName = DNSUtils.decodeName(qNameBytes, index);
-        let length = qNameBytes[index++];
-        while(length != 0x00){            
-            length = qNameBytes[index++];
-        }
-        return qName;
+        let qNameData = DNSUtils.decodeName(qNameBytes, index);
+        index = qNameData.indexPosPostReading;
+        return qNameData.name;
     }
 
     /**

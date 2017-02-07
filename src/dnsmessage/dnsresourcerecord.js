@@ -120,12 +120,12 @@ function DNSResourceRecord(){
      * 
      * @param {Array} _name An array of strings ("labels") representing the domain name of the resourceRecord.
      */
-    function setQname(qname){
+    function setName(_name){
         name = _name;
     }
 
     /**
-     * @name decodeQname
+     * @name decodeName
      * @access private
      * @type {Function}
      * 
@@ -133,13 +133,10 @@ function DNSResourceRecord(){
      * 
      * @param {Array} nameBytes This is the array of bytes that represent the entire DNS message.
      */
-    function decodeQname(nameBytes){
-        let name = DNSUtils.decodeName(nameBytes, index);
-        let length = nameBytes[index++];
-        while(length != 0x00){            
-            length = nameBytes[index++];
-        }
-        return name;
+    function decodeName(nameBytes){
+        let nameData = DNSUtils.decodeName(nameBytes, index);
+        index = nameData.indexPosPostReading;
+        return nameData.name;
     }
 
     /**
@@ -301,7 +298,7 @@ function DNSResourceRecord(){
     }
 
     /**
-     * @name decodeRLength
+     * @name decodeRDLength
      * @access private
      * @type {Function}
      * 
@@ -310,7 +307,7 @@ function DNSResourceRecord(){
      * @param {Uint8} highByte High byte of the 16 bits representing the RDataLength in the resource record.
      * @param {Uint8} lowByte Low byte of the 16 bits representing the RDataLength in the resource record.
      */
-    function decodeRLength(highByte, lowByte){
+    function decodeRDLength(highByte, lowByte){
         return (highByte << 8) | lowByte;
     }
 
@@ -350,7 +347,32 @@ function DNSResourceRecord(){
      * @param {array} data
      */
     function decodeRdata(data){
-        throw "not implemented yet!";
+        let rrtypeValue = getType().value;
+        let rdata = null;
+        switch(rrtypeValue){
+            case 1: //A record
+                rdata = decodeARecordRData(data);
+                break;
+        }
+        return rdata;
+    }
+
+    /**
+     * @name decodeARecordRData
+     * @access public
+     * @type {Function}
+     * 
+     * @description Decodes the rData from an A type resource record.
+     * 
+     * @param {array} data
+     */
+    function decodeARecordRData(data){
+        let totalLength = index + getRDLength();
+        let hostAddress = [];
+        while(index < totalLength){
+            hostAddress.push(data[index++].toString());
+        }
+        return hostAddress.join(".");
     }
 
     /**
@@ -418,19 +440,22 @@ function DNSResourceRecord(){
     function decodeDNSResourceRecordFromMessage(data, offset){
         index = offset;
         setResourceRecordStartIndex(index);
-        setQname(decodeName(data));
-        setQtype(decodeType(data[index++], data[index++]));
-        setQclass(decodeRRclass(data[index++], data[index++]));
+        setName(decodeName(data));
+        setType(decodeType(data[index++], data[index++]));
+        setRRclass(decodeRRclass(data[index++], data[index++]));
+        setTtl(decodeTtl(data[index++], data[index++], data[index++], data[index++]));
+        setRDLength(decodeRDLength(data[index++], data[index++]));
+        setRData(decodeRdata(data));
         setResourceRecordLength(index-offset);
     }
 
     return{
-        getQname: getQname,
-        setQname: setQname,
+        getName: getName,
+        setName: setName,
         getType: getType,
         setType: setType,
-        getClass: getClass,
-        setClass: setClass,
+        getRRclass: getRRclass,
+        setRRclass: setRRclass,
         getTtl: getTtl,
         setTtl: setTtl,
         getRDLength: getRDLength,
@@ -444,4 +469,4 @@ function DNSResourceRecord(){
 
 }
 
-module.exports = DNSRecordResponses;
+module.exports = DNSResourceRecord;
