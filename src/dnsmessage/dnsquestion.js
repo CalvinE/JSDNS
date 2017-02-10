@@ -7,6 +7,7 @@
 const QTYPES = require("../dnsmessage/constants/qtypes");
 const QCLASSES = require("../dnsmessage/constants/qclasses");
 const DNSUtils = require("../dnsmessage/dnsutilities");
+const Utilities = require("../utilities");
 
 /**
  * @name DNSMesageQuestion
@@ -19,7 +20,7 @@ function DNSMesageQuestion(){
     /**
      * @name qname
      * @access private
-     * @type {Array}
+     * @type {String}
      * 
      * @description A domain name represented as a sequence of labels, where each label consists of a length octet followed by that number of octets. The domain name terminates with the zero length octet for the null label of the root. Note that this field may be an odd number of octets; no padding is used.
      */
@@ -46,7 +47,7 @@ function DNSMesageQuestion(){
     /**
      * @name questionStartIndex
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This is the absolute position in the byte array where this question begins.
      */
@@ -55,7 +56,7 @@ function DNSMesageQuestion(){
     /**
      * @name questionLength
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This is the length of the question in bytes.
      */
@@ -64,7 +65,7 @@ function DNSMesageQuestion(){
     /**
      * @name index
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This variable is used to keep track of the current index as we parse the question data.
      */
@@ -104,6 +105,8 @@ function DNSMesageQuestion(){
      * @description Decodes the domain name from the question data. Also it advances the index variable to keep track of how to parse the message.
      * 
      * @param {Array} qNameBytes This is the array of bytes that represent the entire DNS message.
+     * 
+     * @returns {String} A period delimited list of labels with the TLD in the last index.
      */
     function decodeQname(qNameBytes){
         let qNameData = DNSUtils.decodeName(qNameBytes, index);
@@ -131,7 +134,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the setter method for qtype.
      * 
-     * @param {Object} _qtype An object representing the QType from the QTypes module.
+     * @param {Object | Number} _qtype An object representing the QType from the QTypes module.
      */
     function setQtype(_qtype){
         if(_qtype.value == undefined){
@@ -140,20 +143,6 @@ function DNSMesageQuestion(){
             });
         }
         qtype = _qtype;
-    }
-    
-    /**
-     * @name decodeQtype
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the QType from the question data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the QType in the question.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the QType in the question.
-     */
-    function decodeQtype(highByte, lowByte){
-        return (highByte << 8) | lowByte;
     }
 
     /**
@@ -176,7 +165,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the setter method for qclass.
      * 
-     * @param {Object} _qclass An object representing the QClass from the QClasses module.
+     * @param {Object | Number} _qclass An object representing the QClass from the QClasses module.
      */
     function setQclass(_qclass){
         if(_qclass.value == undefined){
@@ -188,27 +177,13 @@ function DNSMesageQuestion(){
     }
 
     /**
-     * @name decodeQclass
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the QClass from the question data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the QClass in the question.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the QClass in the question.
-     */
-    function decodeQclass(highByte, lowByte){
-        return (highByte << 8) | lowByte;
-    }
-
-    /**
      * @name getQuestionStartIndex
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return questionStartIndex.
      * 
-     * @returns {int} The current value of the questionStartIndex variable.
+     * @returns {Number} The current value of the questionStartIndex variable.
      */
     function getQuestionStartIndex(){
         return questionStartIndex;
@@ -221,7 +196,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the setter method for questionStartIndex.
      * 
-     * @param {int} index An integer representing the starting index of this question relative to the whole message.
+     * @param {Number} index An integer representing the starting index of this question relative to the whole message.
      */
     function setQuestionStartIndex(index){
         questionStartIndex = index;
@@ -234,7 +209,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the getter method to return questionLength.
      * 
-     * @returns {int} The current value of the questionLength variable.
+     * @returns {Number} The current value of the questionLength variable.
      */
     function getQuestionLength(){
         return questionLength;
@@ -247,7 +222,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the setter method for questionLength.
      * 
-     * @param {int} length An the length of this message as a part of the whole DNS message.
+     * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
     function setQuestionLength(length){
         questionLength = length;
@@ -260,15 +235,15 @@ function DNSMesageQuestion(){
      * 
      * @description This function takes the byte array containing the DNS message and populates the model with the messages question data at the specified offset in the array.
      * 
-     * @param {Buffer | Uint8Array} data This is an array containing the bytes of the complete DNS message.
-     * @param {int} offset This is an integer representing the offset to be used for parsing the question data.
+     * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
+     * @param {Number} offset This is an integer representing the offset to be used for parsing the question data.
      */
     function decodeDNSQuestionFromMessage(data, offset){
         index = offset;
         setQuestionStartIndex(index);
         setQname(decodeQname(data));
-        setQtype(decodeQtype(data[index++], data[index++]));
-        setQclass(decodeQclass(data[index++], data[index++]));
+        setQtype(Utilities.decode16BitValue(data[index++], data[index++]));
+        setQclass(Utilities.decode16BitValue(data[index++], data[index++]));
         setQuestionLength(index-offset);
 
     }

@@ -8,6 +8,7 @@
 const TYPES = require("../dnsmessage/constants/qtypes");
 const CLASSES = require("../dnsmessage/constants/qclasses");
 const DNSUtils = require("../dnsmessage/dnsutilities");
+const Utilities = require("../utilities");
 
 /**
  * @name DNSResourceRecord
@@ -20,7 +21,7 @@ function DNSResourceRecord(){
     /**
      * @name name
      * @access private
-     * @type {Array}
+     * @type {String}
      * 
      * @description an owner name, i.e., the name of the node to which this resource record pertains.
      */
@@ -47,7 +48,7 @@ function DNSResourceRecord(){
     /**
      * @name ttl
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description a 32 bit signed integer that specifies the time interval that the resource record may be cached before the source of the information should again be consulted. Zero values are interpreted to mean that the RR can only be used for the transaction in progress, and should not be cached. For example, SOA records are always distributed with a zero TTL to prohibit caching. Zero values can also be used for extremely volatile data.
      */
@@ -56,7 +57,7 @@ function DNSResourceRecord(){
     /**
      * @name rdLength
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description an unsigned 16 bit integer that specifies the length in octets of the RDATA field.
      */
@@ -74,7 +75,7 @@ function DNSResourceRecord(){
     /**
      * @name resourceRecordStartIndex
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This is the absolute position in the byte array where this resource record begins.
      */
@@ -83,7 +84,7 @@ function DNSResourceRecord(){
     /**
      * @name resourceRecordLength
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This is the length of the resource record in bytes.
      */
@@ -92,7 +93,7 @@ function DNSResourceRecord(){
     /**
      * @name index
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This variable is used to keep track of the current index as we parse the resource record data.
      */
@@ -131,7 +132,7 @@ function DNSResourceRecord(){
      * 
      * @description Decodes the domain name from the resourceRecord data. Also it advances the index variable to keep track of how to parse the message.
      * 
-     * @param {Array} nameBytes This is the array of bytes that represent the entire DNS message.
+     * @param {String} nameBytes This is the array of bytes that represent the entire DNS message.
      */
     function decodeName(nameBytes){
         let nameData = DNSUtils.decodeName(nameBytes, index);
@@ -159,7 +160,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for type.
      * 
-     * @param {Object} _type An object representing the Type from the QTypes module.
+     * @param {Object | Number} _type An object representing the Type from the QTypes module.
      */
     function setType(_type){
         if(_type.value == undefined){
@@ -168,20 +169,6 @@ function DNSResourceRecord(){
             });
         }
         type = _type;
-    }
-    
-    /**
-     * @name decodeQtype
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the QType from the resource record data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the QType in the resource record.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the QType in the resource record.
-     */
-    function decodeType(highByte, lowByte){
-        return (highByte << 8) | lowByte;
     }
 
     /**
@@ -204,29 +191,15 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for rrClass.
      * 
-     * @param {Object} _qclass An object representing the Class from the QClasses module.
+     * @param {Object | Number} _rclass An object representing the Class from the Classes module.
      */
-    function setRRclass(_qclass){
-        if(_qclass.value == undefined){
-            _qclass = CLASSES.find(function(item){
-                return item.value == parseInt(_qclass);
+    function setRRclass(_rclass){
+        if(_rclass.value == undefined){
+            _rclass = CLASSES.find(function(item){
+                return item.value == parseInt(_rclass);
             });
         }
-        qclass = _qclass;
-    }
-
-    /**
-     * @name decodeRRclass
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the Class from the resource record data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the Class in the resource record.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the Class in the resource record.
-     */
-    function decodeRRclass(highByte, lowByte){
-        return (highByte << 8) | lowByte;
+        rrClass = _rclass;
     }
 
     /**
@@ -236,7 +209,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the getter method to return ttl.
      * 
-     * @returns {Object} The current value of the ttl variable.
+     * @returns {Number} The current value of the ttl variable.
      */
     function getTtl(){
         return ttl;
@@ -249,7 +222,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for ttl.
      * 
-     * @param {Object} _ttl An object representing the ttl.
+     * @param {Number} _ttl An object representing the ttl.
      */
     function setTtl(_ttl){
         ttl = _ttl
@@ -262,10 +235,10 @@ function DNSResourceRecord(){
      * 
      * @description Decodes the Class from the resource record data.
      * 
-     * @param {Uint8} byte1 High word high byte of the 32 bits representing the ttl in the resource record.
-     * @param {Uint8} byte2 High word low byte of the 32 bits representing the ttl in the resource record.
-     * @param {Uint8} byte3 Low word high byte of the 32 bits representing the ttl in the resource record.
-     * @param {Uint8} byte4 Low word low byte of the 32 bits representing the ttl in the resource record.
+     * @param {Number} byte1 High word high byte of the 32 bits representing the ttl in the resource record.
+     * @param {Number} byte2 High word low byte of the 32 bits representing the ttl in the resource record.
+     * @param {Number} byte3 Low word high byte of the 32 bits representing the ttl in the resource record.
+     * @param {Number} byte4 Low word low byte of the 32 bits representing the ttl in the resource record.
      */
     function decodeTtl(byte1, byte2, byte3, byte4){
         return (byte1 << 24) | (byte2 << 16) | (byte3 << 16) |(byte4);
@@ -278,7 +251,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the getter method to return rdLength.
      * 
-     * @returns {int} The current value of the rdLength variable.
+     * @returns {Number} The current value of the rdLength variable.
      */
     function getRDLength(){
         return rdLength;
@@ -291,24 +264,10 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for rdLength.
      * 
-     * @param {int} _rdLength An object representing the RDataLength.
+     * @param {Number} _rdLength An object representing the RDataLength.
      */
     function setRDLength(_rdLength){
         rdLength = _rdLength;
-    }
-
-    /**
-     * @name decodeRDLength
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the RDataLength from the resource record data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the RDataLength in the resource record.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the RDataLength in the resource record.
-     */
-    function decodeRDLength(highByte, lowByte){
-        return (highByte << 8) | lowByte;
     }
 
     /**
@@ -344,7 +303,9 @@ function DNSResourceRecord(){
      * 
      * @description Decodes the rData from the resource record data.
      * 
-     * @param {array} data
+     * @param {Array} data
+     * 
+     * @returns {any} Whatever the RR data is.
      */
     function decodeRdata(data){
         let rrtypeValue = getType().value;
@@ -364,7 +325,7 @@ function DNSResourceRecord(){
      * 
      * @description Decodes the rData from an A type resource record.
      * 
-     * @param {array} data
+     * @param {Array} data
      */
     function decodeARecordRData(data){
         let totalLength = index + getRDLength();
@@ -382,7 +343,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the getter method to return resource recordStartIndex.
      * 
-     * @returns {int} The current value of the resource recordStartIndex variable.
+     * @returns {Number} The current value of the resource recordStartIndex variable.
      */
     function getResourceRecordStartIndex(){
         return resourceRecordStartIndex;
@@ -395,7 +356,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for resourceRecordStartIndex.
      * 
-     * @param {int} index An integer representing the starting index of this resource record relative to the whole message.
+     * @param {Number} index An integer representing the starting index of this resource record relative to the whole message.
      */
     function setResourceRecordStartIndex(index){
         resourceRecordStartIndex = index;
@@ -408,7 +369,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the getter method to return resourceRecordLength.
      * 
-     * @returns {int} The current value of the resourceRecordLength variable.
+     * @returns {Number} The current value of the resourceRecordLength variable.
      */
     function getResourceRecordLength(){
         return resourceRecordLength;
@@ -421,7 +382,7 @@ function DNSResourceRecord(){
      * 
      * @description This is the setter method for resourceRecordLength.
      * 
-     * @param {int} length An the length of this message as a part of the whole DNS message.
+     * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
     function setResourceRecordLength(length){
         resourceRecordLength = length;
@@ -434,17 +395,17 @@ function DNSResourceRecord(){
      * 
      * @description This function takes the byte array containing the DNS message and populates the model with the messages resource record data at the specified offset in the array.
      * 
-     * @param {Buffer | Uint8Array} data This is an array containing the bytes of the complete DNS message.
-     * @param {int} offset This is an integer representing the offset to be used for parsing the resource record data.
+     * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
+     * @param {Number} offset This is an integer representing the offset to be used for parsing the resource record data.
      */
     function decodeDNSResourceRecordFromMessage(data, offset){
         index = offset;
         setResourceRecordStartIndex(index);
         setName(decodeName(data));
-        setType(decodeType(data[index++], data[index++]));
-        setRRclass(decodeRRclass(data[index++], data[index++]));
+        setType(Utilities.decode16BitValue(data[index++], data[index++]));
+        setRRclass(Utilities.decode16BitValue(data[index++], data[index++]));
         setTtl(decodeTtl(data[index++], data[index++], data[index++], data[index++]));
-        setRDLength(decodeRDLength(data[index++], data[index++]));
+        setRDLength(Utilities.decode16BitValue(data[index++], data[index++]));
         setRData(decodeRdata(data));
         setResourceRecordLength(index-offset);
     }

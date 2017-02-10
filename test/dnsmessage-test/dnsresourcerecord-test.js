@@ -41,4 +41,60 @@ describe("dns-resourcerecord", function() {
     offset += resourceRecord.getResourceRecordLength();
     expect(offset).to.equal(testResponseDNSPacket.length);
   });
+  it("When parsing Answer to test query the name in the answer should equal the name in the query.", function(){
+    let header = new DNSHeader();
+    let question = new DNSQuestion();
+    let resourceRecord = new DNSResourceRecord();
+    let data = getTestResponseDNSPacketBuffer();
+    var offset = 0;
+    header.decodeDNSHeaderFromMessage(data)
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    offset += question.getQuestionLength();
+    resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
+    offset += resourceRecord.getResourceRecordLength();
+    expect(question.getQname()).to.equal(resourceRecord.getName());
+  });
+  it("When parsing Answer to test query the type in the answer should equal the type in the query.", function(){
+    let header = new DNSHeader();
+    let question = new DNSQuestion();
+    let resourceRecord = new DNSResourceRecord();
+    let data = getTestResponseDNSPacketBuffer();
+    var offset = 0;
+    header.decodeDNSHeaderFromMessage(data)
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    offset += question.getQuestionLength();
+    resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
+    offset += resourceRecord.getResourceRecordLength();
+    expect(question.getQtype()).to.equal(resourceRecord.getType());
+  });
+  it("When parsing Answer to test query the class in the answer should equal the class in the query.", function(){
+    let header = new DNSHeader();
+    let question = new DNSQuestion();
+    let resourceRecord = new DNSResourceRecord();
+    let data = getTestResponseDNSPacketBuffer();
+    var offset = 0;
+    header.decodeDNSHeaderFromMessage(data)
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    offset += question.getQuestionLength();
+    resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
+    offset += resourceRecord.getResourceRecordLength();
+    expect(question.getQclass()).to.equal(resourceRecord.getRRclass());
+  });
+  it("When parsing the Answer the ttl should be parsed properly.", function(){
+    let header = new DNSHeader();
+    let question = new DNSQuestion();
+    let resourceRecord = new DNSResourceRecord();
+    let data = getTestResponseDNSPacketBuffer();
+    var offset = 0;
+    header.decodeDNSHeaderFromMessage(data)
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    offset += question.getQuestionLength();
+    resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
+    offset += resourceRecord.getResourceRecordLength();
+    expect(resourceRecord.getTtl()).to.equal(0x9a);
+  });
 });

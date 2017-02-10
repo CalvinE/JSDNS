@@ -19,7 +19,7 @@ function DNSMesageHeader(){
     /**
      * @name id
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description A 16 bit identifier assigned by the program that generates any kind of query.  This identifier is copied the corresponding reply and can be used by the requester to match up replies to outstanding queries.
      */
@@ -28,7 +28,7 @@ function DNSMesageHeader(){
     /**
      * @name qr
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description A one bit field that specifies whether this message is a query (0), or a response (1).
      */
@@ -46,7 +46,7 @@ function DNSMesageHeader(){
     /**
      * @name aa
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description Authoritative Answer - this bit is valid in responses, and specifies that the responding name server is an authority for the domain name in question section. Note that the contents of the answer section may have multiple owner names because of aliases.  The AA bitcorresponds to the name which matches the query name, or the first owner name in the answer section.
      */
@@ -55,7 +55,7 @@ function DNSMesageHeader(){
     /**
      * @name tc
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description TrunCation - specifies that this message was truncated due to length greater than that permitted on the transmission channel.
      */
@@ -64,7 +64,7 @@ function DNSMesageHeader(){
     /**
      * @name rd
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description Recursion Desired - this bit may be set in a query and is copied into the response.  If RD is set, it directs the name server to pursue the query recursively. Recursive query support is optional.
      */
@@ -73,7 +73,7 @@ function DNSMesageHeader(){
     /**
      * @name ra
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description Recursion Available - this be is set or cleared in a response, and denotes whether recursive query support is available in the name server.
      */
@@ -82,9 +82,9 @@ function DNSMesageHeader(){
     /**
      * @name z
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
-     * @description Reserved for future use.  Must be zero in all queries and responses.
+     * @description Reserved for future use. Must be zero in all queries and responses.
      */
     let z = 0;
 
@@ -100,7 +100,7 @@ function DNSMesageHeader(){
     /**
      * @name qdcount
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description An unsigned 16 bit integer specifying the number of entries in the question section.
      */
@@ -109,7 +109,7 @@ function DNSMesageHeader(){
     /**
      * @name ancount
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description An unsigned 16 bit integer specifying the number of resource records in the answer section.
      */
@@ -118,7 +118,7 @@ function DNSMesageHeader(){
     /**
      * @name nscount
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description An unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
      */
@@ -127,7 +127,7 @@ function DNSMesageHeader(){
     /**
      * @name arcount
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description An unsigned 16 bit integer specifying the number of resource records in the additional records section.
      */
@@ -136,7 +136,7 @@ function DNSMesageHeader(){
     /**
      * @name headerLength
      * @access private
-     * @type {int}
+     * @type {Number}
      * 
      * @description This is the length in bytes of the header.
      */
@@ -149,7 +149,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return id.
      * 
-     * @returns {int} The current value of the id variable.
+     * @returns {Number} The current value of the id variable.
      */
     function getId(){
         return id;
@@ -162,7 +162,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for id.
      * 
-     * @param {int} _id An integer to store as the ID of the DNS message.
+     * @param {Number} _id An integer to store as the ID of the DNS message.
      */
     function setId(_id){
         if(_id === null){
@@ -172,44 +172,13 @@ function DNSMesageHeader(){
     }
 
     /**
-     * @name decodeId
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the id value from the header data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the id in the header.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the id in the header.
-     */
-    function decodeId(highByte, lowByte){
-        return ((highByte << 8) | lowByte);
-    }
-
-    /**
-     * @name encodeId
-     * @access private
-     * @type {Function}
-     * 
-     * @description Encodes the id of the header into an array of 2 bytes with the high byte being in index 0.
-     * 
-     * @param {int} _id The dns header id.
-     * 
-     * @returns {Array} An array of bytes representing the dns header id with the high byte being at index 0.
-     */
-    function encodeId(_id){
-        let highByte = ((_id & 0xFF00) >> 8);
-        let lowByte = ((_id & 0xFF));
-        return [highByte, lowByte];
-    }
-
-    /**
      * @name getQr
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return qr.
      * 
-     * @returns {int} The current value of the qr variable.
+     * @returns {Number} The current value of the qr variable.
      */
     function getQr(){
         return qr;
@@ -222,7 +191,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for qr.
      * 
-     * @param {Object} _qr A value representing whether this is a query or a response. 0 is query 1 is response.
+     * @param {Number} _qr A value representing whether this is a query or a response. 0 is query 1 is response.
      */
     function setQr(_qr){
         if(_qr === null){
@@ -238,7 +207,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the qr value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeQr(byte){
         return (byte & 0x80) != 0x00 ? 0x01 : 0x00
@@ -264,7 +233,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for opcode.
      * 
-     * @param {Object} _opcode An object representing the Opcode from the Opcodes module.
+     * @param {Object | Number} _opcode An object representing the Opcode from the Opcodes module.
      */
     function setOpcode(_opcode){
         if(_opcode === null){
@@ -285,7 +254,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the opcode value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeOpcode(byte){
         return ((byte & 0x78) << 3);
@@ -298,7 +267,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return aa.
      * 
-     * @returns {int} The current value of the aa variable..
+     * @returns {Number} The current value of the aa variable..
      */
     function getAa(){
         return aa;
@@ -311,7 +280,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for aa.
      * 
-     * @param {int} _aa A value representing if the responding DNS server is an authority for the domain name in question 1 is true 0 is false;
+     * @param {Number} _aa A value representing if the responding DNS server is an authority for the domain name in question 1 is true 0 is false;
      */
     function setAa(_aa){
         if(_aa === null){
@@ -327,7 +296,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the aa value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeAa(byte){
         return (byte & 0x04) != 0x00 ? 0x01 : 0x00
@@ -340,7 +309,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return tc.
      * 
-     * @returns {int} A value representing if the mesage was truncated bue to length 1 is true 0 is false.
+     * @returns {Number} A value representing if the mesage was truncated bue to length 1 is true 0 is false.
      */
     function getTc(){
         return tc;
@@ -353,7 +322,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for tc.
      * 
-     * @param {int} _tc An object representing the QType from the QTypes module.
+     * @param {Number} _tc An object representing the QType from the QTypes module.
      */
     function setTc(_tc){
         if(_tc === null){
@@ -369,7 +338,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the tc value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeTc(byte){
         return (byte & 0x02) != 0x00 ? 0x01 : 0x00
@@ -382,7 +351,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return rd.
      * 
-     * @returns {int} The current value of the rd variable.
+     * @returns {Number} The current value of the rd variable.
      */
     function getRd(){
         return rd;
@@ -411,7 +380,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the rd value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeRd(byte){
         return (byte & 0x01) != 0x00 ? 0x01 : 0x00
@@ -424,7 +393,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return ra.
      * 
-     * @returns {int} The current value of the ra variable.
+     * @returns {Number} The current value of the ra variable.
      */
     function getRa(){
         return ra;
@@ -437,7 +406,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for qtype.
      * 
-     * @param {int} _ra An integer representing is recursion is available 1 is true 0 is false.
+     * @param {Number} _ra An integer representing is recursion is available 1 is true 0 is false.
      */
     function setRa(_ra){
         if(_ra === null){
@@ -453,7 +422,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the ra value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeRa(byte){
         return (byte & 0x80) != 0x00 ? 0x01 : 0x00
@@ -466,7 +435,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return z.
      * 
-     * @returns {int} The current value of the z variable.
+     * @returns {Number} The current value of the z variable.
      */
     function getZ(){
         return z;
@@ -479,7 +448,7 @@ function DNSMesageHeader(){
      * 
      * @description DO NOT USE THIS METHOD!!!!! z must always be zero per RFC 1035. This is the setter method for z.
      * 
-     * @param {int} _z sets the value of the z variable.
+     * @param {Number} _z sets the value of the z variable.
      */
     function setZ(_z){
         z = _z;
@@ -506,7 +475,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for rcode.
      * 
-     * @param {Object} _rcode An object representing the RCode from the RCodes module.
+     * @param {Object | Number} _rcode An object representing the RCode from the RCodes module.
      */
     function setRcode(_rcode){
         if(_rcode === null){
@@ -527,7 +496,7 @@ function DNSMesageHeader(){
      * 
      * @description Decodes the rcode value from the header data.
      * 
-     * @param {Uint8} byte
+     * @param {Number} byte
      */
     function decodeRcode(byte){
         return 0x0F & byte;
@@ -540,14 +509,14 @@ function DNSMesageHeader(){
      * 
      * @description Encodes the values of the following dns header properties in two bytes that represent the flag bytes for the dns header.
      * 
-     * @param {int} _qr the qr value for the header.
-     * @param {int} _opcode the opcode value for the header.
-     * @param {int} _aa the aa value for the header.
-     * @param {int} _tc the tc value for the header.
-     * @param {int} _rd the rd value for the header.
-     * @param {int} _ra the ra value for the header.
-     * @param {int} _z the z value for the header.
-     * @param {int} _rcode the rcode value for the header.
+     * @param {Number} _qr the qr value for the header.
+     * @param {Number} _opcode the opcode value for the header.
+     * @param {Number} _aa the aa value for the header.
+     * @param {Number} _tc the tc value for the header.
+     * @param {Number} _rd the rd value for the header.
+     * @param {Number} _ra the ra value for the header.
+     * @param {Number} _z the z value for the header.
+     * @param {Number} _rcode the rcode value for the header.
      * 
      * @returns {Array} An array of bytes representing the dns header flag bytes with the high byte being at index 0.
      */
@@ -564,7 +533,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the getter method to return qdcount.
      * 
-     * @returns {int} The current value of the qdcount variable..
+     * @returns {Number} The current value of the qdcount variable..
      */
     function getQdcount(){
         return qdcount;
@@ -577,7 +546,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for qdcount.
      * 
-     * @param {Object} _qdcount The number of questions for the DNS message.
+     * @param {Number} _qdcount The number of questions for the DNS message.
      */
     function setQdcount(_qdcount){
         if(_qdcount === null){
@@ -587,46 +556,13 @@ function DNSMesageHeader(){
     }
 
     /**
-     * @name decodeQdcount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the question count value from the header data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the qdcount in the header.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the qdcount in the header.
-     * 
-     * @returns {int} A 16 bit number representing the number of questions associated with this dns message.
-     */
-    function decodeQdcount(highByte, lowByte){
-        return ((highByte << 8) | lowByte);
-    }
-
-    /**
-     * @name encodeQdcount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Encodes the qdcount variable into an array of two bytes with the high byte in the 0 index.
-     * 
-     * @param {int} _qdcount The number of questions in the message.
-     * 
-     * @returns {Array} Array of two bytes with the high byte in the 0 index.
-     */
-    function encodeQdcount(_qdcount){
-        let highByte = (_qdcount >> 8);
-        let lowByte = _qdcount & 0xFF
-        return [highByte, lowByte];
-    }
-
-    /**
      * @name getAncount
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return ancount.
      * 
-     * @returns {int} The current value of the ancount variable..
+     * @returns {Number} The current value of the ancount variable..
      */
     function getAncount(){
         return ancount;
@@ -639,7 +575,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for ancount.
      * 
-     * @param {Object} _ancount The number of answer records for the DNS message.
+     * @param {Number} _ancount The number of answer records for the DNS message.
      */
     function setAncount(_ancount){
         if(_ancount === null){
@@ -649,44 +585,13 @@ function DNSMesageHeader(){
     }
 
     /**
-     * @name decodeAncount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the answer count value from the header data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the ancount in the header.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the ancount in the header.
-     */
-    function decodeAncount(highByte, lowByte){
-        return ((highByte << 8) | lowByte);
-    }
-
-    /**
-     * @name encodeAncount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Encodes the ancount variable into an array of two bytes with the high byte in the 0 index.
-     * 
-     * @param {int} _ancount The number of answers in the message.
-     * 
-     * @returns {Array} Array of two bytes with the high byte in the 0 index.
-     */
-    function encodeAncount(_ancount){
-        let highByte = (_ancount >> 8) & 0xFF;
-        let lowByte = _ancount & 0xFF
-        return [highByte, lowByte];
-    }
-
-    /**
      * @name getNscount
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return nscount.
      * 
-     * @returns {int} The current value of the nscount variable..
+     * @returns {Number} The current value of the nscount variable..
      */
     function getNscount(){
         return nscount;
@@ -699,7 +604,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for nscount.
      * 
-     * @param {int} _nscount The number of nameserver records for the DNS message.
+     * @param {Number} _nscount The number of nameserver records for the DNS message.
      */
     function setNscount(_nscount){
         if(_nscount === null){
@@ -709,44 +614,13 @@ function DNSMesageHeader(){
     }
 
     /**
-     * @name decodeNscount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the nameserver count value from the header data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the nscount in the header.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the nscount in the header.
-     */
-    function decodeNscount(highByte, lowByte){
-        return ((highByte << 8) | lowByte);
-    }
-
-    /**
-     * @name encodeNscount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Encodes the nscount variable into an array of two bytes with the high byte in the 0 index.
-     * 
-     * @param {int} _nscount The number of name servers in the message.
-     * 
-     * @returns {Array} Array of two bytes with the high byte in the 0 index.
-     */
-    function encodeNscount(_nscount){
-        let highByte = (_nscount >> 8) & 0xFF;
-        let lowByte = _nscount & 0xFF
-        return [highByte, lowByte];
-    }
-
-    /**
      * @name getArcount
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return arcount.
      * 
-     * @returns {int} The current value of the arcount variable..
+     * @returns {Number} The current value of the arcount variable..
      */
     function getArcount(){
         return arcount;
@@ -759,7 +633,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for arcount.
      * 
-     * @param {int} _arcount The number of additional records for the DNS message.
+     * @param {Number} _arcount The number of additional records for the DNS message.
      */
     function setArcount(_arcount){
         if(_arcount === null){
@@ -769,44 +643,13 @@ function DNSMesageHeader(){
     }
 
     /**
-     * @name decodeArcount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Decodes the additional record count value from the header data.
-     * 
-     * @param {Uint8} highByte High byte of the 16 bits representing the arcount in the header.
-     * @param {Uint8} lowByte Low byte of the 16 bits representing the arcount in the header.
-     */
-    function decodeArcount(highByte, lowByte){
-        return ((highByte << 8) | lowByte);
-    }
-
-    /**
-     * @name encodeArcount
-     * @access private
-     * @type {Function}
-     * 
-     * @description Encodes the arcount variable into an array of two bytes with the high byte in the 0 index.
-     * 
-     * @param {int} _arcount The number of additional records in the message.
-     * 
-     * @returns {Array} Array of two bytes with the high byte in the 0 index.
-     */
-    function encodeArcount(_arcount){
-        let highByte = (_arcount >> 8) & 0xFF;
-        let lowByte = _arcount & 0xFF
-        return [highByte, lowByte];
-    }
-
-    /**
      * @name getHeaderLength
      * @access public
      * @type {Function}
      * 
      * @description This is the getter method to return headerLength.
      * 
-     * @returns {int} The current value of the headerLength variable..
+     * @returns {Number} The current value of the headerLength variable..
      */
     function getHeaderLength(){
         return headerLength;
@@ -819,7 +662,7 @@ function DNSMesageHeader(){
      * 
      * @description This is the setter method for headerLength.
      * 
-     * @param {int} length The length of the header for the DNS message. (Per RFC 1035 this could always be 12)
+     * @param {Number} length The length of the header for the DNS message. (Per RFC 1035 this could always be 12)
      */
     function setHeaderLength(length){
         headerLength = length;
@@ -832,11 +675,11 @@ function DNSMesageHeader(){
      * 
      * @description This function takes the byte array containing the DNS message and populates the model with the messages header data.
      * 
-     * @param {array} data This is an array containing the bytes of the complete DNS message.
+     * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
      */
     function decodeDNSHeaderFromMessage(data){
         let index = 0;
-        setId(decodeId(data[index++], data[index++]));
+        setId(Utilities.decode16BitValue(data[index++], data[index++]));
         let flagHighByte = data[index++];
         let flagLowByte = data[index++];
         setQr(decodeQr(flagHighByte));
@@ -847,10 +690,10 @@ function DNSMesageHeader(){
         setRa(decodeRa(flagLowByte));      
         //We do not decode the Z value because it is always 0 per RFC 1035 4.1.1
         setRcode(decodeRcode(flagLowByte));  
-        setQdcount(decodeQdcount(data[index++], data[index++]));
-        setAncount(decodeAncount(data[index++], data[index++]));
-        setNscount(decodeNscount(data[index++], data[index++]));
-        setArcount(decodeArcount(data[index++], data[index++]));
+        setQdcount(Utilities.decode16BitValue(data[index++], data[index++]));
+        setAncount(Utilities.decode16BitValue(data[index++], data[index++]));
+        setNscount(Utilities.decode16BitValue(data[index++], data[index++]));
+        setArcount(Utilities.decode16BitValue(data[index++], data[index++]));
         setHeaderLength(index);
     }
 
@@ -886,23 +729,23 @@ function DNSMesageHeader(){
         setArcount(Utilities.isNullOrUndefined(dnsHeaderInfo.arcount) ? getArcount() : dnsHeaderInfo.arcount);
 
         let headerBuffer = new Uint8Array(12);
-        let idBytes = encodeId(getId());
+        let idBytes = Utilities.encode16BitValue(getId());
         let offset = 0;
         headerBuffer.set(idBytes, offset);
         offset += idBytes.length;
         let flagBytes = encodeFlagBytes(getQr(), getOpcode().value, getAa(), getTc(), getRd(), getRa(), getZ(), getRcode().value);
         headerBuffer.set(flagBytes, offset);
         offset += flagBytes.length;
-        let qdBytes = encodeQdcount(getQdcount());
+        let qdBytes = Utilities.encode16BitValue(getQdcount());
         headerBuffer.set(qdBytes, offset);
         offset += qdBytes.length;
-        let anBytes = encodeAncount(getAncount());
+        let anBytes = Utilities.encode16BitValue(getAncount());
         headerBuffer.set(anBytes, offset);
         offset += anBytes.length;
-        let nsBytes = encodeNscount(getNscount());
+        let nsBytes = Utilities.encode16BitValue(getNscount());
         headerBuffer.set(nsBytes, offset);
         offset += nsBytes.length;
-        let arBytes = encodeArcount(getArcount());
+        let arBytes = Utilities.encode16BitValue(getArcount());
         headerBuffer.set(arBytes, offset);
         offset += arBytes.length;
         setHeaderLength(offset);
