@@ -248,6 +248,47 @@ function DNSMesageQuestion(){
 
     }
 
+    /**
+     * @name encodeQuestionForMessage
+     * @access public
+     * @type {Function}
+     * 
+     * @description Encodes a dns question into a Uint8Array based on either the properties set on the variables of this class or from the object passed into the function. If a property is missing from the object then this function will attempt to use the getter function for that property, and if both are absent an error will be thrown.
+     * 
+     * @param {Object} dnsQuestionInfo An object with properties with the same names as the private variables used in this class.
+     * 
+     * @returns {Uint8Array} An array of bytes representing the DNS Question.
+     */
+    function encodeQuestionForMessage(dnsQuestionInfo){
+        dnsQuestionInfo = dnsQuestionInfo || {};
+        setQname(Utilities.isNullOrUndefined(dnsQuestionInfo.qname) ? getQname() : dnsQuestionInfo.qname);
+        setQtype(Utilities.isNullOrUndefined(dnsQuestionInfo.qtype) ? getQtype() : dnsQuestionInfo.qtype);
+        setQclass(Utilities.isNullOrUndefined(dnsQuestionInfo.qclass) ? getQclass() : dnsQuestionInfo.qclass);
+
+        let tempBuffer = [];
+        let qLength = 0;
+        let offset = 0;
+        let qname = DNSUtils.encodeName(getQname());
+        qLength += qname.length;
+        let qtype = Utilities.encode16BitValue(getQtype().value);
+        qLength += qtype.length;
+        let qclass = Utilities.encode16BitValue(getQclass().value);
+        qLength += qclass.length;
+
+        let questionBuffer = new Uint8Array(qLength);
+
+        questionBuffer.set(qname, offset);
+        offset += qname.length;
+        questionBuffer.set(qtype, offset);
+        offset += qtype.length;
+        questionBuffer.set(qclass, offset);
+        offset += qclass.length;
+
+        setQuestionLength(offset);
+
+        return questionBuffer;
+    }
+
     return{
         getQname: getQname,
         setQname: setQname,
@@ -257,7 +298,8 @@ function DNSMesageQuestion(){
         setQclass: setQclass,
         getQuestionLength: getQuestionLength,
         getQuestionStartIndex: getQuestionStartIndex,
-        decodeDNSQuestionFromMessage: decodeDNSQuestionFromMessage
+        decodeDNSQuestionFromMessage: decodeDNSQuestionFromMessage,
+        encodeQuestionForMessage: encodeQuestionForMessage
     };
 
 }

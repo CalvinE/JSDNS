@@ -410,6 +410,60 @@ function DNSResourceRecord(){
         setResourceRecordLength(index-offset);
     }
 
+    /**
+     * @name encodeResourceRecordForMessage
+     * @access public
+     * @type {Function}
+     * 
+     * @description Encodes a dns resource record into a Uint8Array based on either the properties set on the variables of this class or from the object passed into the function. If a property is missing from the object then this function will attempt to use the getter function for that property, and if both are absent an error will be thrown.
+     * 
+     * @param {Object} dnsQuestionInfo An object with properties with the same names as the private variables used in this class.
+     * 
+     * @returns {Uint8Array} An array of bytes representing the DNS Resource Record.
+     */
+    function encodeResourceRecordForMessage(dnsResourceRecordInfo){
+        dnsResourceRecordInfo = dnsResourceRecordInfo || {};
+        setName(Utilities.isNullOrUndefined(dnsResourceRecordInfo.name) ? getName() : dnsResourceRecordInfo.name);
+        setType(Utilities.isNullOrUndefined(dnsResourceRecordInfo.type) ? getType() : dnsResourceRecordInfo.type);
+        setRRclass(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rrclass) ? getRRclass() : dnsResourceRecordInfo.rrclass);
+        setTtl(Utilities.isNullOrUndefined(dnsResourceRecordInfo.ttl) ? getTtl() : dnsResourceRecordInfo.ttl);
+        setRDLength(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? getRDLength() : dnsResourceRecordInfo.rdlength)
+        setRData(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? getRData() : dnsResourceRecordInfo.rdata)
+
+        let tempBuffer = [];
+        let rrLength = 0;
+        let offset = 0;
+        let name = DNSUtils.encodeName(getName());
+        rrLength += name.length;
+        let type = Utilities.encode16BitValue(getType().value);
+        rrLength += type.length;
+        let rrclass = Utilities.encode16BitValue(getRRclass().value);
+        rrLength += rrclass.length;
+        // let ttl = encodeTtl(getTtl());
+        // rrLength += ttl.length;
+        let rdlength = Utilities.encode16BitValue(getRDLength());
+        rrLength += rdlength.length;
+        //Figure out how to encode rdata segment. it can vary based on class... will need a function to handle this.
+
+        let rrBuffer = new Uint8Array(rrLength);
+
+        rrBuffer.set(name, offset);
+        offset += name.length;
+        rrBuffer.set(type, offset);
+        offset += type.length;
+        rrBuffer.set(rrclass, offset);
+        offset += rrclass.length;
+        // rrBuffer.set(ttl, offset);
+        // offset += ttl.length;
+        rrBuffer.set(rdlength, offset);
+        offset += rdlength.length;
+        //put rdata here!
+
+        setResourceRecordLength(offset);
+
+        return rrBuffer;
+    }
+
     return{
         getName: getName,
         setName: setName,

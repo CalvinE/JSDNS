@@ -65,4 +65,16 @@ describe("dns-question", function() {
     question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
     expect(question.getQtype().value).to.equal(0x01);
   });
+  it("When encoding a question the name should be encoded properly.", function() {
+    let data = getTestQuestionDNSPacketBuffer();
+    header.decodeDNSHeaderFromMessage(data)
+    question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+    let encodedQuestion = new DNSQuestion();
+    encodedQuestion.encodeQuestionForMessage({
+      qname: "www.google.com",
+      qtype: 1,
+      qclass: 1
+    });
+    expect(question.getQname()).to.equal(encodedQuestion.getQname());
+  });
 });
