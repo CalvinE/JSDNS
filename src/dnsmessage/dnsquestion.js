@@ -77,7 +77,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the getter method to return qname.
      * 
-     * @returns {array | null} The current value of the qname variable..
+     * @returns {String} The current value of the qname variable..
      */
     function getQname(){
         return qname;
@@ -90,7 +90,7 @@ function DNSMesageQuestion(){
      * 
      * @description This is the setter method for qname.
      * 
-     * @param {Array} _qname An array of strings ("labels") representing the domain name of the question.
+     * @param {String} _qname A string of labels delimited by a . character.
      */
     function setQname(_qname){
         qname = _qname;
@@ -108,7 +108,7 @@ function DNSMesageQuestion(){
     function decodeQname(qNameBytes){
         let qNameData = DNSUtils.decodeName(qNameBytes, index);
         index = qNameData.indexPosPostReading;
-        return qNameData.name;
+        return qNameData.name.join(".");
     }
 
     /**
@@ -260,7 +260,7 @@ function DNSMesageQuestion(){
      * 
      * @description This function takes the byte array containing the DNS message and populates the model with the messages question data at the specified offset in the array.
      * 
-     * @param {array} data This is an array containing the bytes of the complete DNS message.
+     * @param {Buffer | Uint8Array} data This is an array containing the bytes of the complete DNS message.
      * @param {int} offset This is an integer representing the offset to be used for parsing the question data.
      */
     function decodeDNSQuestionFromMessage(data, offset){
@@ -270,6 +270,7 @@ function DNSMesageQuestion(){
         setQtype(decodeQtype(data[index++], data[index++]));
         setQclass(decodeQclass(data[index++], data[index++]));
         setQuestionLength(index-offset);
+
     }
 
     return{

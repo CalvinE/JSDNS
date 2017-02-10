@@ -103,12 +103,12 @@ function DNSResourceRecord(){
      * @access public
      * @type {Function}
      * 
-     * @description This is the getter method to return qname.
+     * @description This is the getter method to return name.
      * 
-     * @returns {array} The current value of the qname variable..
+     * @returns {String} The current value of the name variable.
      */
     function getName(){
-        return qname;
+        return name;
     }
 
     /**
@@ -116,9 +116,9 @@ function DNSResourceRecord(){
      * @access public
      * @type {Function}
      * 
-     * @description This is the setter method for qname.
+     * @description This is the setter method for name.
      * 
-     * @param {Array} _name An array of strings ("labels") representing the domain name of the resourceRecord.
+     * @param {String} _name A string of labels delimited by a . character.
      */
     function setName(_name){
         name = _name;
@@ -136,7 +136,7 @@ function DNSResourceRecord(){
     function decodeName(nameBytes){
         let nameData = DNSUtils.decodeName(nameBytes, index);
         index = nameData.indexPosPostReading;
-        return nameData.name;
+        return nameData.name.join(".");
     }
 
     /**
@@ -434,7 +434,7 @@ function DNSResourceRecord(){
      * 
      * @description This function takes the byte array containing the DNS message and populates the model with the messages resource record data at the specified offset in the array.
      * 
-     * @param {array} data This is an array containing the bytes of the complete DNS message.
+     * @param {Buffer | Uint8Array} data This is an array containing the bytes of the complete DNS message.
      * @param {int} offset This is an integer representing the offset to be used for parsing the resource record data.
      */
     function decodeDNSResourceRecordFromMessage(data, offset){

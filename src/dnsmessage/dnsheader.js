@@ -6,6 +6,7 @@
 
 const OPCODES = require("../dnsmessage/constants/opcodes");
 const RCODES = require("../dnsmessage/constants/rcodes");
+const Utilities = require("../utilities");
 
 /**
  * @name DNSMesageHeader
@@ -164,6 +165,9 @@ function DNSMesageHeader(){
      * @param {int} _id An integer to store as the ID of the DNS message.
      */
     function setId(_id){
+        if(_id === null){
+            throw "DNS Header id cannot be null";
+        }
         id = _id;
     }
 
@@ -179,6 +183,23 @@ function DNSMesageHeader(){
      */
     function decodeId(highByte, lowByte){
         return ((highByte << 8) | lowByte);
+    }
+
+    /**
+     * @name encodeId
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the id of the header into an array of 2 bytes with the high byte being in index 0.
+     * 
+     * @param {int} _id The dns header id.
+     * 
+     * @returns {Array} An array of bytes representing the dns header id with the high byte being at index 0.
+     */
+    function encodeId(_id){
+        let highByte = ((_id & 0xFF00) >> 8);
+        let lowByte = ((_id & 0xFF));
+        return [highByte, lowByte];
     }
 
     /**
@@ -204,6 +225,9 @@ function DNSMesageHeader(){
      * @param {Object} _qr A value representing whether this is a query or a response. 0 is query 1 is response.
      */
     function setQr(_qr){
+        if(_qr === null){
+            throw "DNS Header qr cannot be null";
+        }
         qr = _qr;
     }
     
@@ -243,6 +267,9 @@ function DNSMesageHeader(){
      * @param {Object} _opcode An object representing the Opcode from the Opcodes module.
      */
     function setOpcode(_opcode){
+        if(_opcode === null){
+            throw "DNS Header opcode cannot be null";
+        }
         if(_opcode.value == undefined){
             _opcode = OPCODES.find(function(item){
                 return item.value == parseInt(_opcode);
@@ -287,6 +314,9 @@ function DNSMesageHeader(){
      * @param {int} _aa A value representing if the responding DNS server is an authority for the domain name in question 1 is true 0 is false;
      */
     function setAa(_aa){
+        if(_aa === null){
+            throw "DNS Header aa cannot be null";
+        }
         aa = _aa;
     }
 
@@ -326,6 +356,9 @@ function DNSMesageHeader(){
      * @param {int} _tc An object representing the QType from the QTypes module.
      */
     function setTc(_tc){
+        if(_tc === null){
+            throw "DNS Header tc cannot be null";
+        }
         tc = _tc;
     }
 
@@ -365,6 +398,9 @@ function DNSMesageHeader(){
      * @param {Object} _rd An integer representing is recursion is desired 1 is true 0 is false.
      */
     function setRd(_rd){
+        if(_rd === null){
+            throw "DNS Header rd cannot be null";
+        }
         rd = _rd;
     }
 
@@ -404,6 +440,9 @@ function DNSMesageHeader(){
      * @param {int} _ra An integer representing is recursion is available 1 is true 0 is false.
      */
     function setRa(_ra){
+        if(_ra === null){
+            throw "DNS Header ra cannot be null";
+        }
         ra = _ra;
     }
 
@@ -470,6 +509,9 @@ function DNSMesageHeader(){
      * @param {Object} _rcode An object representing the RCode from the RCodes module.
      */
     function setRcode(_rcode){
+        if(_rcode === null){
+            throw "DNS Header rcode cannot be null";
+        }
         if(_rcode.value == undefined){
             _rcode = RCODES.find(function(item){
                 return item.value == parseInt(_rcode);
@@ -489,6 +531,30 @@ function DNSMesageHeader(){
      */
     function decodeRcode(byte){
         return 0x0F & byte;
+    }
+
+    /**
+     * @name encodeFlagBytes
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the values of the following dns header properties in two bytes that represent the flag bytes for the dns header.
+     * 
+     * @param {int} _qr the qr value for the header.
+     * @param {int} _opcode the opcode value for the header.
+     * @param {int} _aa the aa value for the header.
+     * @param {int} _tc the tc value for the header.
+     * @param {int} _rd the rd value for the header.
+     * @param {int} _ra the ra value for the header.
+     * @param {int} _z the z value for the header.
+     * @param {int} _rcode the rcode value for the header.
+     * 
+     * @returns {Array} An array of bytes representing the dns header flag bytes with the high byte being at index 0.
+     */
+    function encodeFlagBytes(_qr, _opcode, _aa, _tc, _rd, _ra, _z, _rcode){
+        //get your bits in a row :-)
+        let flagValue = (((_qr << 15) | (_opcode << 11) | (_aa << 10) | (_tc << 9) | (_rd << 8) | (_ra << 7) | (_z << 4) | (_rcode << 11)) & 0xFFFF);
+        return [((flagValue >> 8)), (flagValue & 0xFF)];
     }
 
     /**
@@ -514,6 +580,9 @@ function DNSMesageHeader(){
      * @param {Object} _qdcount The number of questions for the DNS message.
      */
     function setQdcount(_qdcount){
+        if(_qdcount === null){
+            throw "DNS Header qdcount cannot be null";
+        }
         qdcount = _qdcount
     }
 
@@ -526,9 +595,28 @@ function DNSMesageHeader(){
      * 
      * @param {Uint8} highByte High byte of the 16 bits representing the qdcount in the header.
      * @param {Uint8} lowByte Low byte of the 16 bits representing the qdcount in the header.
+     * 
+     * @returns {int} A 16 bit number representing the number of questions associated with this dns message.
      */
     function decodeQdcount(highByte, lowByte){
         return ((highByte << 8) | lowByte);
+    }
+
+    /**
+     * @name encodeQdcount
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the qdcount variable into an array of two bytes with the high byte in the 0 index.
+     * 
+     * @param {int} _qdcount The number of questions in the message.
+     * 
+     * @returns {Array} Array of two bytes with the high byte in the 0 index.
+     */
+    function encodeQdcount(_qdcount){
+        let highByte = (_qdcount >> 8);
+        let lowByte = _qdcount & 0xFF
+        return [highByte, lowByte];
     }
 
     /**
@@ -554,6 +642,9 @@ function DNSMesageHeader(){
      * @param {Object} _ancount The number of answer records for the DNS message.
      */
     function setAncount(_ancount){
+        if(_ancount === null){
+            throw "DNS Header ancount cannot be null";
+        }
         ancount = _ancount
     }
 
@@ -569,6 +660,23 @@ function DNSMesageHeader(){
      */
     function decodeAncount(highByte, lowByte){
         return ((highByte << 8) | lowByte);
+    }
+
+    /**
+     * @name encodeAncount
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the ancount variable into an array of two bytes with the high byte in the 0 index.
+     * 
+     * @param {int} _ancount The number of answers in the message.
+     * 
+     * @returns {Array} Array of two bytes with the high byte in the 0 index.
+     */
+    function encodeAncount(_ancount){
+        let highByte = (_ancount >> 8) & 0xFF;
+        let lowByte = _ancount & 0xFF
+        return [highByte, lowByte];
     }
 
     /**
@@ -594,6 +702,9 @@ function DNSMesageHeader(){
      * @param {int} _nscount The number of nameserver records for the DNS message.
      */
     function setNscount(_nscount){
+        if(_nscount === null){
+            throw "DNS Header nscount cannot be null";
+        }
         nscount = _nscount;
     }
 
@@ -609,6 +720,23 @@ function DNSMesageHeader(){
      */
     function decodeNscount(highByte, lowByte){
         return ((highByte << 8) | lowByte);
+    }
+
+    /**
+     * @name encodeNscount
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the nscount variable into an array of two bytes with the high byte in the 0 index.
+     * 
+     * @param {int} _nscount The number of name servers in the message.
+     * 
+     * @returns {Array} Array of two bytes with the high byte in the 0 index.
+     */
+    function encodeNscount(_nscount){
+        let highByte = (_nscount >> 8) & 0xFF;
+        let lowByte = _nscount & 0xFF
+        return [highByte, lowByte];
     }
 
     /**
@@ -634,6 +762,9 @@ function DNSMesageHeader(){
      * @param {int} _arcount The number of additional records for the DNS message.
      */
     function setArcount(_arcount){
+        if(_arcount === null){
+            throw "DNS Header arcount cannot be null";
+        }
         arcount = _arcount;
     }
 
@@ -649,6 +780,23 @@ function DNSMesageHeader(){
      */
     function decodeArcount(highByte, lowByte){
         return ((highByte << 8) | lowByte);
+    }
+
+    /**
+     * @name encodeArcount
+     * @access private
+     * @type {Function}
+     * 
+     * @description Encodes the arcount variable into an array of two bytes with the high byte in the 0 index.
+     * 
+     * @param {int} _arcount The number of additional records in the message.
+     * 
+     * @returns {Array} Array of two bytes with the high byte in the 0 index.
+     */
+    function encodeArcount(_arcount){
+        let highByte = (_arcount >> 8) & 0xFF;
+        let lowByte = _arcount & 0xFF
+        return [highByte, lowByte];
     }
 
     /**
@@ -697,7 +845,7 @@ function DNSMesageHeader(){
         setTc(decodeTc(flagHighByte));
         setRd(decodeRd(flagHighByte));
         setRa(decodeRa(flagLowByte));      
-        //We do not deoce the Z value because it is always 0 per RFC 1035 4.1.1
+        //We do not decode the Z value because it is always 0 per RFC 1035 4.1.1
         setRcode(decodeRcode(flagLowByte));  
         setQdcount(decodeQdcount(data[index++], data[index++]));
         setAncount(decodeAncount(data[index++], data[index++]));
@@ -706,8 +854,58 @@ function DNSMesageHeader(){
         setHeaderLength(index);
     }
 
-    function encodeHeaderForMessage(){
+    /**
+     * @name encodeHeaderForMessage
+     * @access public
+     * @type {Function}
+     * 
+     * @description Encodes a dns header into a Uint8Array based on either the properties set on the variables of this class or from the object passed into the function. If a property is missing from the object then this function will attempt to use the getter function for that property, and if both are absent an error will be thrown.
+     * 
+     * @param {Object} dnsHeaderInfo An object with properties with the same names as the private variables used in this class.
+     * 
+     * @returns {Uint8Array} An array of bytes representing the DNS Header.
+     */
+    function encodeHeaderForMessage(dnsHeaderInfo){
+        dnsHeaderInfo = dnsHeaderInfo || {};
+        let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? getId() : dnsHeaderInfo.id;
+        if(Utilities.isNullOrUndefined(_id)){
+            _id = generateRandomID();
+        }
+        setId(_id);
+        setQr(Utilities.isNullOrUndefined(dnsHeaderInfo.qr) ? getQr() : dnsHeaderInfo.qr);
+        setOpcode(Utilities.isNullOrUndefined(dnsHeaderInfo.opcode) ? getOpcode() : dnsHeaderInfo.opcode);
+        setAa(Utilities.isNullOrUndefined(dnsHeaderInfo.aa) ? getAa() : dnsHeaderInfo.aa);
+        setTc(Utilities.isNullOrUndefined(dnsHeaderInfo.tc) ? getTc() : dnsHeaderInfo.tc);
+        setRd(Utilities.isNullOrUndefined(dnsHeaderInfo.rd) ? getRd() : dnsHeaderInfo.rd);
+        setRa(Utilities.isNullOrUndefined(dnsHeaderInfo.ra) ? getRa() : dnsHeaderInfo.ra);
+        let _z = 0x00; //Z value because it is always 0 per RFC 1035 4.1.1
+        setRcode(Utilities.isNullOrUndefined(dnsHeaderInfo.rcode) ? getRcode() : dnsHeaderInfo.rcode)
+        setQdcount(Utilities.isNullOrUndefined(dnsHeaderInfo.qdcount) ? getQdcount() : dnsHeaderInfo.qdcount);
+        setAncount(Utilities.isNullOrUndefined(dnsHeaderInfo.ancount) ? getAncount() : dnsHeaderInfo.ancount);
+        setNscount(Utilities.isNullOrUndefined(dnsHeaderInfo.nscount) ? getNscount() : dnsHeaderInfo.nscount);
+        setArcount(Utilities.isNullOrUndefined(dnsHeaderInfo.arcount) ? getArcount() : dnsHeaderInfo.arcount);
 
+        let headerBuffer = new Uint8Array(12);
+        let idBytes = encodeId(getId());
+        let offset = 0;
+        headerBuffer.set(idBytes, offset);
+        offset += idBytes.length;
+        let flagBytes = encodeFlagBytes(getQr(), getOpcode().value, getAa(), getTc(), getRd(), getRa(), getZ(), getRcode().value);
+        headerBuffer.set(flagBytes, offset);
+        offset += flagBytes.length;
+        let qdBytes = encodeQdcount(getQdcount());
+        headerBuffer.set(qdBytes, offset);
+        offset += qdBytes.length;
+        let anBytes = encodeAncount(getAncount());
+        headerBuffer.set(anBytes, offset);
+        offset += anBytes.length;
+        let nsBytes = encodeNscount(getNscount());
+        headerBuffer.set(nsBytes, offset);
+        offset += nsBytes.length;
+        let arBytes = encodeArcount(getArcount());
+        headerBuffer.set(arBytes, offset);
+        offset += arBytes.length;
+        setHeaderLength(offset);
     }
 
     function generateRandomID(){
@@ -730,7 +928,7 @@ function DNSMesageHeader(){
         getRa: getRa,
         setRa: setRa,
         getZ: getZ,
-        setZ: setZ,
+        // setZ: setZ,
         getRcode: getRcode,
         setRcode: setRcode,
         getQdcount: getQdcount,
@@ -743,6 +941,7 @@ function DNSMesageHeader(){
         setArcount: setArcount,
         getHeaderLength: getHeaderLength,
         decodeDNSHeaderFromMessage: decodeDNSHeaderFromMessage,
+        encodeHeaderForMessage: encodeHeaderForMessage,
         generateRandomID: generateRandomID
     };
 

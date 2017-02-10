@@ -40,6 +40,7 @@ function decodeName(messageData, offset){
         }
         
     }
+    data.name = data.name;
     data.indexPosPostReading = index;
     return data;
 

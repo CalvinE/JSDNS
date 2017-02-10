@@ -156,4 +156,38 @@ describe("dns-header", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
+  it("encoding header with same parameters as the sample query's header above should result in identical headers.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
+    expect(encodedHeader.getId()).to.equal(decodedHeader.getId());
+    expect(encodedHeader.getQr()).to.equal(decodedHeader.getQr());
+    expect(encodedHeader.getOpcode()).to.equal(decodedHeader.getOpcode());
+    expect(encodedHeader.getAa()).to.equal(decodedHeader.getAa());
+    expect(encodedHeader.getTc()).to.equal(decodedHeader.getTc());
+    expect(encodedHeader.getRd()).to.equal(decodedHeader.getRd());
+    expect(encodedHeader.getRa()).to.equal(decodedHeader.getRa());
+    expect(encodedHeader.getZ()).to.equal(decodedHeader.getZ());
+    expect(encodedHeader.getRcode()).to.equal(decodedHeader.getRcode());
+    expect(encodedHeader.getQdcount()).to.equal(decodedHeader.getQdcount());
+    expect(encodedHeader.getAncount()).to.equal(decodedHeader.getAncount());
+    expect(encodedHeader.getNscount()).to.equal(decodedHeader.getNscount());
+    expect(encodedHeader.getArcount()).to.equal(decodedHeader.getArcount());
+  });
 });
