@@ -40,7 +40,7 @@ function getTestResponseDNSPacketBuffer(){
 }
 
 describe("dns-header", function() {
-  it("When decoding the test question above the DNSHeader class should set the header length to the length of a DNS header section.", function(){
+  it("When decoding the test question above using the DNSHeader class should set the header length to the length of a DNS header section.", function(){
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getHeaderLength()).to.equal(0x0C);
@@ -54,133 +54,133 @@ describe("dns-header", function() {
     }
   });
   //Question
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the ID field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ID field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getId()).to.equal(0xb16a);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the QR field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the QR field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getQr()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the Opcode field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Opcode field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getOpcode().value).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the AA field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the AA field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getAa()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the TC field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the TC field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getTc()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the RD field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the RD field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRd()).to.equal(0x01);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the RA field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the RA field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRa()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the Z field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Z field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getZ()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the Rcode field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Rcode field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getRcode().value).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the QDcount field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the QDcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getQdcount()).to.equal(0x01);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the ANcount field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ANcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getAncount()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the NScount field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the NScount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getNscount()).to.equal(0x00);
   });
-  it("When decoding the test question above the DNSHeader class should decode the byte array of the question above and populate the ARcount field.", function() {
+  it("When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ARcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
   //Response
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the ID field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ID field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getId()).to.equal(0xb16a);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the QR field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the QR field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getQr()).to.equal(0x01);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the Opcode field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Opcode field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getOpcode().value).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the AA field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the AA field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getAa()).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the TC field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the TC field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getTc()).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the RD field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the RD field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRd()).to.equal(0x01);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the RA field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the RA field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRa()).to.equal(0x01);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the Z field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Z field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getZ()).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the Rcode field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Rcode field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getRcode().value).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the QDcount field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the QDcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getQdcount()).to.equal(0x01);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the ANcount field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ANcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getAncount()).to.equal(0x01);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the NScount field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the NScount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getNscount()).to.equal(0x00);
   });
-  it("When decoding the test response above the DNSHeader class should decode the byte array of the response above and populate the ARcount field.", function() {
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ARcount field.", function() {
     let header = new DNSHeader();
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);

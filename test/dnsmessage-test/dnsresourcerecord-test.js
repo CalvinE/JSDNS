@@ -27,7 +27,7 @@ function getTestResponseDNSPacketBuffer(){
 }
 
 describe("dns-resourcerecord", function() {
-  it("While parsing a dns response the bytes parsed should equal the length of the message.", function() {
+  it("When decoding the test response above using the DNSResourceRecord class the getResourceRecordLength method should return that when added together with the lengths of the DHSHeader and DHSQuestion the value should be equal to testResponseDNSPacket.length because that is the entire message.", function() {
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let resourceRecord = new DNSResourceRecord();
@@ -41,7 +41,7 @@ describe("dns-resourcerecord", function() {
     offset += resourceRecord.getResourceRecordLength();
     expect(offset).to.equal(testResponseDNSPacket.length);
   });
-  it("When parsing Answer to test query the name in the answer should equal the name in the query.", function(){
+  it("When decoding the test response above using the DNSResourceRecord class the name in the answer section should equal the name in the question section of the message..", function(){
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let resourceRecord = new DNSResourceRecord();
@@ -55,7 +55,7 @@ describe("dns-resourcerecord", function() {
     offset += resourceRecord.getResourceRecordLength();
     expect(question.getQname()).to.equal(resourceRecord.getName());
   });
-  it("When parsing Answer to test query the type in the answer should equal the type in the query.", function(){
+  it("When decoding the test response above using the DNSResourceRecord class the type in the answer should equal the type in the query.", function(){
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let resourceRecord = new DNSResourceRecord();
@@ -69,7 +69,7 @@ describe("dns-resourcerecord", function() {
     offset += resourceRecord.getResourceRecordLength();
     expect(question.getQtype()).to.equal(resourceRecord.getType());
   });
-  it("When parsing Answer to test query the class in the answer should equal the class in the query.", function(){
+  it("When decoding the test response above using the DNSResourceRecord class the class in the answer should equal the class in the query.", function(){
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let resourceRecord = new DNSResourceRecord();
@@ -83,7 +83,7 @@ describe("dns-resourcerecord", function() {
     offset += resourceRecord.getResourceRecordLength();
     expect(question.getQclass()).to.equal(resourceRecord.getRRclass());
   });
-  it("When parsing the Answer the ttl should be parsed properly.", function(){
+  it("When decoding the test response above using the DNSResourceRecord class the ttl should be parsed properly.", function(){
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let resourceRecord = new DNSResourceRecord();
