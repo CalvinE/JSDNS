@@ -752,7 +752,7 @@ function DNSMesageHeader(){
     }
 
     function generateRandomID(){
-        return Math.floor(Math.random() * (0xFFFF - 0x00)) + 0x00;
+        return Math.floor(Math.random() * (0xFFFF - 0x0001)) + 0x0001;
     }
 
     return{
