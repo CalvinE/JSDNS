@@ -46,7 +46,7 @@ describe("dns-question", function() {
     question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
     expect(question.getQtype().value).to.equal(0x01);
   });
-  it("When encoding a test question using using the DNSQuestion class the name should be encoded properly to match the name in the test question above.", function() {
+  it("When encoding a test question using the DNSQuestion class the name should be encoded properly to match the name in the test question above.", function() {
     let header = new DNSHeader();
     let question = new DNSQuestion();
     let data = getTestQuestionDNSPacketBuffer();
