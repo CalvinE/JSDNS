@@ -96,7 +96,11 @@ function Utilities() {
         highLowByte = highLowByte & 0xFF;
         lowHighByte = lowHighByte & 0xFF;
         lowLowByte = lowLowByte & 0xFF;
-        return ((highHighByte << 24) | (highLowByte << 16) | (lowHighByte << 8) | lowLowByte);
+        //Just a note on the >>> 0 on the end of this line...
+        //it is hacky, but it is the only way I can get this shift operation to be non negative!
+        //The zero-fill right shift operator (>>>) is the only javascript operator that works with 32 bit unsigned integer, 
+        //so using it at the end even with a value of 0 will cast the value to a 32 unsigned integer
+        return ((highHighByte << 24) | (highLowByte << 16) | (lowHighByte << 8) | lowLowByte) >>> 0;
     }
 
     return{
