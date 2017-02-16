@@ -314,6 +314,33 @@ function DNSResourceRecord(){
             case 1: //A record
                 rdata = decodeARecordRData(data);
                 break;
+            case 2: //NS Record
+                throw "NS Records not implemented yet."
+                break;
+            case 5: //CNAME Record
+                throw "CNAME Records not implemented yet."
+                break;
+            case 6: //SOA Record
+                throw "SOA Records not implemented yet."
+                break;
+            case 11: //WKS Record
+                throw "WKS Records not implemented yet."
+                break;
+            case 12: //PTR Record
+                throw "PTR Records not implemented yet."
+                break;
+            case 13: //HINFO Record
+                throw "HINFO Records not implemented yet."
+                break;
+            case 14: //MINFO Record
+                throw "MINFO Records not implemented yet."
+                break;
+            case 15: //MX Record
+                throw "MX Records not implemented yet."
+                break;
+            case 16: //TXT Record
+                throw "TXT Records not implemented yet."
+                break;
         }
         return rdata;
     }
@@ -334,6 +361,74 @@ function DNSResourceRecord(){
             hostAddress.push(data[index++].toString());
         }
         return hostAddress.join(".");
+    }
+
+    /**
+     * @name encodeRdata
+     * @access public
+     * @type {Function}
+     * 
+     * @description Decodes the rData from the resource record data.
+     * 
+     * @param {any} data The RData in what ever format is comes in.
+     * 
+     * @returns {Array} An array of bytes representing the encoded form of the data.
+     */
+    function encodeRdata(data){
+        let rrtypeValue = getType().value;
+        let rdata = null;
+        switch(rrtypeValue){
+            case 1: //A record
+                rdata = encodeARecordRData(data);
+                break;
+            case 2: //NS Record
+                throw "NS Records not implemented yet."
+                break;
+            case 5: //CNAME Record
+                throw "CNAME Records not implemented yet."
+                break;
+            case 6: //SOA Record
+                throw "SOA Records not implemented yet."
+                break;
+            case 11: //WKS Record
+                throw "WKS Records not implemented yet."
+                break;
+            case 12: //PTR Record
+                throw "PTR Records not implemented yet."
+                break;
+            case 13: //HINFO Record
+                throw "HINFO Records not implemented yet."
+                break;
+            case 14: //MINFO Record
+                throw "MINFO Records not implemented yet."
+                break;
+            case 15: //MX Record
+                throw "MX Records not implemented yet."
+                break;
+            case 16: //TXT Record
+                throw "TXT Records not implemented yet."
+                break;
+        }
+        return rdata;
+    }
+
+    /**
+     * @name encodeARecordRData
+     * @access public
+     * @type {Function}
+     * 
+     * @description Decodes the rData from an A type resource record.
+     * 
+     * @param {String} data The 32 bit host address as a tring delimited with periods.
+     * 
+     * @returns {Array} Array of bytes representing the 32 bit host address with the MSB in the 0 index of the array.
+     */
+    function encodeARecordRData(data){
+        let result = [];
+        data.split('.').forEach(function(octet) {
+            result.push(octet & 0xFF);
+        }, this);
+        return result;
     }
 
     /**
@@ -439,11 +534,12 @@ function DNSResourceRecord(){
         rrLength += type.length;
         let rrclass = Utilities.encode16BitValue(getRRclass().value);
         rrLength += rrclass.length;
-        // let ttl = encodeTtl(getTtl());
-        // rrLength += ttl.length;
+        let ttl = Utilities.encode32BitValue(getTtl());
+        rrLength += ttl.length;
         let rdlength = Utilities.encode16BitValue(getRDLength());
         rrLength += rdlength.length;
-        //Figure out how to encode rdata segment. it can vary based on class... will need a function to handle this.
+        let rdata = encodeRdata(getRData());
+        rrLength += rdata.length
 
         let rrBuffer = new Uint8Array(rrLength);
 
@@ -453,13 +549,14 @@ function DNSResourceRecord(){
         offset += type.length;
         rrBuffer.set(rrclass, offset);
         offset += rrclass.length;
-        // rrBuffer.set(ttl, offset);
-        // offset += ttl.length;
+        rrBuffer.set(ttl, offset);
+        offset += ttl.length;
         rrBuffer.set(rdlength, offset);
         offset += rdlength.length;
-        //put rdata here!
+        rrBuffer.set(rdata, offset);
+        offset += rdata.length;
 
-        setResourceRecordLength(offset);
+        setResourceRecordLength(rrBuffer.length);
 
         return rrBuffer;
     }
@@ -479,7 +576,8 @@ function DNSResourceRecord(){
         setRData: setRData, 
         getResourceRecordLength: getResourceRecordLength,
         getResourceRecordStartIndex: getResourceRecordStartIndex,
-        decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage
+        decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage,
+        encodeResourceRecordForMessage: encodeResourceRecordForMessage
     };
 
 }

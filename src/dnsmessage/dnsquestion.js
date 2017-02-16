@@ -284,7 +284,7 @@ function DNSMesageQuestion(){
         questionBuffer.set(qclass, offset);
         offset += qclass.length;
 
-        setQuestionLength(offset);
+        setQuestionLength(questionBuffer.length);
 
         return questionBuffer;
     }

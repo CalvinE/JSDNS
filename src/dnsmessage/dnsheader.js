@@ -748,7 +748,7 @@ function DNSMesageHeader(){
         let arBytes = Utilities.encode16BitValue(getArcount());
         headerBuffer.set(arBytes, offset);
         offset += arBytes.length;
-        setHeaderLength(offset);
+        setHeaderLength(headerBuffer.length);
     }
 
     function generateRandomID(){

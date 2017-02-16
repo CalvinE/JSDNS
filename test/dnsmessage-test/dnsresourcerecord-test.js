@@ -95,6 +95,30 @@ describe("dns-resourcerecord", function() {
     offset += question.getQuestionLength();
     resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
     offset += resourceRecord.getResourceRecordLength();
-    expect(resourceRecord.getTtl()).to.equal(0x9a);
+    expect(resourceRecord.getTtl()).to.equal(0x9A);
+  });
+  it("When encoding a test question using using the DNSResourceRecord class the RData should be encoded properly to match the RData in the test response above.", function() {
+    let header = new DNSHeader();
+    let question = new DNSQuestion();
+    let resourceRecord = new DNSResourceRecord()
+    let data = getTestResponseDNSPacketBuffer();
+    let offset = 0;
+    header.decodeDNSHeaderFromMessage(data);
+    offset += header.getHeaderLength();
+    question.decodeDNSQuestionFromMessage(data, offset);
+    offset += question.getQuestionLength();
+    resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
+    offset += resourceRecord.getResourceRecordLength();
+    let encodedResourceRecord = new DNSResourceRecord();
+    encodedResourceRecord.encodeResourceRecordForMessage({
+      name: "www.google.com",
+      type: 0x01,
+      rrclass: 0x01,
+      ttl: 0x9A,
+      rdlength: 4,
+      rdata: "172.217.0.4"
+
+    });
+    expect(resourceRecord.getRData()).to.equal(encodedResourceRecord.getRData());
   });
 });
