@@ -4,49 +4,203 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
+let DNSHeader = require("./dnsheader");
+let DNSQuestion = require("./dnsquestion");
+let DNSResourceRecord = require("./dnsresourcerecord");
+
 
 /**
- * This function will return a representation of a DNS message as described in RFC 1035 4.1 Message Format
- * and also methods for parsing and generating messages.
+ * @name DNSMessage
+ * @type {class}
+ * @access public
+ * 
+ * @description A representation of an entire DNS message complete with all of its sections.
  */
 function DNSMessage() {
 
-    //General
+    /**
+     * @name id
+     * @access private
+     * @type {DNSHeader}
+     * 
+     * @description The header of the DNS message.
+     */
     let header = null;
-    let question = null;
-    let answer = null;
-    let authority = null;
-    let additional = null;
 
-    //Header
-    
+    /**
+     * @name questions
+     * @access private
+     * @type {Array.<DNSQuestion>}
+     * 
+     * @description An array of questions for this message.
+     */
+    let questions = [];
 
-    //Question
-    function DNSMesageQuestion(){
-        
+    /**
+     * @name answers
+     * @access private
+     * @type {Array.<DNSResourceRecord>}
+     * 
+     * @description An array of answers for this message.
+     */
+    let answers = [];
+
+    /**
+     * @name nameservers
+     * @access private
+     * @type {Array.<DNSResourceRecord>}
+     * 
+     * @description An array of nameservers for this message.
+     */
+    let nameservers = [];
+
+    /**
+     * @name additionalResources
+     * @access private
+     * @type {Array.<DNSResourceRecord>}
+     * 
+     * @description An array of additional records for this message.
+     */
+    let additionalResources = [];
+
+    /**
+     * @name messageLength
+     * @access private
+     * @type {number}
+     * 
+     * @description This is the length of the DNS message in bytes.
+     */
+    let messageLength = 0;
+
+    /**
+     * @name getHeader
+     * @access public
+     * @type {Function}
+     * 
+     * @description This is the getter method for the dns message header.
+     * 
+     * @returns {DNSHeader} The current value of the header variable.
+     */
+    function getHeader(){
+        return header;
     }
 
-    //Answer
-    function DNSMesageAnswer(){
-        
+    /**
+     * @name getQuestions
+     * @access public
+     * @type {Function}
+     * 
+     * @description This is the getter method for the dns message questions.
+     * 
+     * @returns {Array.<DNSQuestion>} The current value of the questions variable.
+     */
+    function getQuestions(){
+        return questions;
     }
 
-    //Authority
-    function DNSMesageAuthority(){
-        
+    /**
+     * @name getAnswers
+     * @access public
+     * @type {Function}
+     * 
+     * @description This is the getter method for the dns message answers.
+     * 
+     * @returns {Array.<DNSResourceRecord>} The current value of the answers variable.
+     */
+    function getAnswers(){
+        return answers;
     }
 
-    //Additional
-    function DNSMesageAdditional(){
-        
+    /**
+     * @name getNameservers
+     * @access public
+     * @type {Function}
+     * 
+     * @description This is the getter method for the dns message answers.
+     * 
+     * @returns {Array.<DNSResourceRecord>} The current value of the nameservers variable.
+     */
+    function getNameservers(){
+        return nameservers;
     }
+
+    /**
+     * @name getAdditionalResources
+     * @access public
+     * @type {Function}
+     * 
+     * @description This is the getter method for the dns message additional resources.
+     * 
+     * @returns {Array.<DNSResourceRecord>} The current value of the additionalResources variable.
+     */
+    function getAdditionalResources(){
+        return additionalResources;
+    }
+
+    /**
+     * @name compressDNSMessage
+     * @access private
+     * @type {Function}
+     * 
+     * @description Goes through a populated DNS Message and compresses instances of labels per the RFC spec.
+     */
+    function compressDNSMessage(){
+        throw "Not implemented yet!";
+    }
+
+    /**
+     * @name parseRequest
+     * @access public
+     * @type {Function}
+     * 
+     * @description parses the bytes of a DNS message to populate a model representing the message.
+     * 
+     * @param {Uint8Array | Buffer} name description
+     */
+    function parseRequest(messageData){
+        let offset = 0;
+        header = new DNSHeader();
+        header.decodeDNSHeaderFromMessage(messageData);
+        //Parse Questions
+        for(let i = 0; i < header.getQdcount(); i++){
+            let q = new DNSQuestion();
+            q.decodeDNSQuestionFromMessage(messageData, offset);
+            offset += q.getQuestionLength();
+            questions.push(q);
+        }
+        //Parse Answers
+        for(let i = 0; i < header.getAncount(); i++){
+            let rr = new DNSResourceRecord();
+            rr.decodeDNSResourceRecordFromMessage(messageData, offset);
+            offset += rr.getResourceRecordLength();
+            answers.push(rr);
+        }
+        //Parse Nameservers
+        for(let i = 0; i < header.getNscount(); i++){
+            let rr = new DNSResourceRecord();
+            rr.decodeDNSResourceRecordFromMessage(messageData, offset);
+            offset += rr.getResourceRecordLength();
+            nameservers.push(rr);
+        }
+        //Parse Additional Resources
+        for(let i = 0; i < header.getArcount(); i++){
+            let rr = new DNSResourceRecord();
+            rr.decodeDNSResourceRecordFromMessage(messageData, offset);
+            offset += rr.getResourceRecordLength();
+            additionalResources.push(rr);
+        }
+
+        messageLength = offset;
+    }    
 
     return {
-        header: header,
-        question: question,
-        answer: answer,
-        authority: authority,
-        additional: additional
+        getHeader: getHeader,
+        getQuestions: getQuestions,
+        getAnswers: getAnswers,
+        getNameservers: getNameservers,
+        getAdditionalResources: getAdditionalResources,
+        parseRequest: parseRequest,
+
     };
 };
 
