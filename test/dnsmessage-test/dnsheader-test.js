@@ -185,7 +185,7 @@ describe("dns-header", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
-  it("Encoding message header with same parameters as the sample query's header above should result in identical properties..", function(){
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical id values.", function(){
     let encodedHeader = new DNSHeader();
     let headerData = {
       id: 45418,
@@ -206,17 +206,269 @@ describe("dns-header", function() {
     let decodedHeader = new DNSHeader()
     decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getId()).to.equal(decodedHeader.getId());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical qr values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getQr()).to.equal(decodedHeader.getQr());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical opcode values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getOpcode()).to.equal(decodedHeader.getOpcode());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical aa values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getAa()).to.equal(decodedHeader.getAa());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical tc values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getTc()).to.equal(decodedHeader.getTc());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical rd values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getRd()).to.equal(decodedHeader.getRd());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical ra values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getRa()).to.equal(decodedHeader.getRa());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical z values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getZ()).to.equal(decodedHeader.getZ());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical rcode values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getRcode()).to.equal(decodedHeader.getRcode());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical qdcount values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getQdcount()).to.equal(decodedHeader.getQdcount());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical ancount values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getAncount()).to.equal(decodedHeader.getAncount());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical nscount values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getNscount()).to.equal(decodedHeader.getNscount());
+  });
+  it("Encoding message header with same parameters as the sample query's header above should result both having identical arcount values.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    let decodedHeader = new DNSHeader()
+    decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
     expect(encodedHeader.getArcount()).to.equal(decodedHeader.getArcount());
   });
 });
