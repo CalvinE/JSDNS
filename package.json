@@ -1,4 +1,11 @@
 {
+  "name": "jsdns",
+  "version": "1.0.0",
+  "description": "A DNS Server written in Javascript!",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "mocha test --recursive"
   },
@@ -7,5 +14,20 @@
   },
   "dependencies": {
     "mocha": "^3.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://calvine@github.com/CalvinE/JSDNS.git"
+  },
+  "keywords": [
+    "DNS",
+    "Node",
+    "JS"
+  ],
+  "author": "Calvin L. Echols",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CalvinE/JSDNS/issues"
+  },
+  "homepage": "https://github.com/CalvinE/JSDNS#readme"
 }

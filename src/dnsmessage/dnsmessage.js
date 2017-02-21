@@ -161,6 +161,7 @@ function DNSMessage() {
         let offset = 0;
         header = new DNSHeader();
         header.decodeDNSHeaderFromMessage(messageData);
+        offset = header.getHeaderLength();
         //Parse Questions
         for(let i = 0; i < header.getQdcount(); i++){
             let q = new DNSQuestion();

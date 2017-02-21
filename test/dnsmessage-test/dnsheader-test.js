@@ -185,6 +185,31 @@ describe("dns-header", function() {
     header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
     expect(header.getArcount()).to.equal(0x00);
   });
+  it("When decoding the test response above using the DNSHeader class should decode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.", function() {
+    let header = new DNSHeader();
+    header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
+    expect(header.getHeaderLength()).to.equal(12);
+  });
+  it("When encoding the test response above using the DNSHeader class should encode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.", function(){
+    let encodedHeader = new DNSHeader();
+    let headerData = {
+      id: 45418,
+      qr: 0,
+      opcode: 0,
+      aa: 0,
+      tc: 0,
+      rd: 1,
+      ra: 0,
+      z: 0,
+      rcode: 0,
+      qdcount: 1,
+      ancount: 0,
+      nscount: 0,
+      arcount: 0
+    };
+    encodedHeader.encodeHeaderForMessage(headerData);
+    expect(encodedHeader.getHeaderLength()).to.equal(12);
+  });
   it("Encoding message header with same parameters as the sample query's header above should result both having identical id values.", function(){
     let encodedHeader = new DNSHeader();
     let headerData = {

@@ -256,10 +256,11 @@ function DNSMesageQuestion(){
      * @description Encodes a dns question into a Uint8Array based on either the properties set on the variables of this class or from the object passed into the function. If a property is missing from the object then this function will attempt to use the getter function for that property, and if both are absent an error will be thrown.
      * 
      * @param {Object} dnsQuestionInfo An object with properties with the same names as the private variables used in this class.
+     * @param {Number} startIndex The starting index of this question in the overall message.
      * 
      * @returns {Uint8Array} An array of bytes representing the DNS Question.
      */
-    function encodeQuestionForMessage(dnsQuestionInfo){
+    function encodeQuestionForMessage(dnsQuestionInfo, startIndex){
         dnsQuestionInfo = dnsQuestionInfo || {};
         setQname(Utilities.isNullOrUndefined(dnsQuestionInfo.qname) ? getQname() : dnsQuestionInfo.qname);
         setQtype(Utilities.isNullOrUndefined(dnsQuestionInfo.qtype) ? getQtype() : dnsQuestionInfo.qtype);
@@ -285,6 +286,7 @@ function DNSMesageQuestion(){
         offset += qclass.length;
 
         setQuestionLength(questionBuffer.length);
+        setQuestionStartIndex(startIndex);
 
         return questionBuffer;
     }

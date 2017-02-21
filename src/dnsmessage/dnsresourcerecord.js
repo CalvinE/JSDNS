@@ -512,11 +512,12 @@ function DNSResourceRecord(){
      * 
      * @description Encodes a dns resource record into a Uint8Array based on either the properties set on the variables of this class or from the object passed into the function. If a property is missing from the object then this function will attempt to use the getter function for that property, and if both are absent an error will be thrown.
      * 
-     * @param {Object} dnsQuestionInfo An object with properties with the same names as the private variables used in this class.
+     * @param {Object} dnsResourceRecordInfo An object with properties with the same names as the private variables used in this class.
+     * @param {Number} startIndex The starting index of this resource record in the overall message.
      * 
      * @returns {Uint8Array} An array of bytes representing the DNS Resource Record.
      */
-    function encodeResourceRecordForMessage(dnsResourceRecordInfo){
+    function encodeResourceRecordForMessage(dnsResourceRecordInfo, startIndex){
         dnsResourceRecordInfo = dnsResourceRecordInfo || {};
         setName(Utilities.isNullOrUndefined(dnsResourceRecordInfo.name) ? getName() : dnsResourceRecordInfo.name);
         setType(Utilities.isNullOrUndefined(dnsResourceRecordInfo.type) ? getType() : dnsResourceRecordInfo.type);
@@ -557,6 +558,7 @@ function DNSResourceRecord(){
         offset += rdata.length;
 
         setResourceRecordLength(rrBuffer.length);
+        setResourceRecordStartIndex(startIndex);
 
         return rrBuffer;
     }
