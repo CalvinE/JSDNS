@@ -22,9 +22,13 @@ function decodeName(messageData, offset){
         indexPosPostReading: 0
     };
     let length = messageData[index++];
-    while(length != 0x00){ //While current label length is not null or 0
-        if(length == 0xC0){ //Compression flag detected. Call method again recursively to resolve compression.
-            let compressionResolutionArray = decodeName(messageData, messageData[index++]);
+    while(length != 0x00){ //While current label length is not null or 
+        let isCompressed = ((length & 0xC0) === 0xC0);
+        if(isCompressed === true){ //Compression flag detected. Call method again recursively to resolve compression.
+            let compressionOffsetLowerByte = messageData[index++];
+            let compressionOffset = (((length & 0x3F) << 8) | (compressionOffsetLowerByte));
+
+            let compressionResolutionArray = decodeName(messageData, compressionOffset);
             for(let i = 0; i < compressionResolutionArray.name.length; i++){
                 data.name.push(compressionResolutionArray.name[i]);
             }
