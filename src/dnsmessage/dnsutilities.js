@@ -4,6 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
+let Utilities = require("../utilities");
+
 /**
  * @name decodeName
  * @access public
@@ -56,20 +58,83 @@ function decodeName(messageData, offset){
  * @description This method encodes a name as defined in RFC 1035 from the DNS message. This method will work with non-compressed and compressed names (RFC 1025 4.1.4).
  * 
  * @param {String} name This is a string representing an array of labels joind with a period.
+ * @param {Array.<Object>}  otherNameData If this is populated then the data in this array will be 
  * 
  * @return {Array} Array of bytes representing the name as an array of bytes.
  */
-function encodeName(name){
+function encodeName(name, otherNameData){ 
     let labelArray = name.split(".");
     let dataArray = [];
-    
-    for(let i = 0; i < labelArray.length; i++){
-        dataArray.push(labelArray[i].length);
-        for(let j = 0; j < labelArray[i].length; j++){
-            dataArray.push(labelArray[i].charCodeAt(j));
+    let compressed = false;
+    otherNameData = otherNameData || [];
+    if(otherNameData.length > 0){
+        for(let i = 0; i < otherNameData.length; i++){                   
+            while(compressed === false && labelArray.length !== 0){
+                let originalOtherNameLabels = otherNameData[i].name.split(".");
+                let otherNameLabels = otherNameData[i].name.split(".");     
+                let otherNameLabelsSkipped = 0;
+                while(compressed === false && otherNameLabels.length !== 0){
+                    //attempt to find matches and compress!
+                    let nameRegex = new RegExp("^" + otherNameLabels.join(".") + "$");
+                    var matches = labelArray.join(".").match(nameRegex);
+                    console.log(matches);
+                    if(Utilities.isNullOrUndefined(matches)){
+                        otherNameLabels.shift();
+                        otherNameLabelsSkipped += 1;                 
+                    } else {
+                        let offset = otherNameData[i].startingIndex;
+                        for(let j = 0; j < otherNameLabelsSkipped; j++){
+                            offset += originalOtherNameLabels[j].length + 1
+                        }
+                        //TODO: make it so that we use the 14 bits for the offset instead of the lower 8 only!
+                        dataArray.push(0xC0);
+                        dataArray.push(offset);
+                        compressed = true;
+                        break;
+                    }                
+                }
+                if(compressed === false){
+                    let label = labelArray.shift();
+                    let encodedLabel = encodeLabel(label);
+                    for(let j = 0; j < encodedLabel.length; j++){
+                        dataArray.push(encodedLabel[j]);
+                    } 
+                }
+            }
+            if(compressed === true){
+                break;
+            }
+        }
+    } else {        
+        for(let i = 0; i < labelArray.length; i++){
+            let encodedLabel = encodeLabel(labelArray[i]);
+            for(let j = 0; j < encodedLabel.length; j++){
+                dataArray.push(encodedLabel[j]);
+            } 
         }
     }
+    if(compressed === false){
+        dataArray.push(0x00);
+    }
+    return dataArray;
+}
 
+/**
+ * @name encodeLabel
+ * @access private
+ * 
+ * @description This is a method that encodes a single label.
+ * 
+ * @param {String} label 
+ * 
+ * @returns {Array} Array of bytes representing the label.
+ */
+function encodeLabel(label){
+    let dataArray = [];
+    dataArray.push(label.length);
+    for(let j = 0; j < label.length; j++){
+        dataArray.push(label.charCodeAt(j));
+    }
     return dataArray;
 }
 
