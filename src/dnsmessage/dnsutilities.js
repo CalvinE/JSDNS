@@ -77,7 +77,6 @@ function encodeName(name, otherNameData){
                     //attempt to find matches and compress!
                     let nameRegex = new RegExp("^" + otherNameLabels.join(".") + "$");
                     var matches = labelArray.join(".").match(nameRegex);
-                    console.log(matches);
                     if(Utilities.isNullOrUndefined(matches)){
                         otherNameLabels.shift();
                         otherNameLabelsSkipped += 1;                 

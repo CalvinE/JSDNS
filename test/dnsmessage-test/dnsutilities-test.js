@@ -30,7 +30,7 @@ function getTestQuestionDNSPacketBuffer(){
   return Buffer.from(testNameData.slice());
 }
 
-describe("dns-header", function() {
+describe("dns-utilities", function() {
   it("When decoding names from the test data above all names should be present and correctly returned from the DNSUtilities class.", function(){
     let offset = 12;
     let data = getTestQuestionDNSPacketBuffer();
@@ -87,5 +87,38 @@ describe("dns-header", function() {
     });
     offset = data.length;
     expect(DNSUtilities.decodeName(data, otherNameData[1].startingIndex).name.join(".")).to.equal("www.google.com");
+  });
+  it("When encoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.", function(){
+    let otherNameData = [];
+    let offset = 0
+    let data = [];
+    let name1 = DNSUtilities.encodeName(testNamesForEncoding2[0], otherNameData);    
+    for(let i = 0; i < name1.length; i++){
+      data.push(name1[i]);
+    }
+    otherNameData.push({
+      name: testNamesForEncoding2[0],
+      startingIndex: offset
+    });
+    offset = data.length;
+    let name2 = DNSUtilities.encodeName(testNamesForEncoding2[1], otherNameData);    
+    for(let i = 0; i < name2.length; i++){
+      data.push(name2[i]);
+    }
+    otherNameData.push({
+      name: testNamesForEncoding2[1],
+      startingIndex: offset
+    });
+    offset = data.length;
+    let name3 = DNSUtilities.encodeName(testNamesForEncoding2[2], otherNameData);    
+    for(let i = 0; i < name3.length; i++){
+      data.push(name3[i]);
+    }
+    otherNameData.push({
+      name: testNamesForEncoding2[2],
+      startingIndex: offset
+    });
+    offset = data.length;
+    expect(DNSUtilities.decodeName(data, otherNameData[1].startingIndex).name.join(".")).to.equal("google.com");
   });
 });
