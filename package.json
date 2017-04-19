@@ -10,11 +10,16 @@
     "test": "mocha test --recursive"
   },
   "devDependencies": {
-    "chai": "^3.5.0"
-  },
-  "dependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.2.0"
   },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://calvine@github.com/CalvinE/JSDNS.git"

@@ -64,4 +64,4 @@ FSLogger = function(){
     }
 };
 
-module.exports = new FSLogger();
+module.exports = FSLogger;
