@@ -1,3 +1,9 @@
+/*
+ * Created on Wed Apr 19 2017
+ *
+ * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
+ */
+
 /**
  * @name ErrorInstance
  * @class
