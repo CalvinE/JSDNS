@@ -1,5 +1,10 @@
 {
     "extends": "standard",
+    "rules": {
+        "indent": ["error", "tab"],
+        "no-tabs": "off",
+        "semi": ["error", "always"]
+    },
     "plugins": [
         "standard",
         "promise"

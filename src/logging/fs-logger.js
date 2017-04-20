@@ -13,7 +13,7 @@ const fs = require("fs");
  * 
  * @description A utility class for logging information to the file system frommthe DNS server.
  */
-FSLogger = function(){
+let FSLogger = function(){
 
     /**
      * @name loggerDir
