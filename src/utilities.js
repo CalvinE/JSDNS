@@ -16,9 +16,9 @@ function Utilities () {
   *
   * @returns {boolean} True if the input is null or undefined False if it is not.
   */
-  function isNullOrUndefined (value) {
-    return ((value === null) || (value === undefined))
-  }
+	function isNullOrUndefined (value) {
+		return ((value === null) || (value === undefined));
+	}
 
   /**
   * @name encode16BitValue
@@ -31,11 +31,11 @@ function Utilities () {
   *
   * @returns {Array} Array of two bytes with the high byte in the 0 index.
   */
-  function encode16BitValue (value) {
-    let highByte = (value >> 8) & 0xFF
-    let lowByte = value & 0xFF
-    return [highByte, lowByte]
-  }
+	function encode16BitValue (value) {
+		let highByte = (value >> 8) & 0xFF;
+		let lowByte = value & 0xFF;
+		return [highByte, lowByte];
+	}
 
   /**
   * @name decode16BitValue
@@ -49,12 +49,12 @@ function Utilities () {
   *
   * @returns {Number} A 16 bit value assembled from the two input bytes.
   */
-  function decode16BitValue (highByte, lowByte) {
+	function decode16BitValue (highByte, lowByte) {
     // Sanitize the bytes to ensure they are 8 bit values.
-    highByte = highByte & 0xFF
-    lowByte = lowByte & 0xFF
-    return ((highByte << 8) | lowByte)
-  }
+		highByte = highByte & 0xFF;
+		lowByte = lowByte & 0xFF;
+		return ((highByte << 8) | lowByte);
+	}
 
   /**
   * @name encode32BitValue
@@ -67,13 +67,13 @@ function Utilities () {
   *
   * @returns {Array} Array of two bytes with the high byte in the 0 index.
   */
-  function encode32BitValue (value) {
-    let highHighByte = (value >> 24) & 0xFF
-    let highLowByte = (value >> 16) & 0xFF
-    let lowHighByte = (value >> 8) & 0xFF
-    let lowLowByte = value & 0xFF
-    return [highHighByte, highLowByte, lowHighByte, lowLowByte]
-  }
+	function encode32BitValue (value) {
+		let highHighByte = (value >> 24) & 0xFF;
+		let highLowByte = (value >> 16) & 0xFF;
+		let lowHighByte = (value >> 8) & 0xFF;
+		let lowLowByte = value & 0xFF;
+		return [highHighByte, highLowByte, lowHighByte, lowLowByte];
+	}
 
   /**
   * @name decode32BitValue
@@ -89,26 +89,26 @@ function Utilities () {
   *
   * @returns {Number} A 32 bit value assembled from the four input bytes.
   */
-  function decode32BitValue (highHighByte, highLowByte, lowHighByte, lowLowByte) {
+	function decode32BitValue (highHighByte, highLowByte, lowHighByte, lowLowByte) {
     // Sanitize the bytes to ensure they are 8 bit values.
-    highHighByte = highHighByte & 0xFF
-    highLowByte = highLowByte & 0xFF
-    lowHighByte = lowHighByte & 0xFF
-    lowLowByte = lowLowByte & 0xFF
+		highHighByte = highHighByte & 0xFF;
+		highLowByte = highLowByte & 0xFF;
+		lowHighByte = lowHighByte & 0xFF;
+		lowLowByte = lowLowByte & 0xFF;
     // Just a note on the >>> 0 on the end of this line...
     // it is hacky, but it is the only way I can get this shift operation to be non negative!
     // The zero-fill right shift operator (>>>) is the only javascript operator that works with 32 bit unsigned integer,
     // so using it at the end even with a value of 0 will cast the value to a 32 unsigned integer
-    return ((highHighByte << 24) | (highLowByte << 16) | (lowHighByte << 8) | lowLowByte) >>> 0
-  }
+		return ((highHighByte << 24) | (highLowByte << 16) | (lowHighByte << 8) | lowLowByte) >>> 0;
+	}
 
-  return {
-    isNullOrUndefined: isNullOrUndefined,
-    encode16BitValue: encode16BitValue,
-    decode16BitValue: decode16BitValue,
-    encode32BitValue: encode32BitValue,
-    decode32BitValue: decode32BitValue
-  }
+	return {
+		isNullOrUndefined: isNullOrUndefined,
+		encode16BitValue: encode16BitValue,
+		decode16BitValue: decode16BitValue,
+		encode32BitValue: encode32BitValue,
+		decode32BitValue: decode32BitValue
+	};
 };
 
-module.exports = Utilities()
+module.exports = Utilities();
