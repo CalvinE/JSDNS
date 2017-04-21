@@ -8,7 +8,7 @@ const TYPES = require('../dnsmessage/constants/qtypes');
 const CLASSES = require('../dnsmessage/constants/qclasses');
 const DNSUtils = require('../dnsmessage/dnsutilities');
 const Utilities = require('../utilities');
-const ErrorFactory = require('../logging/error');
+const ErrorFactory = require('../error');
 
 /**
  * @name DNSResourceRecord

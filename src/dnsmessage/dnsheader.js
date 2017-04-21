@@ -7,7 +7,7 @@
 const OPCODES = require('../dnsmessage/constants/opcodes');
 const RCODES = require('../dnsmessage/constants/rcodes');
 const Utilities = require('../utilities');
-const ErrorFactory = require('../logging/error');
+const ErrorFactory = require('../error');
 
 /**
  * @name DNSMesageHeader
