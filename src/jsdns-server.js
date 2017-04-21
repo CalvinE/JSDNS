@@ -23,9 +23,11 @@ function JSDNS () {
 		createServer();
 	}
 
-  /**
-   * @name createServer
-   */
+	/* eslint handle-callback-err: 0 */
+
+	/**
+	 * @name createServer
+	 */
 	function createServer () {
 		server = net.createServer({
 			allowHalfOpen: false,

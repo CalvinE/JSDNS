@@ -20,6 +20,7 @@ function DNSMessage () {
      * @name id
      * @access private
      * @type {DNSHeader}
+     * @function
      *
      * @description The header of the DNS message.
      */
@@ -142,7 +143,7 @@ function DNSMessage () {
      *
      * @description parses the bytes of a DNS message to populate a model representing the message.
      *
-     * @param {Uint8Array | Buffer} name description
+     * @param {Array<Uint8>} name description
      */
 	function parseRequest (messageData) {
 		let offset = 0;
