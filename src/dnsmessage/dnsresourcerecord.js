@@ -14,6 +14,7 @@ const ErrorFactory = require('../error');
  * @name DNSResourceRecord
  * @class {DNSResourceRecord} DNSResourceRecord
  * @access public
+ *
  * @description A representation of a DNS message resource record (RR) and functions for encoding this data for reading and decoding this data for transmission.
  */
 function DNSResourceRecord () {
