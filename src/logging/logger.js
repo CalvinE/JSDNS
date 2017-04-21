@@ -12,8 +12,8 @@ let Logger = () => {
 	let providers = [];
 
 	let logTypes = {
-		"debug": "D",
-		"error": "E"
+		'debug': 'D',
+		'error': 'E'
 	};
 
 	function init () {

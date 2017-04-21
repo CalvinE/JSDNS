@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A DNS Server written in Javascript!",
   "main": "app.js",
+  "private": true,
   "directories": {
     "test": "test"
   },

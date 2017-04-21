@@ -17,9 +17,7 @@ function JSDNS () {
    * @param {any} config
    */
 	function init (_config) {
-		config = {
-			'port': 53
-		};
+		config = _config;
 		createServer();
 	}
 
