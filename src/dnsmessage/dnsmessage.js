@@ -7,7 +7,6 @@
 let DNSHeader = require('./dnsheader');
 let DNSQuestion = require('./dnsquestion');
 let DNSResourceRecord = require('./dnsresourcerecord');
-const ErrorFactory = require('../logging/error');
 
 /**
  * @name DNSMessage
@@ -137,19 +136,6 @@ function DNSMessage () {
 	}
 
     /**
-     * @name compressDNSMessage
-     * @access private
-     * @type {Function}
-     *
-     * @description Goes through a populated DNS Message and compresses instances of labels per the RFC spec.
-     *
-     * @todo Find where I implemented this and then delete this crap...
-     */
-	function compressDNSMessage () {
-		throw ErrorFactory('Not implemented yet!', null);
-	}
-
-    /**
      * @name parseRequest
      * @access public
      * @type {Function}
@@ -201,8 +187,8 @@ function DNSMessage () {
 		getAnswers: getAnswers,
 		getNameservers: getNameservers,
 		getAdditionalResources: getAdditionalResources,
-		parseRequest: parseRequest
-
+		parseRequest: parseRequest,
+		messageLength: messageLength
 	};
 };
 
