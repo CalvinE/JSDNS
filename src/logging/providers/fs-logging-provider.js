@@ -33,22 +33,20 @@ let FSLogger = function (config) {
      */
 	let logCounter = 0;
 
-	function getCurrentLogFileName () {
-		let d = new Date();
-		return `${loggerDir}JSDNS_LOG_${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}_${d.getUTCHours()}.txt`;
+	function getCurrentLogFileName (date) {
+		return `${loggerDir}JSDNS_LOG_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getUTCHours()}.txt`;
 	};
 
-	function logToFile (filePath, msg, type) {
+	function logToFile (filePath, msg, type, date) {
 		logCounter += 1;
 		if (typeof msg === 'object') {
 			msg = JSON.stringify(msg);
 		} else {
 			msg = msg.toString();
 		}
-		let d = new Date();
-		let seconds = d.getUTCSeconds();
+		let seconds = date.getUTCSeconds();
 		seconds = (seconds < 10) ? '0' + seconds : seconds;
-		let logItem = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}_${d.getUTCHours()}:${d.getUTCMinutes()}:${seconds} - [${type.text}] - #${logCounter} - ${msg}\r\n`;
+		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${date.getUTCMinutes()}:${seconds} - [${type.text}] - #${logCounter} - ${msg}\r\n`;
 		fs.appendFile(filePath, logItem, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				throw err;
@@ -62,8 +60,8 @@ let FSLogger = function (config) {
      *
      * @description
      */
-	function log (msg, type) {
-		let filePath = getCurrentLogFileName();
+	function log (msg, type, date) {
+		let filePath = getCurrentLogFileName(date);
 		fs.access(loggerDir, fs.constants.R_OK | fs.constants.W_OK | fs.constants.F_OK, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				if (err.code === 'ENOENT') {
@@ -71,12 +69,12 @@ let FSLogger = function (config) {
 						if (Utilities.isNullOrUndefined(err) === false) {
 							throw err;
 						} else {
-							logToFile(filePath, msg, type);
+							logToFile(filePath, msg, type, date);
 						}
 					});
 				}
 			} else {
-				logToFile(filePath, msg, type);
+				logToFile(filePath, msg, type, date);
 			}
 		});
 	}

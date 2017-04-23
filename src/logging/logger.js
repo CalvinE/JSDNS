@@ -51,7 +51,8 @@ let Logger = (() => {
 
 		logQueue.push({
 			msg: msg,
-			type: type
+			type: type,
+			date: new Date()
 		});
 	};
 
@@ -67,7 +68,7 @@ let Logger = (() => {
 			let currentProvider = null;
 			try {
 				currentProvider = providers[i].name;
-				providers[i].log(item.msg, item.type);
+				providers[i].log(item.msg, item.type, item.date);
 			} catch (e) {
 				// TODO: should I log an error in a logging provider :-)
 				console.error(e, currentProvider);
