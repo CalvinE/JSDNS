@@ -3,16 +3,18 @@
  *
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
+
 const fs = require('fs');
+const Utilities = require('../../utilities');
 
 /**
  * @name FSLogger
- * @type {class}
+ * @class
  * @access public
  *
  * @description A utility class for logging information to the file system frommthe DNS server.
  */
-let FSLogger = function () {
+let FSLogger = function (config) {
     /**
      * @name loggerDir
      * @type {String}
@@ -20,7 +22,7 @@ let FSLogger = function () {
      *
      * @description This is the directory the log files from the server will be made.
      */
-	let loggerDir = './';
+	let loggerDir = config.baseDir;
 
     /**
      * @name requestCounter
@@ -29,37 +31,58 @@ let FSLogger = function () {
      *
      * @description This is just an auto incrementing counter for each item logged.
      */
-	let requestCounter = 0;
+	let logCounter = 0;
 
-    /**
-     * @name setLoggerDir
-     * @type {Function}
-     * @access public
-     *
-     * @description This function is the setter methog for the variable that represents the logging directory for the server.
-     *
-     * @param {String} dir The path that log files should be created in.
-     */
-	function setLoggerDir (dir) {
-		loggerDir = dir;
+	function getCurrentLogFileName () {
+		let d = new Date();
+		return `${loggerDir}JSDNS_LOG_${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}_${d.getUTCHours()}.txt`;
+	};
+
+	function logToFile (filePath, msg, type) {
+		logCounter += 1;
+		if (typeof msg === 'object') {
+			msg = JSON.stringify(msg);
+		} else {
+			msg = msg.toString();
+		}
+		let d = new Date();
+		let seconds = d.getUTCSeconds();
+		seconds = (seconds < 10) ? '0' + seconds : seconds;
+		let logItem = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}_${d.getUTCHours()}:${d.getUTCMinutes()}:${seconds} - [${type.text}] - #${logCounter} - ${msg}\r\n`;
+		fs.appendFile(filePath, logItem, (err) => {
+			if (Utilities.isNullOrUndefined(err) === false) {
+				throw err;
+			}
+		});
 	}
 
     /**
-     * @name logDNSMessage
-     * @type {Function}
-     * @access public
+     * @name log
+     * @function
      *
-     * @description This function will log the raw bytes of a DNS message to the server.
-     *
-     * @param {Uint8Array | Buffer} data The complete DNS message in the form of a byte array or buffer. to be logged.
+     * @description
      */
-	function logRawDNSMessage (data) {
-		requestCounter += 1;
+	function log (msg, type) {
+		let filePath = getCurrentLogFileName();
+		fs.access(loggerDir, fs.constants.R_OK | fs.constants.W_OK | fs.constants.F_OK, (err) => {
+			if (Utilities.isNullOrUndefined(err) === false) {
+				if (err.code === 'ENOENT') {
+					fs.mkdir(loggerDir, (err) => {
+						if (Utilities.isNullOrUndefined(err) === false) {
+							throw err;
+						} else {
+							logToFile(filePath, msg, type);
+						}
+					});
+				}
+			} else {
+				logToFile(filePath, msg, type);
+			}
+		});
 	}
 
 	return {
-		setLoggerDir: setLoggerDir,
-		logRawDNSMessage: logRawDNSMessage
+		log: log
 	};
 };
 

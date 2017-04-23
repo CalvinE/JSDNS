@@ -1,5 +1,33 @@
 {
     "providers": [
-        "./providers/fs-logging-provider"
-    ]
+        {
+            "name": "fs-logging-provider",
+            "path": "./providers/fs-logging-provider",
+            "config": "./providers/fs-logging-provider-config"
+        }
+    ],
+    "logTypes": {
+        "info": {
+            "name": "info",
+            "text": "INFO",
+            "value": 0
+        },
+		"debug": {
+            "name": "debug",
+            "text": "DEBUG",
+            "value": 5
+        },
+		"error": {
+            "name": "error",
+            "text": "ERROR",
+            "value": 10
+        },
+        "off": {
+            "name" : "off",
+            "text": "OFF",
+            "value": 10000
+        }
+    },
+    "logLevel": "debug",
+    "defaultLogLevel": "debug"
 }
