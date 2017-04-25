@@ -70,4 +70,5 @@ var queries = [
 while (queries.length !== 0) {
 	let message = new DNSMessage();
 	message.parseRequest(queries.shift());
+	Logger.log(message);
 }
