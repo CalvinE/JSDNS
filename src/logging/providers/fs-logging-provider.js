@@ -29,7 +29,6 @@ let FSLogger = function (config) {
 	};
 
 	function logToFile (filePath, msg, type, date) {
-		logCounter += 1;
 		if (typeof msg === 'object') {
 			msg = JSON.stringify(msg);
 		} else {
