@@ -12,9 +12,7 @@
  * @description A utility class for logging information to the console log from the DNS server.
  */
 let ConsoleLogger = function () {
-
 	function log (msg, type, date) {
-		logCounter += 1;
 		if (typeof msg === 'object') {
 			msg = JSON.stringify(msg);
 		} else {
