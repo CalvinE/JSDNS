@@ -4,6 +4,10 @@
             "name": "fs-logging-provider",
             "path": "./providers/fs-logging-provider",
             "config": "./providers/fs-logging-provider-config"
+        }, {
+            "name": "console-logging-provider",
+            "path": "./providers/console-logging-provider",
+            "config": null
         }
     ],
     "logTypes": {

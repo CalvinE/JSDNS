@@ -4,16 +4,21 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
-const net = require('net');
+const dgram = require('dgram');
+const udpServer = dgram.createSocket('udp4');
+let Logger = require('./logging/logger');
 
 /**
+ *
+ *
  * @returns public interface for this module.
  */
 function JSDNS () {
-	let server = null;
 	let config = null;
 
   /**
+   *
+   *
    * @param {any} config
    */
 	function init (_config) {
@@ -21,49 +26,32 @@ function JSDNS () {
 		createServer();
 	}
 
-	/* eslint handle-callback-err: 0 */
-
 	/**
 	 * @name createServer
 	 */
 	function createServer () {
-		server = net.createServer({
-			allowHalfOpen: false,
-			pauseOnConnect: false
-		}, (socket) => {
-			socket.on('close', (wasError) => {
-				console.log('Socket closed!');
-			}).on('connect', () => {
-				console.log('Socket connected!');
-			}).on('data', (data) => {
-				console.log('Socket Data Received!');
-			}).on('drain', () => {
-				console.log('Socket Occurred!');
-			}).on('end', () => {
-				console.log('Socket Ended!');
-			}).on('error', (err) => {
-				console.log('Socket Error Occurred!', err);
-			}).on('lookup', (err, address, family, host) => {
-				console.log('Socket Lookup!');
-			}).on('timeout', () => {
-				console.log('Socket timeout!');
-			});
-		}).on('close', () => {
-			console.log('Server closed.');
-		}).on('error', (err) => {
-			console.log('Server error occurred.');
-		}).on('listening', () => {
-			console.log('Server is listening');
+		udpServer.on('error', (err) => {
+			Logger.log(err, Logger.logTypes.error);
 		});
 
-		server.listen(config.port, () => {
-			console.log(`Server is listening on port ${config.port}`);
+		udpServer.on('message', (msg, rinfo) => {
+			Logger.log(rinfo, Logger.logTypes.debug);
+			Logger.log(msg, Logger.logTypes.debug);
 		});
-	}
+
+		udpServer.on('listening', () => {
+			Logger.log(`UDP Socket listening on port ${config.port}.`, Logger.logTypes.debug);
+		});
+
+		udpServer.on('close', () => {
+			Logger.log(`UDP Socket listening on port ${config.port} is not closed.`, Logger.logTypes.debug);
+		});
+
+		udpServer.bind(config.port);
+	};
 
 	return {
-		init: init,
-		server: server
+		init: init
 	};
 };
 

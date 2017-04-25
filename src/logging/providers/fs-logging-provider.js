@@ -24,15 +24,6 @@ let FSLogger = function (config) {
      */
 	let loggerDir = config.baseDir;
 
-    /**
-     * @name requestCounter
-     * @type {Number}
-     * @access private
-     *
-     * @description This is just an auto incrementing counter for each item logged.
-     */
-	let logCounter = 0;
-
 	function getCurrentLogFileName (date) {
 		return `${loggerDir}JSDNS_LOG_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getUTCHours()}.txt`;
 	};
@@ -46,7 +37,7 @@ let FSLogger = function (config) {
 		}
 		let seconds = date.getUTCSeconds();
 		seconds = (seconds < 10) ? '0' + seconds : seconds;
-		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${date.getUTCMinutes()}:${seconds} - [${type.text}] - #${logCounter} - ${msg}\r\n`;
+		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${date.getUTCMinutes()}:${seconds} - [${type.text}] - ${msg}\r\n`;
 		fs.appendFile(filePath, logItem, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				throw err;

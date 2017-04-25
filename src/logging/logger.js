@@ -30,7 +30,10 @@ let Logger = (() => {
 		if (isInit === false) {
 			for (let i = 0; i < config.providers.length; i++) {
 				let Provider = require(config.providers[i].path);
-				let providerConfig = require(config.providers[i].config);
+				let providerConfig = null;
+				if (Utilities.isNullOrUndefined(config.providers[i].config) === false) {
+					providerConfig = require(config.providers[i].config);
+				}
 				Provider = new Provider(providerConfig);
 				providers.push(Provider);
 			}
