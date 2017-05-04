@@ -4,8 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
-const OPCODES = require('../dnsmessage/constants/opcodes');
-const RCODES = require('../dnsmessage/constants/rcodes');
+const OperationCodes = require('../dnsmessage/constants/opcodes');
+const ResponseCodes = require('../dnsmessage/constants/rcodes');
 const Utilities = require('../utilities');
 const ErrorFactory = require('../error');
 
@@ -234,16 +234,14 @@ function DNSMesageHeader () {
      *
      * @description This is the setter method for opcode.
      *
-     * @param {Object | Number} _opcode An object representing the Opcode from the Opcodes module.
+     * @param {Object | Number} _opcode An object representing the Opcode from the OperationCodes module.
      */
 	function setOpcode (_opcode) {
 		if (_opcode === null) {
 			throw ErrorFactory('DNS Header opcode cannot be null', null);
 		}
 		if (_opcode.value === undefined) {
-			_opcode = OPCODES.find(function (item) {
-				return item.value === parseInt(_opcode);
-			});
+			_opcode = OperationCodes.findOPCodeByValue(parseInt(_opcode));
 		}
 		opcode = _opcode;
 	}
@@ -478,16 +476,14 @@ function DNSMesageHeader () {
      *
      * @description This is the setter method for rcode.
      *
-     * @param {Object | Number} _rcode An object representing the RCode from the RCodes module.
+     * @param {Object | Number} _rcode An object representing the RCode from the ResponseCodes module.
      */
 	function setRcode (_rcode) {
 		if (_rcode === null) {
 			throw ErrorFactory('DNS Header rcode cannot be null', null);
 		}
 		if (_rcode.value === undefined) {
-			_rcode = RCODES.find(function (item) {
-				return item.value === parseInt(_rcode);
-			});
+			_rcode = ResponseCodes.findRCodeByValue(parseInt(_rcode));
 		}
 		rcode = _rcode;
 	}

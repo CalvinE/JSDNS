@@ -4,8 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
-const TYPES = require('../dnsmessage/constants/qtypes');
-const CLASSES = require('../dnsmessage/constants/qclasses');
+const Types = require('../dnsmessage/constants/types');
+const Classes = require('../dnsmessage/constants/classes');
 const DNSUtils = require('../dnsmessage/dnsutilities');
 const Utilities = require('../utilities');
 const ErrorFactory = require('../error');
@@ -163,10 +163,11 @@ function DNSResourceRecord () {
      * @param {Object | Number} _type An object representing the Type from the QTypes module.
      */
 	function setType (_type) {
+		if (Utilities.isNullOrUndefined(_type) === true) {
+			throw ErrorFactory('DNS Resource Record type cannot be null', null);
+		}
 		if (_type.value === undefined) {
-			_type = TYPES.find(function (item) {
-				return item.value === parseInt(_type);
-			});
+			_type = Types.findTypeByValue(parseInt(_type));
 		}
 		type = _type;
 	}
@@ -194,10 +195,11 @@ function DNSResourceRecord () {
      * @param {Object | Number} _rclass An object representing the Class from the Classes module.
      */
 	function setRRclass (_rclass) {
+		if (Utilities.isNullOrUndefined(_rclass) === true) {
+			throw ErrorFactory('DNS Resource Record class cannot be null', null);
+		}
 		if (_rclass.value === undefined) {
-			_rclass = CLASSES.find(function (item) {
-				return item.value === parseInt(_rclass);
-			});
+			_rclass = Classes.findClassByValue(parseInt(_rclass));
 		}
 		rrClass = _rclass;
 	}

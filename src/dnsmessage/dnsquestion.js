@@ -4,10 +4,11 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
-const QTYPES = require('../dnsmessage/constants/qtypes');
-const QCLASSES = require('../dnsmessage/constants/qclasses');
+const Types = require('../dnsmessage/constants/types');
+const Classes = require('../dnsmessage/constants/classes');
 const DNSUtils = require('../dnsmessage/dnsutilities');
 const Utilities = require('../utilities');
+const ErrorFactory = require('../error');
 
 /**
  * @name DNSMesageQuestion
@@ -137,10 +138,11 @@ function DNSMesageQuestion () {
      * @param {Object | Number} _qtype An object representing the QType from the QTypes module.
      */
 	function setQtype (_qtype) {
+		if (Utilities.isNullOrUndefined(_qtype) === true) {
+			throw ErrorFactory('DNS Question type cannot be null', null);
+		}
 		if (_qtype.value === undefined) {
-			_qtype = QTYPES.find(function (item) {
-				return item.value === parseInt(_qtype);
-			});
+			_qtype = Types.findTypeByValue(parseInt(_qtype));
 		}
 		qtype = _qtype;
 	}
@@ -168,10 +170,11 @@ function DNSMesageQuestion () {
      * @param {Object | Number} _qclass An object representing the QClass from the QClasses module.
      */
 	function setQclass (_qclass) {
+		if (Utilities.isNullOrUndefined(_qclass) === true) {
+			throw ErrorFactory('DNS Question class cannot be null', null);
+		}
 		if (_qclass.value === undefined) {
-			_qclass = QCLASSES.find(function (item) {
-				return item.value === parseInt(_qclass);
-			});
+			_qclass = Classes.findClassByValue(parseInt(_qclass));
 		}
 		qclass = _qclass;
 	}
