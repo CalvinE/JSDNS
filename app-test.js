@@ -68,6 +68,7 @@ var queries = [
 ];
 
 let counter = 0;
+let start = new Date();
 for (let i = 0; i < queries.length; i++) {
 	let d0 = new Date();
 	let message = new DNSMessage();
@@ -76,6 +77,9 @@ for (let i = 0; i < queries.length; i++) {
 	Logger.log(`Message number: ${++counter}`);
 	Logger.log(`Time to process DNS query was ${d1.getTime() - d0.getTime()} milliseconds.`);
 	Logger.log(message.getQuestions()[0].getQname());
-	Logger.log(message.getQuestions()[0].getQclass());
-	Logger.log(message.getQuestions()[0].getQtype());
+	Logger.log(message.getQuestions()[0].getQclass() || 'Class could not be parsed because it was not in our Classes file!');
+	Logger.log(message.getQuestions()[0].getQtype() || 'Type could not be parsed because it was not in our Types file!');
 }
+let end = new Date();
+
+Logger.log(`Total time to process ${queries.length} DNS queries was ${end.getTime() - start.getTime()} milliseconds.`);
