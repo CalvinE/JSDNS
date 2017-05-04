@@ -67,8 +67,15 @@ var queries = [
 	[44, 93, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 28, 0, 1]
 ];
 
-while (queries.length !== 0) {
+let counter = 0;
+for (let i = 0; i < queries.length; i++) {
+	let d0 = new Date();
 	let message = new DNSMessage();
-	message.parseRequest(queries.shift());
-	Logger.log(message);
+	message.parseRequest(queries[i]);
+	let d1 = new Date();
+	Logger.log(`Message number: ${++counter}`);
+	Logger.log(`Time to process DNS query was ${d1.getTime() - d0.getTime()} milliseconds.`);
+	Logger.log(message.getQuestions()[0].getQname());
+	Logger.log(message.getQuestions()[0].getQclass());
+	Logger.log(message.getQuestions()[0].getQtype());
 }
