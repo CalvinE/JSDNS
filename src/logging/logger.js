@@ -38,6 +38,12 @@ let Logger = (() => {
 				providers.push(Provider);
 			}
 			isInit = true;
+			processLogInterval = setInterval(() => {
+				let item = logQueue.shift();
+				if (Utilities.isNullOrUndefined(item) === false) {
+					logItem(item);
+				}
+			}, 10);
 		}
 	};
 
@@ -78,13 +84,6 @@ let Logger = (() => {
 			}
 		}
 	}
-
-	processLogInterval = setInterval(() => {
-		let item = logQueue.shift();
-		if (Utilities.isNullOrUndefined(item) === false) {
-			logItem(item);
-		}
-	}, 500);
 
 	return {
 		init: init,

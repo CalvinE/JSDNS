@@ -35,8 +35,10 @@ let FSLogger = function (config) {
 			msg = msg.toString();
 		}
 		let seconds = date.getUTCSeconds();
+		let minutes = date.getUTCMinutes();
 		seconds = (seconds < 10) ? '0' + seconds : seconds;
-		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${date.getUTCMinutes()}:${seconds} - [${type.text}] - ${msg}\r\n`;
+		minutes = (minutes < 10) ? '0' + minutes : minutes;
+		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${minutes}:${seconds} - [${type.text}] - ${msg}\r\n`;
 		fs.appendFile(filePath, logItem, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				throw err;
