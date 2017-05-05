@@ -83,3 +83,9 @@ for (let i = 0; i < queries.length; i++) {
 let end = new Date();
 
 Logger.log(`Total time to process ${queries.length} DNS queries was ${end.getTime() - start.getTime()} milliseconds.`);
+
+Logger.log('Quitting test application in 5 seconds.');
+
+setTimeout(function () {
+	process.exit(0);
+}, 5000);
