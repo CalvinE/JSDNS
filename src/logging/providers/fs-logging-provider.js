@@ -25,7 +25,7 @@ let FSLogger = function (config) {
 	let loggerDir = config.baseDir;
 
 	function getCurrentLogFileName (date) {
-		return `${loggerDir}JSDNS_LOG_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getUTCHours()}.txt`;
+		return `JSDNS_LOG_${Utilities.getUTCDateStringFileSafe(date)}.txt`;
 	};
 
 	function logToFile (filePath, msg, type, date) {
@@ -34,11 +34,7 @@ let FSLogger = function (config) {
 		} else {
 			msg = msg.toString();
 		}
-		let seconds = date.getUTCSeconds();
-		let minutes = date.getUTCMinutes();
-		seconds = (seconds < 10) ? '0' + seconds : seconds;
-		minutes = (minutes < 10) ? '0' + minutes : minutes;
-		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${minutes}:${seconds} - [${type.text}] - ${msg}\r\n`;
+		let logItem = `${Utilities.getUTCDateStringFileSafe(date)} - [${type.text}] - ${msg}\r\n`;
 		fs.appendFile(filePath, logItem, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				throw err;
@@ -53,7 +49,7 @@ let FSLogger = function (config) {
      * @description
      */
 	function log (msg, type, date) {
-		let filePath = getCurrentLogFileName(date);
+		let filePath = loggerDir + getCurrentLogFileName(date);
 		fs.access(loggerDir, fs.constants.R_OK | fs.constants.W_OK | fs.constants.F_OK, (err) => {
 			if (Utilities.isNullOrUndefined(err) === false) {
 				if (err.code === 'ENOENT') {

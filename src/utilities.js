@@ -77,7 +77,7 @@ function Utilities () {
 
   /**
   * @name decode32BitValue
-  * @access private
+  * @access public
   * @type {Function}
   *
   * @description Decodes the input values into a 32 bit value.
@@ -102,12 +102,41 @@ function Utilities () {
 		return ((highHighByte << 24) | (highLowByte << 16) | (lowHighByte << 8) | lowLowByte) >>> 0;
 	}
 
+  /**
+   * @name getUTCDateStringFileSafe
+   * @access public
+   * @type {Function}
+   *
+   * @description This function takes a date object and additional delimiter characters and creates a UTC date time string safe for use as a file name, unless you overried the delimiters with something that is not safe for a file name...
+   *
+   * @param {Date} date This is the date object that will be used for construction of the UTC date time string. By default it is just a new date instance.
+   * @param {string} dateDelimiter This is a string that will be used as a delimiter for the date parts of the string. By default is it ''.
+   * @param {string} dateTimeDelimiter This is a string that will be used as a delimiter for the date part and the time part of the string. By default is it '_'.
+   * @param {string} timeDelimiter This is a string that will be used as a delimiter for the time parts of the string. By default is it ''.
+   *
+   * @returns {string} Returns a UTC date time string safe for use as a file name, unless you overried the delimiters with something that is not safe for a file name...
+   */
+	function getUTCDateStringFileSafe (date = new Date(), dateDelimiter = '', dateTimeDelimiter = '_', timeDelimiter = '') {
+		let seconds = date.getUTCSeconds();
+		let minutes = date.getUTCMinutes();
+		let hours = date.getUTCHours();
+		let month = date.getUTCMonth() + 1;
+		let day = date.getUTCDate();
+		seconds = (seconds < 10) ? '0' + seconds : seconds;
+		minutes = (minutes < 10) ? '0' + minutes : minutes;
+		hours = (hours < 10) ? '0' + hours : hours;
+		month = (month < 10) ? '0' + month : month;
+		day = (day < 10) ? '0' + day : day;
+		return `${date.getUTCFullYear()}${dateDelimiter}${month}${dateDelimiter}${day}${dateTimeDelimiter}${hours}${timeDelimiter}${minutes}${timeDelimiter}${seconds}`;
+	};
+
 	return {
 		isNullOrUndefined: isNullOrUndefined,
 		encode16BitValue: encode16BitValue,
 		decode16BitValue: decode16BitValue,
 		encode32BitValue: encode32BitValue,
-		decode32BitValue: decode32BitValue
+		decode32BitValue: decode32BitValue,
+		getUTCDateStringFileSafe: getUTCDateStringFileSafe
 	};
 };
 

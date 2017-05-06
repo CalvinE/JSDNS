@@ -26,6 +26,8 @@ let Logger = (() => {
 
 	let processLogInterval = null;
 
+	let logInstance = null;
+
 	function init () {
 		if (isInit === false) {
 			for (let i = 0; i < config.providers.length; i++) {

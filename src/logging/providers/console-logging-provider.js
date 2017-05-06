@@ -4,6 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
+const Utilities = require('../../utilities');
+
 /**
  * @name ConsoleLogger
  * @class
@@ -18,11 +20,7 @@ let ConsoleLogger = function () {
 		} else {
 			msg = msg.toString();
 		}
-		let seconds = date.getUTCSeconds();
-		let minutes = date.getUTCMinutes();
-		seconds = (seconds < 10) ? '0' + seconds : seconds;
-		minutes = (minutes < 10) ? '0' + minutes : minutes;
-		let logItem = `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}_${date.getUTCHours()}:${minutes}:${seconds} - [${type.text}] - ${msg}\r\n`;
+		let logItem = `${Utilities.getUTCDateStringFileSafe(date)} - [${type.text}] - ${msg}\r\n`;
 		switch (type.name) {
 		case 'error':
 			console.error(logItem);
