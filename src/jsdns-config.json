@@ -1,3 +1,30 @@
 {
-	"port": 53
+	"server": {
+		"udpPort": 53,
+		"tcpPort": 53
+	},
+	"resolution": {
+		"caching": {
+			"provider": {
+				"name": "memory-cache-provider",
+				"path": "./cache-providers/memory-cache-provider",
+				"config": null
+			}
+		},
+		"zone": {
+			"zoneFileDir": ""
+		},
+		"recursion": {
+			"recursionAvailable": false,
+			"namedRootFile": "./named.root"				
+		},
+		"forwarding": {
+			"enabled": true,
+			"forwarders": [
+				"8.8.8.8",
+				"8.8.4.4"
+			]				
+		}
+	}
+	
 }
