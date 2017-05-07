@@ -74,19 +74,52 @@ function Resolver () {
 		});
 	};
 
+	/**
+	 * @name searchCache
+	 * @access private
+	 * @function
+	 *
+	 * @description This is one of the three steps in the resolution process. This is the first step.
+	 *
+	 * @param {DNSMessage} query A DNSMesage object.
+	 *
+	 * @returns {Promise} The result of the cache.find function of the cache provider given to the resolver. The find method implementation needs to return a promise..
+	 */
 	function searchCache (query) {
 		return cache.find(query);
 	};
 
+	/**
+	 * @name forward
+	 * @access private
+	 * @function
+	 *
+	 * @description This is one of the three steps in the resolution process. This is the second step.
+	 *
+	 * @param {DNSMessage} query A DNSMesage object.
+	 *
+	 * @returns {Promise} A promise with the results from the zone file search.
+	 */
 	function zoneFileSearch (query) {
 		return new Promise(function (resolve, reject) {
-			resolve(null);
+			resolve(null); // TODO: Implement this...
 		});
 	};
 
+	/**
+	 * @name recurse
+	 * @access private
+	 * @function
+	 *
+	 * @description This is one of the third steps in the resolution process. This only happens if recursion is disabled and forwarding is enabled.
+	 *
+	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
+	 *
+	 * @returns {Promise} A promise with the results from the forwarding.
+	 */
 	function recurse (query) {
 		return new Promise(function (resolve, reject) {
-			resolve(null);
+			resolve(null); // TODO: Implement this...
 		});
 	};
 
@@ -97,12 +130,11 @@ function Resolver () {
 	 *
 	 * @description This is one of the third steps in the resolution process. This only happens if recursion available is set and recursion is desired.
 	 *
-	 * @param {Buffer} queryBuffer a buffer containing the ray byte stream of the dns request.
-	 * @param {string} forwarder
+	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
 	 *
-	 * @returns {Promise} a promise with the results from the forwarding.
+	 * @returns {Promise} A promise with the results from the forwarding.
 	 */
-	function forward (queryBuffer, forwarder) {
+	function forward (queryBuffer) {
 		return new Promise(function (resolve, reject) {
 			let response = null;
 			let client = dgram.createSocket('udp4');
@@ -122,21 +154,38 @@ function Resolver () {
 				}
 			});
 
-			client.send(Buffer.from(queryBuffer), 53, forwarders[0], (err) => {
-				if(Utilities.isNullOrUndefined(err) === false){
+			client.send(Buffer.from(queryBuffer), 53, forwarders[0], (err) => { // TODO: implement this in a way that cycles through forwarders until either a result is found or we run out...
+				if (Utilities.isNullOrUndefined(err) === false) {
 					reject(err);
-				}				
+				}
 			});
 		});
 	};
 
+	/**
+	 * @name handleQueryNotFound
+	 * @access private
+	 * @function
+	 *
+	 * @description This function handles when no corresponding resource records are found for a given query.
+	 *
+	 * @param {DNSMessage} query This is origional query that resulted in no results being found.
+	 */
 	function handleQueryNotFound (query) {
 		Logger.log('no domain found!');
-		// TODO: implement not found response.
+		// TODO: implement not found response...
 	};
 
+	/**
+	 * @name handlePromiseFailure
+	 * @access private
+	 * @function
+	 *
+	 * @param {any} reason This is typically the error object passed back through the promise chain that caused the rejection.
+	 */
 	function handlePromiseFailure (reason) {
 		Logger.logError(reason);
+		// TODO: implement better error handling...
 	};
 
 	/**

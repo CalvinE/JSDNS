@@ -143,7 +143,7 @@ function DNSMessage () {
      *
      * @description parses the bytes of a DNS message to populate a model representing the message.
      *
-     * @param {Array<Uint8>} name description
+     * @param {UInt8Array} messageData This is the raw message data in bytes
      */
 	function parseRequest (messageData) {
 		let offset = 0;
@@ -182,6 +182,17 @@ function DNSMessage () {
 		messageLength = offset;
 	};
 
+    /**
+     * @name encodeMessageToBuffer
+     * @access public
+     * @type {Function}
+     *
+     * @description Takes the DNSMessage object and returns buffer with the raw DNS message in bytes.
+     *
+     * @param {UInt8Array} messageData This is the raw message data in bytes
+     * 
+     * @returns {Buffer} A Buffer containing the raw bytes of the DNS message.
+     */
 	function encodeMessageToBuffer () {
 		let headerData = header.encodeHeaderForMessage();
 		let offset = headerData.length;
