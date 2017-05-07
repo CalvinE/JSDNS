@@ -99,6 +99,8 @@ resolver.init(ResolverConfig, {'find': function () {
 	});
 }});
 let message = new DNSMessage();
+// [84, 251, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1] // Good array
+// [84, 251, 1, 0, 0, 1, 255, 255, 255, 255, 255, 255, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1] // Busted array need to use for implementing error handling...
 message.parseRequest(Buffer.from([84, 251, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1]));
 resolver.resolve(message).then(function (data) {
 	console.timeEnd('Time to resolve query:');

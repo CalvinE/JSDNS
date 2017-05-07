@@ -136,6 +136,29 @@ function Resolver () {
 	 */
 	function forward (queryBuffer) {
 		return new Promise(function (resolve, reject) {
+			sendDNSUDPDatagram(queryBuffer, forwarders[0]).then(function (response) {
+				resolve(response);
+			}, function (err) {
+				reject(err);
+			});
+		});
+	};
+
+	/**
+	 * @name sendDNSUDPDatagram
+	 * @access privte
+	 * @function
+	 *
+	 * @description A general purpose method for sending UDP datagrams to other name servers.
+	 *
+	 * @param {Buffer} queryBuffer The raw DNS request data to send via UDP.
+	 * @param {string} destinationAddress The address to send the UDP DNS datagram.
+	 * @param {number} destinationPort The port to send the UDP DNS datagram.
+	 *
+	 * @returns {Promise} A promise that is resolved when the request is complete successful or not.
+	 */
+	function sendDNSUDPDatagram (queryBuffer, destinationAddress, destinationPort = 53) {
+		return new Promise(function (resolve, reject) {
 			let response = null;
 			let client = dgram.createSocket('udp4');
 			client.on('listening', function () {
@@ -154,13 +177,13 @@ function Resolver () {
 				}
 			});
 
-			client.send(Buffer.from(queryBuffer), 53, forwarders[0], (err) => { // TODO: implement this in a way that cycles through forwarders until either a result is found or we run out...
+			client.send(Buffer.from(queryBuffer), destinationPort, destinationAddress, (err) => { // TODO: implement this in a way that cycles through forwarders until either a result is found or we run out...
 				if (Utilities.isNullOrUndefined(err) === false) {
 					reject(err);
 				}
 			});
 		});
-	};
+	}
 
 	/**
 	 * @name handleQueryNotFound
