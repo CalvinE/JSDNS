@@ -26,8 +26,6 @@ let Logger = (() => {
 
 	let processLogInterval = null;
 
-	let logInstance = null;
-
 	function init () {
 		if (isInit === false) {
 			for (let i = 0; i < config.providers.length; i++) {
@@ -67,6 +65,10 @@ let Logger = (() => {
 		});
 	};
 
+	function logError (msg) {
+		log(msg, logTypes.error);
+	}
+
 	function flushLogQueue () {
 		clearInterval(processLogInterval);
 		while (logQueue.length !== 0) {
@@ -91,6 +93,7 @@ let Logger = (() => {
 		init: init,
 		logTypes: logTypes,
 		log: log,
+		logError: logError,
 		flushLogQueue: flushLogQueue
 	};
 })();

@@ -180,7 +180,55 @@ function DNSMessage () {
 		}
 
 		messageLength = offset;
-	}
+	};
+
+	function encodeMessageToBuffer () {
+		let headerData = header.encodeHeaderForMessage();
+		let offset = headerData.length;
+		// let questionData = [];
+		// let answerData = [];
+		// let nameserverData = [];
+		// let additionalresourcesData = [];
+		let messageData = [].concat(headerData);
+        // Parse Questions
+		for (let i = 0; i < questions.length; i++) {
+			let qData = questions[i].encodeQuestionForMessage({}, offset);
+			offset += qData.length;
+			messageData = messageData.concat(qData);
+			// questionData.push(qData);
+		}
+        // Parse Answers
+		for (let i = 0; i < answers.length; i++) {
+			let rrData = answers[i].encodeResourceRecordForMessage({}, offset);
+			offset += rrData.length;
+			messageData = messageData.concat(rrData);
+			// answerData.push(rrData);
+		}
+        // Parse Nameservers
+		for (let i = 0; i < nameservers.length; i++) {
+			let rrData = nameservers[i].encodeResourceRecordForMessage({}, offset);
+			offset += rrData.length;
+			messageData = messageData.concat(rrData);
+			// nameserverData.push(rrData);
+		}
+        // Parse Additional Resources
+		for (let i = 0; i < additionalResources.length; i++) {
+			let rrData = additionalResources[i].encodeResourceRecordForMessage({}, offset);
+			offset += rrData.length;
+			messageData = messageData.concat(rrData);
+			// additionalresourcesData.push(rrData);
+		}
+
+		messageLength = offset;
+
+		let data = [];
+
+		for (let i = 0; i < messageData.length; i++) {
+			data.push.apply(data, messageData[i]);
+		}
+
+		return Buffer.from(data);
+	};
 
 	return {
 		getHeader: getHeader,
@@ -189,6 +237,7 @@ function DNSMessage () {
 		getNameservers: getNameservers,
 		getAdditionalResources: getAdditionalResources,
 		parseRequest: parseRequest,
+		encodeMessageToBuffer: encodeMessageToBuffer,
 		messageLength: messageLength
 	};
 };

@@ -5,6 +5,8 @@
  */
 
 let DNSMessage = require('../dnsmessage/dnsmessage');
+let Logger = require('../logging/logger');
+let Utilities = require('../utilities');
 const dgram = require('dgram');
 
 /**
@@ -30,40 +32,111 @@ function Resolver () {
 	 *
 	 * @param {DNSMessage} query This is the query we are attempting to resolve.
 	 *
-	 * @returns {DNSMessage} The DNS Message response.
+	 * @returns {Promise} A promise that will have the result of the DNS query..
 	 */
 	function resolve (query) {
-		var response = null;
-		// 1. Query cache.
-		response = cache.find(query);
+		return new Promise(function (resolve, reject) {
+			try {
+				// 1. Query cache.
+				searchCache(query).then(function (cacheResponse) {
+					if (cacheResponse === null) {
+						zoneFileSearch(query).then(function (zoneResponse) {
+							if (zoneResponse === null) {
+								let step3 = null;
+								let queryStream = query.encodeMessageToBuffer();
+								if (zoneResponse === null && config.recursion.recursionAvailable === true) { // If recursion is available then recursively resolve the query.
+									step3 = recurse(queryStream);
+								} else if (zoneResponse === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
+									step3 = forward(queryStream);
+								}
+								if (step3 !== null) {
+									step3.then(function (step3Response) {
+										if (step3Response === null) {
+											handleQueryNotFound(query);
+										} else {
+											resolve(step3Response);
+										}
+									}, handlePromiseFailure);
+								} else {
+									handleQueryNotFound(query);
+								}
+							} else {
+								resolve(zoneResponse);
+							}
+						}, handlePromiseFailure);
+					} else {
+						resolve(cacheResponse);
+					}
+				}, handlePromiseFailure);
+			} catch (e) {
+				reject(e);
+			}
+		});
+	};
 
-		if (response === null) { // 2. Query local zone files.
+	function searchCache (query) {
+		return cache.find(query);
+	};
 
-		}
+	function zoneFileSearch (query) {
+		return new Promise(function (resolve, reject) {
+			resolve(null);
+		});
+	};
 
-		if (response === null && config.recursion.recursionAvailable === true) { // If recursion is available then recursively resolve the query.
+	function recurse (query) {
+		return new Promise(function (resolve, reject) {
+			resolve(null);
+		});
+	};
 
-		} else if (response === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
+	/**
+	 * @name forward
+	 * @access private
+	 * @function
+	 *
+	 * @description This is one of the third steps in the resolution process. This only happens if recursion available is set and recursion is desired.
+	 *
+	 * @param {Buffer} queryBuffer a buffer containing the ray byte stream of the dns request.
+	 * @param {string} forwarder
+	 *
+	 * @returns {Promise} a promise with the results from the forwarding.
+	 */
+	function forward (queryBuffer, forwarder) {
+		return new Promise(function (resolve, reject) {
+			let response = null;
 			let client = dgram.createSocket('udp4');
 			client.on('listening', function () {
-				var address = client.address();
+				let address = client.address();
 				console.log('UDP Server listening on ' + address.address + ':' + address.port);
 			});
 
 			client.on('message', function (message, remote) {
 				console.log(remote.address + ':' + remote.port + ' - ' + message);
+				try {
+					response = new DNSMessage();
+					response.parseRequest(message);
+					resolve(response);
+				} catch (e) {
+					reject(e);
+				}
 			});
 
-			client.send(Buffer.from([44, 93, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 28, 0, 1]), 53, forwarders[0], (err) => {
-				console.log(arguments);
+			client.send(Buffer.from(queryBuffer), 53, forwarders[0], (err) => {
+				if(Utilities.isNullOrUndefined(err) === false){
+					reject(err);
+				}				
 			});
-		}
+		});
+	};
 
-		if (response === null) {
-			response = new DNSMessage();
-		}
+	function handleQueryNotFound (query) {
+		Logger.log('no domain found!');
+		// TODO: implement not found response.
+	};
 
-		// return response;
+	function handlePromiseFailure (reason) {
+		Logger.logError(reason);
 	};
 
 	/**

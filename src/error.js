@@ -13,7 +13,7 @@
  * @param {string} msg
  * @param {object} data
  */
-let ErrorInstance = (msg, data) => {
+function ErrorInstance (msg, data) {
 	this.msg = msg;
 	this.data = data;
 

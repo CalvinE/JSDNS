@@ -91,7 +91,18 @@ let ResolverConfig = require('./src/jsdns-config.json').resolution;
 // setTimeout(function () {
 // 	process.exit(0);
 // }, 5000);
-
+console.time('Time to resolve query:');
 let resolver = new Resolver();
-resolver.init(ResolverConfig, {'find': function () { return null; }});
-resolver.resolve();
+resolver.init(ResolverConfig, {'find': function () {
+	return new Promise(function (resolve, reject) {
+		resolve(null);
+	});
+}});
+let message = new DNSMessage();
+message.parseRequest(Buffer.from([84, 251, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1]));
+resolver.resolve(message).then(function (data) {
+	console.timeEnd('Time to resolve query:');
+	console.log(data);
+}, function (err) {
+	console.log(err);
+});

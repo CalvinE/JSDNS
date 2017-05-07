@@ -748,6 +748,8 @@ function DNSMesageHeader () {
 		headerBuffer.set(arBytes, offset);
 		offset += arBytes.length;
 		setHeaderLength(headerBuffer.length);
+
+		return headerBuffer;
 	}
 
 	function generateRandomID () {
