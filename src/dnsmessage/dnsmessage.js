@@ -190,7 +190,7 @@ function DNSMessage () {
      * @description Takes the DNSMessage object and returns buffer with the raw DNS message in bytes.
      *
      * @param {UInt8Array} messageData This is the raw message data in bytes
-     * 
+     *
      * @returns {Buffer} A Buffer containing the raw bytes of the DNS message.
      */
 	function encodeMessageToBuffer () {

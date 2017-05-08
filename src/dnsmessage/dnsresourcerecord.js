@@ -100,6 +100,15 @@ function DNSResourceRecord () {
 	let index = 0;
 
     /**
+     * @name isAuthoritative
+     * @access private
+     * @type {boolean}
+     *
+     * @description This variable indicates if the resource record is from an authoritative source.
+     */
+	let isAuthoritative = false;
+
+    /**
      * @name getName
      * @access public
      * @type {Function}
@@ -486,6 +495,32 @@ function DNSResourceRecord () {
 	}
 
     /**
+     * @name getName
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the getter method to return isAuthoritative.
+     *
+     * @returns {String} The current value of the isAuthoritative variable.
+     */
+	function getIsAuthoritative () {
+		return isAuthoritative;
+	}
+
+    /**
+     * @name setName
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for isAuthoritative.
+     *
+     * @param {boolean} _isAuthoritative A boolean value specifying if this record is from and authoritative source.
+     */
+	function setIsAuthoritative (_isAuthoritative) {
+		isAuthoritative = _isAuthoritative;
+	}
+
+    /**
      * @name decodeDNSResourceRecordFromMessage
      * @access public
      * @type {Function}
@@ -527,6 +562,7 @@ function DNSResourceRecord () {
 		setTtl(Utilities.isNullOrUndefined(dnsResourceRecordInfo.ttl) ? getTtl() : dnsResourceRecordInfo.ttl);
 		setRDLength(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? getRDLength() : dnsResourceRecordInfo.rdlength);
 		setRData(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? getRData() : dnsResourceRecordInfo.rdata);
+		setIsAuthoritative(Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? getIsAuthoritative() : dnsResourceRecordInfo.isAuthoritative);
 
 		let rrLength = 0;
 		let offset = 0;
@@ -579,6 +615,8 @@ function DNSResourceRecord () {
 		setRData: setRData,
 		getResourceRecordLength: getResourceRecordLength,
 		getResourceRecordStartIndex: getResourceRecordStartIndex,
+		getIsAuthoritative: getIsAuthoritative,
+		setIsAuthoritative: setIsAuthoritative,
 		decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage,
 		encodeResourceRecordForMessage: encodeResourceRecordForMessage
 	};

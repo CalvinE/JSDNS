@@ -5,9 +5,11 @@
  */
 
 let DNSMessage = require('./src/dnsmessage/dnsmessage');
-let Logger = require('./src/logging/logger');
+// let Logger = require('./src/logging/logger');
 let Resolver = require('./src/resolver/resolver');
-let ResolverConfig = require('./src/jsdns-config.json').resolution;
+let Config = require('./src/jsdns-config.json');
+let ResolverConfig = Config.resolution;
+let MemoryCacheProvider = require('./src/resolver/cache-providers/memory-cache-provider');
 
 // var queries = [
 // 	[119, 121, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 108, 98, 7, 95, 100, 110, 115, 45, 115, 100, 4, 95, 117, 100, 112, 1, 48, 1, 48, 3, 49, 54, 56, 3, 49, 57, 50, 7, 105, 110, 45, 97, 100, 100, 114, 4, 97, 114, 112, 97, 0, 0, 12, 0, 1],
@@ -93,11 +95,7 @@ let ResolverConfig = require('./src/jsdns-config.json').resolution;
 // }, 5000);
 console.time('Time to resolve query:');
 let resolver = new Resolver();
-resolver.init(ResolverConfig, {'find': function () {
-	return new Promise(function (resolve, reject) {
-		resolve(null);
-	});
-}});
+resolver.init(ResolverConfig, new MemoryCacheProvider());
 let message = new DNSMessage();
 // [84, 251, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1] // Good array
 // [84, 251, 1, 0, 0, 1, 255, 255, 255, 255, 255, 255, 6, 103, 105, 116, 104, 117, 98, 3, 99, 111, 109, 0, 0, 1, 0, 1] // Busted array need to use for implementing error handling...
@@ -105,6 +103,13 @@ message.parseRequest(Buffer.from([84, 251, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 6, 103,
 resolver.resolve(message).then(function (data) {
 	console.timeEnd('Time to resolve query:');
 	console.log(data);
+	console.time('Time to resolve cached query:');
+	resolver.resolve(message).then(function (data) {
+		console.timeEnd('Time to resolve cached query:');
+		console.log(data);
+	}, function (err) {
+		console.log(err);
+	});
 }, function (err) {
 	console.log(err);
 });

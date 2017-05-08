@@ -38,7 +38,7 @@ function Resolver () {
 		return new Promise(function (resolve, reject) {
 			try {
 				// 1. Query cache.
-				searchCache(query).then(function (cacheResponse) {
+				searchCache(query.getQuestions()[0]).then(function (cacheResponse) { // TODO: Fix Immediately! Must be able to handle queries with multiple questions.
 					if (cacheResponse === null) {
 						zoneFileSearch(query).then(function (zoneResponse) {
 							if (zoneResponse === null) {
@@ -54,6 +54,7 @@ function Resolver () {
 										if (step3Response === null) {
 											handleQueryNotFound(query);
 										} else {
+											cache.cache(step3Response);
 											resolve(step3Response);
 										}
 									}, handlePromiseFailure);
@@ -86,7 +87,9 @@ function Resolver () {
 	 * @returns {Promise} The result of the cache.find function of the cache provider given to the resolver. The find method implementation needs to return a promise..
 	 */
 	function searchCache (query) {
-		return cache.find(query);
+		return new Promise(function (resolve, reject) {
+			resolve(cache.search(query));
+		});
 	};
 
 	/**
