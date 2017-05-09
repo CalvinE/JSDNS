@@ -109,6 +109,15 @@ function DNSResourceRecord () {
 	let isAuthoritative = false;
 
     /**
+     * @name cacheExpiration
+     * @access private
+     * @type {Date}
+     *
+     * @description This field is populated before it is stored in cache. The value of this property is
+     */
+	let cacheExpiration = null;
+
+    /**
      * @name getName
      * @access public
      * @type {Function}
@@ -492,7 +501,7 @@ function DNSResourceRecord () {
      */
 	function setResourceRecordLength (length) {
 		resourceRecordLength = length;
-	}
+	};
 
     /**
      * @name getName
@@ -505,10 +514,10 @@ function DNSResourceRecord () {
      */
 	function getIsAuthoritative () {
 		return isAuthoritative;
-	}
+	};
 
     /**
-     * @name setName
+     * @name setIsAuthoritative
      * @access public
      * @type {Function}
      *
@@ -518,6 +527,50 @@ function DNSResourceRecord () {
      */
 	function setIsAuthoritative (_isAuthoritative) {
 		isAuthoritative = _isAuthoritative;
+	};
+
+    /**
+     * @name getName
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the getter method to return cacheExpiration.
+     *
+     * @returns {Date} The current value of the cacheExpiration variable, or a null value if there is no known expiration.
+     */
+	function getCacheExpiration () {
+		return cacheExpiration;
+	};
+
+    /**
+     * @name setCacheExpiration
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for cacheExpiration.
+     *
+     * @param {Number} seconds A boolean value specifying cache expiration of rhe record.
+     */
+	function setCacheExpiration (seconds) {
+		seconds = parseInt(seconds);
+		if (Utilities.isNullOrUndefined(seconds) === false && isNaN(seconds) === false) {
+			cacheExpiration = new Date(Date.now() + (seconds * 1000));
+		} else {
+			cacheExpiration = null;
+		}
+	};
+
+    /**
+     * @name isExpired
+     * @access public
+     * @function
+     *
+     * @description Returns true if this resource records cacheability has passed.
+     *
+     * @returns {Boolean}
+     */
+	function isExpired () {
+		return getCacheExpiration() < new Date();
 	}
 
     /**
@@ -529,14 +582,17 @@ function DNSResourceRecord () {
      *
      * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
      * @param {Number} offset This is an integer representing the offset to be used for parsing the resource record data.
+     * @param {Boolean} _isAuthoritative Boolean value that sets if the resource is from an authoritative source.
      */
-	function decodeDNSResourceRecordFromMessage (data, offset) {
+	function decodeDNSResourceRecordFromMessage (data, offset = 0, _isAuthoritative = false) {
 		index = offset;
 		setResourceRecordStartIndex(index);
 		setName(decodeName(data));
 		setType(Utilities.decode16BitValue(data[index++], data[index++]));
 		setRRclass(Utilities.decode16BitValue(data[index++], data[index++]));
 		setTtl(decodeTtl(data[index++], data[index++], data[index++], data[index++]));
+		setCacheExpiration(getTtl());
+		setIsAuthoritative(_isAuthoritative);
 		setRDLength(Utilities.decode16BitValue(data[index++], data[index++]));
 		setRData(decodeRdata(data));
 		setResourceRecordLength(index - offset);
@@ -551,15 +607,18 @@ function DNSResourceRecord () {
      *
      * @param {Object} dnsResourceRecordInfo An object with properties with the same names as the private variables used in this class.
      * @param {Number} startIndex The starting index of this resource record in the overall message.
+     * @param {Boolean} _isAuthoritative Boolean value that sets if the resource is from an authoritative source.
      *
      * @returns {Uint8Array} An array of bytes representing the DNS Resource Record.
      */
-	function encodeResourceRecordForMessage (dnsResourceRecordInfo, startIndex) {
+	function encodeResourceRecordForMessage (dnsResourceRecordInfo, startIndex = 0, _isAuthoritative = false) {
 		dnsResourceRecordInfo = dnsResourceRecordInfo || {};
 		setName(Utilities.isNullOrUndefined(dnsResourceRecordInfo.name) ? getName() : dnsResourceRecordInfo.name);
 		setType(Utilities.isNullOrUndefined(dnsResourceRecordInfo.type) ? getType() : dnsResourceRecordInfo.type);
 		setRRclass(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rrclass) ? getRRclass() : dnsResourceRecordInfo.rrclass);
 		setTtl(Utilities.isNullOrUndefined(dnsResourceRecordInfo.ttl) ? getTtl() : dnsResourceRecordInfo.ttl);
+		setCacheExpiration(getTtl());
+		setIsAuthoritative(_isAuthoritative);
 		setRDLength(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? getRDLength() : dnsResourceRecordInfo.rdlength);
 		setRData(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? getRData() : dnsResourceRecordInfo.rdata);
 		setIsAuthoritative(Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? getIsAuthoritative() : dnsResourceRecordInfo.isAuthoritative);
@@ -617,6 +676,9 @@ function DNSResourceRecord () {
 		getResourceRecordStartIndex: getResourceRecordStartIndex,
 		getIsAuthoritative: getIsAuthoritative,
 		setIsAuthoritative: setIsAuthoritative,
+		getCacheExpiration: getCacheExpiration,
+		setCacheExpiration: setCacheExpiration,
+		isExpired: isExpired,
 		decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage,
 		encodeResourceRecordForMessage: encodeResourceRecordForMessage
 	};

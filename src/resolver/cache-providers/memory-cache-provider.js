@@ -4,6 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
+let Types = require('../../dnsmessage/constants/types');
+
 /**
  * @name MemoryCacheProvider
  * @access public
@@ -19,6 +21,14 @@ function MemoryCacheProvider () { // TODO: Need to improve this by sorting cache
 	 * @description This is the array that contains the resource records that are cached.
 	 */
 	let _cache = [];
+
+	/**
+	 * @name wildCardQTypeValue
+	 * @access private
+	 *
+	 * @description This is the value of the qType that is the wildcard selector.
+	 */
+	let wildCardQTypeValue = Types.findTypeByName('*').value;
 
 	/**
 	 * @name cache
@@ -49,13 +59,29 @@ function MemoryCacheProvider () { // TODO: Need to improve this by sorting cache
 	 */
 	function search (dnsQuestion) {
 		let responses = [];
-
-		let queryName = dnsQuestion.getQname();
-
-		for (let i = 0; i < _cache.length; i++) {
-			if (_cache[i].getName() === queryName) {
-				responses.push(_cache[i]);
+		let qNameRegex = new RegExp('^' + dnsQuestion.getQname() + '$', 'gi');
+		let queryType = dnsQuestion.getQtype().value;
+		let queryClass = dnsQuestion.getQclass().value;
+		let counter = 0;
+		while (counter < _cache.length) {
+			let response = _cache[counter];
+			let resourceName = response.getName();
+			let resourceType = response.getType().value;
+			let resourceClass = response.getClass().value;
+		// _cache[i].getName() === queryName && _cache[i].getType().value === queryType && _cache[i].getClass().value === queryClass
+			if (qNameRegex.test(resourceName) === true) {
+				if (queryClass === resourceClass) {
+					if (queryType === wildCardQTypeValue || queryType === resourceType) {
+						if (response.isExpired() === true) {
+							_cache.splice(counter, 1);
+							counter--;
+						} else {
+							responses.push(response);
+						}
+					}
+				}
 			}
+			counter++;
 		}
 
 		if (responses.length === 0) {
@@ -63,7 +89,7 @@ function MemoryCacheProvider () { // TODO: Need to improve this by sorting cache
 		}
 
 		return responses;
-	}
+	};
 
 	return {
 		cache: cache,
