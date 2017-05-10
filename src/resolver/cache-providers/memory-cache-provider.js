@@ -67,7 +67,7 @@ function MemoryCacheProvider () { // TODO: Need to improve this by sorting cache
 			let response = _cache[counter];
 			let resourceName = response.getName();
 			let resourceType = response.getType().value;
-			let resourceClass = response.getClass().value;
+			let resourceClass = response.getRRclass().value;
 		// _cache[i].getName() === queryName && _cache[i].getType().value === queryType && _cache[i].getClass().value === queryClass
 			if (qNameRegex.test(resourceName) === true) {
 				if (queryClass === resourceClass) {

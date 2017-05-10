@@ -38,9 +38,9 @@ function Resolver () {
 		let recursionDesired = (query.getHeader().getRd() === 1);
 		return new Promise(function (resolve, reject) {
 			try {
-				query.getHeader().setQr(1); // Set header to signify this is a response.
 				query.getHeader().setRcode(RCodes.RESPONSE_CODES[0]); // Setting RCode to success, and changing it below if needed.
 				if (query.getQuestionsCount() > 1) { // Multi questyion DNS queries are not somthing that most DNS software handles right now due to several issues. more info is available here: https://tools.ietf.org/id/draft-bellis-dnsext-multi-qtypes-03.html
+					query.getHeader().setQr(1); // Set header to signify this is a response.
 					query.getHeader().setRcode(RCodes.RESPONSE_CODES[1]);
 				}
 				searchCache(query.getQuestions()[0]).then(function (cacheResponse) {
@@ -57,6 +57,7 @@ function Resolver () {
 								if (step3 !== null) {
 									step3.then(function (step3Response) {
 										if (step3Response === null) { // Step 3 resulted in no records found, so we return RCode 3
+											query.getHeader().setQr(1); // Set header to signify this is a response.
 											query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
 											resolve(query);
 										} else {
@@ -64,10 +65,12 @@ function Resolver () {
 											resolve(step3Response);
 										}
 									}, function (reason) { // TODO: Is this the right way to handle the error?
+										query.getHeader().setQr(1); // Set header to signify this is a response.
 										query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 										resolve(query);
 									});
 								} else { // Step 3 resulted in no records found, so we return RCode 3
+									query.getHeader().setQr(1); // Set header to signify this is a response.
 									query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
 									resolve(query);
 								}
@@ -75,6 +78,7 @@ function Resolver () {
 								resolve(zoneResponse);
 							}
 						}, function (reason) { // TODO: Is this the right way to handle the error?
+							query.getHeader().setQr(1); // Set header to signify this is a response.
 							query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 							resolve(query);
 						});
@@ -82,6 +86,7 @@ function Resolver () {
 						resolve(cacheResponse);
 					}
 				}, function (reason) { // TODO: Is this the right way to handle the error?
+					query.getHeader().setQr(1); // Set header to signify this is a response.
 					query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 					resolve(query);
 				});
