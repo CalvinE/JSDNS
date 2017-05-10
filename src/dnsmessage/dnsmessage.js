@@ -82,7 +82,7 @@ function DNSMessage () {
      */
 	function getHeader () {
 		return header;
-	}
+	};
 
     /**
      * @name getQuestions
@@ -95,7 +95,20 @@ function DNSMessage () {
      */
 	function getQuestions () {
 		return questions;
-	}
+	};
+
+    /**
+     * @name getQuestionsCount
+     * @access public
+     * @function
+     *
+     * @description This function returns the number of questions associated with this DNS Message.
+     *
+     * @returns {Number}
+     */
+	function getQuestionsCount () {
+		return questions.length;
+	};
 
     /**
      * @name getAnswers
@@ -108,7 +121,20 @@ function DNSMessage () {
      */
 	function getAnswers () {
 		return answers;
-	}
+	};
+
+    /**
+     * @name getAnswersCount
+     * @access public
+     * @function
+     *
+     * @description This function returns the number of answers associated with this DNS Message.
+     *
+     * @returns {Number}
+     */
+	function getAnswersCount () {
+		return answers.length;
+	};
 
     /**
      * @name getNameservers
@@ -121,7 +147,20 @@ function DNSMessage () {
      */
 	function getNameservers () {
 		return nameservers;
-	}
+	};
+
+    /**
+     * @name getNameserversCount
+     * @access public
+     * @function
+     *
+     * @description This function returns the number of name servers associated with this DNS Message.
+     *
+     * @returns {Number}
+     */
+	function getNameserversCount () {
+		return nameservers.length;
+	};
 
     /**
      * @name getAdditionalResources
@@ -134,7 +173,20 @@ function DNSMessage () {
      */
 	function getAdditionalResources () {
 		return additionalResources;
-	}
+	};
+
+    /**
+     * @name getAdditionalResourcesCount
+     * @access public
+     * @function
+     *
+     * @description This function returns the number of additional resources associated with this DNS Message.
+     *
+     * @returns {Number}
+     */
+	function getAdditionalResourcesCount () {
+		return additionalResources.length;
+	};
 
     /**
      * @name parseRequest
@@ -244,9 +296,13 @@ function DNSMessage () {
 	return {
 		getHeader: getHeader,
 		getQuestions: getQuestions,
+		getQuestionsCount: getQuestionsCount,
 		getAnswers: getAnswers,
+		getAnswersCount: getAnswersCount,
 		getNameservers: getNameservers,
+		getNameserversCount: getNameserversCount,
 		getAdditionalResources: getAdditionalResources,
+		getAdditionalResourcesCount: getAdditionalResourcesCount,
 		parseRequest: parseRequest,
 		encodeMessageToBuffer: encodeMessageToBuffer,
 		messageLength: messageLength

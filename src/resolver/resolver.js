@@ -35,16 +35,16 @@ function Resolver () {
 	 * @returns {Promise} A promise that will have the result of the DNS query..
 	 */
 	function resolve (query) {
+		let recursionDesired = (query.getHeader().getRd() === 1);
 		return new Promise(function (resolve, reject) {
 			try {
-				// 1. Query cache.
 				searchCache(query.getQuestions()[0]).then(function (cacheResponse) { // TODO: Fix Immediately! Must be able to handle queries with multiple questions.
 					if (cacheResponse === null) {
 						zoneFileSearch(query).then(function (zoneResponse) {
 							if (zoneResponse === null) {
 								let step3 = null;
 								let queryStream = query.encodeMessageToBuffer();
-								if (zoneResponse === null && config.recursion.recursionAvailable === true) { // If recursion is available then recursively resolve the query.
+								if (zoneResponse === null && config.recursion.recursionAvailable === true && recursionDesired === true) { // If recursion is available then recursively resolve the query.
 									step3 = recurse(queryStream);
 								} else if (zoneResponse === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
 									step3 = forward(queryStream);
