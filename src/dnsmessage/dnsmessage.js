@@ -245,7 +245,7 @@ function DNSMessage () {
      *
      * @returns {Buffer} A Buffer containing the raw bytes of the DNS message.
      */
-	function encodeMessageToBuffer () {
+	function encodeMessageToBuffer () { // TODO: make this use name compression.
 		let headerData = header.encodeHeaderForMessage();
 		let offset = headerData.length;
 		// let questionData = [];

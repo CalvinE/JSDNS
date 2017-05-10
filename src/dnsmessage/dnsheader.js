@@ -448,8 +448,6 @@ function DNSMesageHeader () {
      * @description DO NOT USE THIS METHOD!!!!! z must always be zero per RFC 1035. This is the setter method for z.
      *
      * @param {Number} _z sets the value of the z variable.
-     *
-     * @todo delete this because unles spec changes this will never get used.
      */
 	// function setZ (_z) {
 	// 	z = _z;

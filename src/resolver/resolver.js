@@ -5,8 +5,8 @@
  */
 
 let DNSMessage = require('../dnsmessage/dnsmessage');
-let Logger = require('../logging/logger');
 let Utilities = require('../utilities');
+let RCodes = require('../dnsmessage/constants/rcodes');
 const dgram = require('dgram');
 
 /**
@@ -38,7 +38,12 @@ function Resolver () {
 		let recursionDesired = (query.getHeader().getRd() === 1);
 		return new Promise(function (resolve, reject) {
 			try {
-				searchCache(query.getQuestions()[0]).then(function (cacheResponse) { // TODO: Fix Immediately! Must be able to handle queries with multiple questions.
+				query.getHeader().setQr(1); // Set header to signify this is a response.
+				query.getHeader().setRcode(RCodes.RESPONSE_CODES[0]); // Setting RCode to success, and changing it below if needed.
+				if (query.getQuestionsCount() > 1) { // Multi questyion DNS queries are not somthing that most DNS software handles right now due to several issues. more info is available here: https://tools.ietf.org/id/draft-bellis-dnsext-multi-qtypes-03.html
+					query.getHeader().setRcode(RCodes.RESPONSE_CODES[1]);
+				}
+				searchCache(query.getQuestions()[0]).then(function (cacheResponse) {
 					if (cacheResponse === null) {
 						zoneFileSearch(query).then(function (zoneResponse) {
 							if (zoneResponse === null) {
@@ -51,24 +56,35 @@ function Resolver () {
 								}
 								if (step3 !== null) {
 									step3.then(function (step3Response) {
-										if (step3Response === null) {
-											handleQueryNotFound(query);
+										if (step3Response === null) { // Step 3 resulted in no records found, so we return RCode 3
+											query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
+											resolve(query);
 										} else {
 											cache.cache(step3Response);
 											resolve(step3Response);
 										}
-									}, handlePromiseFailure);
-								} else {
-									handleQueryNotFound(query);
+									}, function (reason) { // TODO: Is this the right way to handle the error?
+										query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
+										resolve(query);
+									});
+								} else { // Step 3 resulted in no records found, so we return RCode 3
+									query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
+									resolve(query);
 								}
 							} else {
 								resolve(zoneResponse);
 							}
-						}, handlePromiseFailure);
+						}, function (reason) { // TODO: Is this the right way to handle the error?
+							query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
+							resolve(query);
+						});
 					} else {
 						resolve(cacheResponse);
 					}
-				}, handlePromiseFailure);
+				}, function (reason) { // TODO: Is this the right way to handle the error?
+					query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
+					resolve(query);
+				});
 			} catch (e) {
 				reject(e);
 			}
@@ -186,32 +202,6 @@ function Resolver () {
 				}
 			});
 		});
-	}
-
-	/**
-	 * @name handleQueryNotFound
-	 * @access private
-	 * @function
-	 *
-	 * @description This function handles when no corresponding resource records are found for a given query.
-	 *
-	 * @param {DNSMessage} query This is origional query that resulted in no results being found.
-	 */
-	function handleQueryNotFound (query) {
-		Logger.log('no domain found!');
-		// TODO: implement not found response...
-	};
-
-	/**
-	 * @name handlePromiseFailure
-	 * @access private
-	 * @function
-	 *
-	 * @param {any} reason This is typically the error object passed back through the promise chain that caused the rejection.
-	 */
-	function handlePromiseFailure (reason) {
-		Logger.logError(reason);
-		// TODO: implement better error handling...
 	};
 
 	/**
@@ -238,7 +228,7 @@ function Resolver () {
 				forwarders.push(config.forwarding.forwarders[i]);
 			}
 		}
-	}
+	};
 
 	/**
 	 * @name setConfig
@@ -264,7 +254,7 @@ function Resolver () {
 	 */
 	function setCache (_cache) {
 		init(config, _cache);
-	}
+	};
 
 	return {
 		resolve: resolve,
