@@ -12,11 +12,11 @@
 			}
 		},
 		"zone": {
-			"zoneFileDir": ""
+			"zoneFileDir": "/etc/jsdns/zone"
 		},
 		"recursion": {
 			"recursionAvailable": false,
-			"namedRootFile": "./named.root"				
+			"namedRootFile": "named.root"			
 		},
 		"forwarding": {
 			"enabled": true,

@@ -549,7 +549,7 @@ function DNSResourceRecord () {
      *
      * @description This is the setter method for cacheExpiration.
      *
-     * @param {Number} seconds A boolean value specifying cache expiration of rhe record.
+     * @param {Number} seconds A number in seconds that is the TTL for this record.
      */
 	function setCacheExpiration (seconds) {
 		seconds = parseInt(seconds);

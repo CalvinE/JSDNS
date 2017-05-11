@@ -23,6 +23,8 @@ function Resolver () {
 
 	let forwarders = [];
 
+	let rootServers = [];
+
 	/**
 	 * @name resolve
 	 * @access public
@@ -139,9 +141,10 @@ function Resolver () {
 	 *
 	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
 	 *
-	 * @returns {Promise} A promise with the results from the forwarding.
+	 * @returns {Promise} A promise with the results from the recursive query.
 	 */
 	function recurse (query) {
+		// TODO: First cache root servers if they are not already cached.
 		return new Promise(function (resolve, reject) {
 			resolve(null); // TODO: Implement this...
 		});
@@ -185,17 +188,18 @@ function Resolver () {
 		return new Promise(function (resolve, reject) {
 			let response = null;
 			let client = dgram.createSocket('udp4');
-			client.on('listening', function () {
-				let address = client.address();
-				console.log('UDP Server listening on ' + address.address + ':' + address.port);
-			});
+			// client.on('listening', function () {
+			// 	let address = client.address();
+			// 	console.log('UDP Server listening on ' + address.address + ':' + address.port);
+			// });
 
 			client.on('message', function (message, remote) {
-				console.log(remote.address + ':' + remote.port + ' - ' + message);
+				// console.log(remote.address + ':' + remote.port + ' - ' + message);
 				try {
 					response = new DNSMessage();
 					response.parseRequest(message);
 					resolve(response);
+					client.close();
 				} catch (e) {
 					reject(e);
 				}
@@ -223,49 +227,54 @@ function Resolver () {
 		config = _config;
 		cache = _cache;
 
-		if (config.recursion.recursionAvailable === true) { // Cache local root server file.
-
-		}
-
-		if (config.forwarding.enabled === true) {
-			forwarders = [];
-			for (let i = 0; i < config.forwarding.forwarders.length; i++) {
-				forwarders.push(config.forwarding.forwarders[i]);
-			}
-		}
+		handleConfigUpdate();
 	};
 
 	/**
-	 * @name setConfig
+	 * @name updateConfig
 	 * @access public
 	 * @function
 	 *
-	 * @description This function sets the configuration for the resolver.
+	 * @description This function updates the configuration for the resolver.
 	 *
 	 * @param {Object} _config This parameter is the configuration for the resolver.
 	 */
-	function setConfig (_config) {
-		init(_config, cache);
+	function updateConfig (_config) {
+		config = _config;
+		handleConfigUpdate();
 	};
 
+	function handleConfigUpdate () {
+		if (config.recursion.recursionAvailable === true) { // Cache local root server file.
+
+		} else {
+
+		}
+
+		forwarders = [];
+		for (let i = 0; i < config.forwarding.forwarders.length; i++) {
+			forwarders.push(config.forwarding.forwarders[i]);
+		}
+	}
+
 	/**
-	 * @name setConfig
+	 * @name updateCache
 	 * @access public
 	 * @function
 	 *
-	 * @description This function sets the cache for the resolver.
+	 * @description This function updates the cache for the resolver.
 	 *
 	 * @param {Object} _cache This parameter is the cache for the resolver.
 	 */
-	function setCache (_cache) {
-		init(config, _cache);
+	function updateCache (_cache) {
+		cache = _cache;
 	};
 
 	return {
 		resolve: resolve,
 		init: init,
-		setConfig: setConfig,
-		setCache: setCache
+		updateConfig: updateConfig,
+		updateCache: updateCache
 	};
 };
 
