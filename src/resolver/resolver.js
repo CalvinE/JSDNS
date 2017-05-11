@@ -52,7 +52,7 @@ function Resolver () {
 								let step3 = null;
 								let queryStream = query.encodeMessageToBuffer();
 								if (zoneResponse === null && config.recursion.recursionAvailable === true && recursionDesired === true) { // If recursion is available then recursively resolve the query.
-									step3 = recurse(queryStream);
+									step3 = recurse(query);
 								} else if (zoneResponse === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
 									step3 = forward(queryStream);
 								}
@@ -139,13 +139,25 @@ function Resolver () {
 	 *
 	 * @description This is one of the third steps in the resolution process. This only happens if recursion is disabled and forwarding is enabled.
 	 *
-	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
+	 * @param {DNSMessage} query A DNSMessage.
 	 *
 	 * @returns {Promise} A promise with the results from the recursive query.
 	 */
 	function recurse (query) {
 		// TODO: First cache root servers if they are not already cached.
 		return new Promise(function (resolve, reject) {
+			let qname = query.getQuestions()[0].getQname();
+			if (qname[qname.length - 1] !== '.') { // If there is no terminating period then we need to add one to represent the root server.
+				qname = qname + '.';
+			}
+			let qnameParts = qname.split('.').reverse();
+			let currentQnameForQuery = qnameParts.shift() + '.';
+			do {
+				// TODO: do query
+
+				currentQnameForQuery = qnameParts.shift() + '.';
+			} while (qnameParts.length !== 0);
+
 			resolve(null); // TODO: Implement this...
 		});
 	};
