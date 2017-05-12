@@ -21,6 +21,8 @@ function Resolver () {
 
 	let cache = null;
 
+	let recursionAvailable = false;
+
 	let forwarders = [];
 
 	let rootServers = [];
@@ -51,7 +53,7 @@ function Resolver () {
 							if (zoneResponse === null) {
 								let step3 = null;
 								let queryStream = query.encodeMessageToBuffer();
-								if (zoneResponse === null && config.recursion.recursionAvailable === true && recursionDesired === true) { // If recursion is available then recursively resolve the query.
+								if (zoneResponse === null && recursionAvailable === true && recursionDesired === true) { // If recursion is available then recursively resolve the query.
 									step3 = recurse(query);
 								} else if (zoneResponse === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
 									step3 = forward(queryStream);
@@ -60,6 +62,7 @@ function Resolver () {
 									step3.then(function (step3Response) {
 										if (step3Response === null) { // Step 3 resulted in no records found, so we return RCode 3
 											query.getHeader().setQr(1); // Set header to signify this is a response.
+											query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
 											query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
 											resolve(query);
 										} else {
@@ -68,11 +71,13 @@ function Resolver () {
 										}
 									}, function (reason) { // TODO: Is this the right way to handle the error?
 										query.getHeader().setQr(1); // Set header to signify this is a response.
+										query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
 										query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 										resolve(query);
 									});
 								} else { // Step 3 resulted in no records found, so we return RCode 3
 									query.getHeader().setQr(1); // Set header to signify this is a response.
+									query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
 									query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
 									resolve(query);
 								}
@@ -81,6 +86,7 @@ function Resolver () {
 							}
 						}, function (reason) { // TODO: Is this the right way to handle the error?
 							query.getHeader().setQr(1); // Set header to signify this is a response.
+							query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
 							query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 							resolve(query);
 						});
@@ -89,6 +95,7 @@ function Resolver () {
 					}
 				}, function (reason) { // TODO: Is this the right way to handle the error?
 					query.getHeader().setQr(1); // Set header to signify this is a response.
+					query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
 					query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
 					resolve(query);
 				});
@@ -257,7 +264,8 @@ function Resolver () {
 	};
 
 	function handleConfigUpdate () {
-		if (config.recursion.recursionAvailable === true) { // Cache local root server file.
+		recursionAvailable = config.recursion.recursionAvailable;
+		if (recursionAvailable === true) { // Cache local root server file.
 
 		} else {
 
