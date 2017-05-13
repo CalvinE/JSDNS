@@ -53,12 +53,13 @@ function MemoryCacheProvider () { // TODO: Need to improve this by sorting cache
 	 *
 	 * @description This function searches the cache for a resource record.
 	 *
-	 * @param {DNSQuestion} dnsQuestion This is a DNS query that we will search for in the cache.
+	 * @param {DNSMessage} dnsMessage This is a DNS query that we will search for in the cache.
 	 *
-	 * @returns {DNSResourceRecord} The corresponding resource record for the query or if no match is found null is returned.
+	 * @returns {Array.<DNSResourceRecord>} The corresponding resource record for the query or if no match is found null is returned.
 	 */
-	function search (dnsQuestion) {
+	function search (dnsMessage) {
 		let responses = [];
+		let dnsQuestion = dnsMessage.getQuestions()[0];
 		let qNameRegex = new RegExp('^' + dnsQuestion.getQname() + '$', 'gi');
 		let queryType = dnsQuestion.getQtype().value;
 		let queryClass = dnsQuestion.getQclass().value;

@@ -118,7 +118,15 @@ function Resolver () {
 	 */
 	function searchCache (query) {
 		return new Promise(function (resolve, reject) {
-			resolve(cache.search(query));
+			let responses = cache.search(query);
+			if (responses === null) {
+				resolve(null);
+			} else {
+				for (let i = 0; i < responses.length; i++) {
+					// TODO: Populate query with responses.
+				}
+			}
+			resolve(query);
 		});
 	};
 
@@ -158,12 +166,6 @@ function Resolver () {
 				qname = qname + '.';
 			}
 			let qnameParts = qname.split('.').reverse();
-			let currentQnameForQuery = qnameParts.shift() + '.';
-			do {
-				// TODO: do query
-
-				currentQnameForQuery = qnameParts.shift() + '.';
-			} while (qnameParts.length !== 0);
 
 			resolve(null); // TODO: Implement this...
 		});
