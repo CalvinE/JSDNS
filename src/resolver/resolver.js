@@ -4,10 +4,8 @@
  * Copyright (c) 2017 Calvin Echols - calvin.echols@gmail.com
  */
 
-let DNSMessage = require('../dnsmessage/dnsmessage');
-let Utilities = require('../utilities');
 let RCodes = require('../dnsmessage/constants/rcodes');
-const dgram = require('dgram');
+let ResolverUtilities = require('./resolver-utilities');
 
 /**
  * @name Resolver
@@ -21,217 +19,85 @@ function Resolver () {
 
 	let cache = null;
 
-	let recursionAvailable = false;
+	let recursionAvailable = 0;
 
 	let forwarders = [];
-
-	let rootServers = [];
 
 	/**
 	 * @name resolve
 	 * @access public
 	 * @function
 	 *
-	 * @description This function resolves the query based on the configuration settings. The first set is to check the cache, then the local zone files, then if recursion is available we recursively query until we get our answer, otherwise we forward the query to any configured forwarding servers.
+	 * @description This is the main resolution method in the resolver. It handles handing the incomming query off to the appropriate handler.
 	 *
-	 * @param {DNSMessage} query This is the query we are attempting to resolve.
+	 * @param {DNSMessage} dnsQuery The complete DNS Message to query for.
 	 *
-	 * @returns {Promise} A promise that will have the result of the DNS query..
+	 * @returns {Promise} A promise that is working on completeing your query. a reject from this query indicates a server error otherwise the resolve method will contain any other dns message result.
 	 */
-	function resolve (query) {
-		let recursionDesired = (query.getHeader().getRd() === 1);
+	function resolve (dnsQuery) {
 		return new Promise(function (resolve, reject) {
-			try {
-				query.getHeader().setRcode(RCodes.RESPONSE_CODES[0]); // Setting RCode to success, and changing it below if needed.
-				if (query.getQuestionsCount() > 1) { // Multi questyion DNS queries are not somthing that most DNS software handles right now due to several issues. more info is available here: https://tools.ietf.org/id/draft-bellis-dnsext-multi-qtypes-03.html
-					query.getHeader().setQr(1); // Set header to signify this is a response.
-					query.getHeader().setRcode(RCodes.RESPONSE_CODES[1]);
-				}
-				searchCache(query.getQuestions()[0]).then(function (cacheResponse) {
-					if (cacheResponse === null) {
-						zoneFileSearch(query).then(function (zoneResponse) {
-							if (zoneResponse === null) {
-								let step3 = null;
-								let queryStream = query.encodeMessageToBuffer();
-								if (zoneResponse === null && recursionAvailable === true && recursionDesired === true) { // If recursion is available then recursively resolve the query.
-									step3 = recurse(query);
-								} else if (zoneResponse === null && config.forwarding.enabled === true) { // Else if forwarding is enabled forward the request to the configured forwarders.
-									step3 = forward(queryStream);
-								}
-								if (step3 !== null) {
-									step3.then(function (step3Response) {
-										if (step3Response === null) { // Step 3 resulted in no records found, so we return RCode 3
-											query.getHeader().setQr(1); // Set header to signify this is a response.
-											query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
-											query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
-											resolve(query);
-										} else {
-											cache.cache(step3Response);
-											resolve(step3Response);
-										}
-									}, function (reason) { // TODO: Is this the right way to handle the error?
-										query.getHeader().setQr(1); // Set header to signify this is a response.
-										query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
-										query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
-										resolve(query);
-									});
-								} else { // Step 3 resulted in no records found, so we return RCode 3
-									query.getHeader().setQr(1); // Set header to signify this is a response.
-									query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
-									query.getHeader().setRcode(RCodes.RESPONSE_CODES[3]); // Setting RCode to success, and changing it below if needed.
-									resolve(query);
-								}
-							} else {
-								resolve(zoneResponse);
-							}
-						}, function (reason) { // TODO: Is this the right way to handle the error?
-							query.getHeader().setQr(1); // Set header to signify this is a response.
-							query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
-							query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
-							resolve(query);
-						});
-					} else {
-						resolve(cacheResponse);
-					}
-				}, function (reason) { // TODO: Is this the right way to handle the error?
-					query.getHeader().setQr(1); // Set header to signify this is a response.
-					query.getHeader().setRa((recursionAvailable === true) ? 1 : 0); // Set RA to the appropriate value
-					query.getHeader().setRcode(RCodes.RESPONSE_CODES[2]); // Setting RCode to 2 to indicate a server error occurred.
-					resolve(query);
-				});
-			} catch (e) {
-				reject(e);
-			}
+			let opcode = dnsQuery.getHeader().getOpcode().value;
+			switch (opcode) {
+			case 0:
+				resolve(resolveStandardQuery(dnsQuery));
+				break;
+			case 1:
+				resolve(resolveInverseQuery(dnsQuery));
+				break;
+			case 2:
+				resolve(resolveStatusQuery(dnsQuery));
+				break;
+			default:
+				return Promise.resolve(ResolverUtilities.setMessageAsResponse(dnsQuery, 0, 0, recursionAvailable, RCodes.RESPONSE_CODES[4].value));
+			};
 		});
 	};
 
 	/**
-	 * @name searchCache
+	 * @name resolveStandardQuery
 	 * @access private
 	 * @function
 	 *
-	 * @description This is one of the three steps in the resolution process. This is the first step.
+	 * @description This is the method for resolving standard queries
 	 *
-	 * @param {DNSMessage} query A DNSMesage object.
+	 * @param {DNSMessage} dnsQuery
 	 *
-	 * @returns {Promise} The result of the cache.find function of the cache provider given to the resolver. The find method implementation needs to return a promise..
+	 * @return {DNSMessage} A response to your query.
 	 */
-	function searchCache (query) {
-		return new Promise(function (resolve, reject) {
-			let responses = cache.search(query);
-			if (responses === null) {
-				resolve(null);
-			} else {
-				for (let i = 0; i < responses.length; i++) {
-					// TODO: Populate query with responses.
-				}
-			}
-			resolve(query);
-		});
+	function resolveStandardQuery (dnsQuery) {
+		// Step 1 search cache.
+		// Setp 2 search zone files.
+		// Step 3 either recursive resolution or forwarding based on config.
 	};
 
 	/**
-	 * @name forward
+	 * @name resolveInverseQuery
 	 * @access private
 	 * @function
 	 *
-	 * @description This is one of the three steps in the resolution process. This is the second step.
+	 * @description This is the method for resolving inverse queries
 	 *
-	 * @param {DNSMessage} query A DNSMesage object.
+	 * @param {DNSMessage} dnsQuery
 	 *
-	 * @returns {Promise} A promise with the results from the zone file search.
+	 * @return {DNSMessage} A response to your query.
 	 */
-	function zoneFileSearch (query) {
-		return new Promise(function (resolve, reject) {
-			resolve(null); // TODO: Implement this...
-		});
+	function resolveInverseQuery (dnsQuery) { // This returns the query with the RCode set to "Not implemented" because it is not yet implmented in this software.
+		return ResolverUtilities.setMessageAsResponse(dnsQuery, 0, 0, recursionAvailable, RCodes.RESPONSE_CODES[4].value);
 	};
 
 	/**
-	 * @name recurse
+	 * @name resolveStatusQuery
 	 * @access private
 	 * @function
 	 *
-	 * @description This is one of the third steps in the resolution process. This only happens if recursion is disabled and forwarding is enabled.
+	 * @description This is the method for resolving status queries
 	 *
-	 * @param {DNSMessage} query A DNSMessage.
+	 * @param {DNSMessage} dnsQuery
 	 *
-	 * @returns {Promise} A promise with the results from the recursive query.
+	 * @return {DNSMessage} A response to your query.
 	 */
-	function recurse (query) {
-		// TODO: First cache root servers if they are not already cached.
-		return new Promise(function (resolve, reject) {
-			let qname = query.getQuestions()[0].getQname();
-			if (qname[qname.length - 1] !== '.') { // If there is no terminating period then we need to add one to represent the root server.
-				qname = qname + '.';
-			}
-			let qnameParts = qname.split('.').reverse();
-
-			resolve(null); // TODO: Implement this...
-		});
-	};
-
-	/**
-	 * @name forward
-	 * @access private
-	 * @function
-	 *
-	 * @description This is one of the third steps in the resolution process. This only happens if recursion available is set and recursion is desired.
-	 *
-	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
-	 *
-	 * @returns {Promise} A promise with the results from the forwarding.
-	 */
-	function forward (queryBuffer) {
-		return new Promise(function (resolve, reject) {
-			sendDNSUDPDatagram(queryBuffer, forwarders[0]).then(function (response) {
-				resolve(response);
-			}, function (err) {
-				reject(err);
-			});
-		});
-	};
-
-	/**
-	 * @name sendDNSUDPDatagram
-	 * @access privte
-	 * @function
-	 *
-	 * @description A general purpose method for sending UDP datagrams to other name servers.
-	 *
-	 * @param {Buffer} queryBuffer The raw DNS request data to send via UDP.
-	 * @param {string} destinationAddress The address to send the UDP DNS datagram.
-	 * @param {number} destinationPort The port to send the UDP DNS datagram.
-	 *
-	 * @returns {Promise} A promise that is resolved when the request is complete successful or not.
-	 */
-	function sendDNSUDPDatagram (queryBuffer, destinationAddress, destinationPort = 53) {
-		return new Promise(function (resolve, reject) {
-			let response = null;
-			let client = dgram.createSocket('udp4');
-			// client.on('listening', function () {
-			// 	let address = client.address();
-			// 	console.log('UDP Server listening on ' + address.address + ':' + address.port);
-			// });
-
-			client.on('message', function (message, remote) {
-				// console.log(remote.address + ':' + remote.port + ' - ' + message);
-				try {
-					response = new DNSMessage();
-					response.parseRequest(message);
-					resolve(response);
-					client.close();
-				} catch (e) {
-					reject(e);
-				}
-			});
-
-			client.send(Buffer.from(queryBuffer), destinationPort, destinationAddress, (err) => { // TODO: implement this in a way that cycles through forwarders until either a result is found or we run out...
-				if (Utilities.isNullOrUndefined(err) === false) {
-					reject(err);
-				}
-			});
-		});
+	function resolveStatusQuery (dnsQuery) { // This returns the query with the RCode set to "Not implemented" because it is not yet implmented in this software.
+		return ResolverUtilities.setMessageAsResponse(dnsQuery, 0, 0, recursionAvailable, RCodes.RESPONSE_CODES[4].value);
 	};
 
 	/**
@@ -266,8 +132,8 @@ function Resolver () {
 	};
 
 	function handleConfigUpdate () {
-		recursionAvailable = config.recursion.recursionAvailable;
-		if (recursionAvailable === true) { // Cache local root server file.
+		recursionAvailable = (config.recursion.recursionAvailable === true) ? 1 : 0;
+		if (recursionAvailable === 1) { // Cache local root server file.
 
 		} else {
 
