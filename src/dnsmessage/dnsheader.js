@@ -519,7 +519,7 @@ function DNSMesageHeader () {
      */
 	function encodeFlagBytes (_qr, _opcode, _aa, _tc, _rd, _ra, _z, _rcode) {
         // get your bits in a row :-)
-		let flagValue = (((_qr << 15) | (_opcode << 11) | (_aa << 10) | (_tc << 9) | (_rd << 8) | (_ra << 7) | (_z << 4) | (_rcode << 11)) & 0xFFFF);
+		let flagValue = (((_qr << 15) | (_opcode << 11) | (_aa << 10) | (_tc << 9) | (_rd << 8) | (_ra << 7) | (_z << 4) | (_rcode << 0)) & 0xFFFF);
 		return [((flagValue >> 8)), (flagValue & 0xFF)];
 	}
 
