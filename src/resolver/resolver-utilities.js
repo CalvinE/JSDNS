@@ -17,30 +17,6 @@ let Utilities = require('../utilities');
  */
 function ResolverUtilities () {
 	/**
-	 * @name setMessageAsResponse
-	 * @access public
-	 * @function
-	 *
-	 * @description This function is used to set the appropriate header flags in the dns message to prepare it for returning to the client that sent it.
-	 *
-	 * @param {DNSMessage} dnsQuery The dns message to be modified for the return trip to the client.
-	 * @param {Number} aa A 1 or 0 value to set the AA flag.
-	 * @param {Number} tc A 1 or 0 value to set the TC flag.
-	 * @param {Number} ra A 1 or 0 value to set the RA flag.
-	 * @param {Number} rcode A valid rcode value.
-	 *
-	 * @return {DNSMessage} The modified message ready for the return trip!
-	 */
-	function setMessageAsResponse (dnsQuery, aa = 0, tc = 0, ra = 0, rcode = 0) {
-		dnsQuery.getHeader().setQr(1); // Set header QR flag to 1 to indicate it is a response
-		dnsQuery.getHeader().setAa(aa); // Set header AA Flag
-		dnsQuery.getHeader().setTc(tc); // Set header TC Flag
-		dnsQuery.getHeader().setRa(ra); // Set header RA flag
-		dnsQuery.getHeader().setRcode(rcode); // Set header RCODE
-		return dnsQuery;
-	};
-
-	/**
 	 * @name sendDNSUDPDatagram
 	 * @access privte
 	 * @function
@@ -83,7 +59,6 @@ function ResolverUtilities () {
 	};
 
 	return {
-		setMessageAsResponse: setMessageAsResponse,
 		sendDNSUDPDatagram: sendDNSUDPDatagram
 	};
 }

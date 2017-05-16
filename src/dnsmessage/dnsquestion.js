@@ -83,7 +83,7 @@ function DNSMesageQuestion () {
      */
 	function getQname () {
 		return qname;
-	}
+	};
 
     /**
      * @name setQname
@@ -96,7 +96,7 @@ function DNSMesageQuestion () {
      */
 	function setQname (_qname) {
 		qname = _qname;
-	}
+	};
 
     /**
      * @name decodeQname
@@ -113,7 +113,7 @@ function DNSMesageQuestion () {
 		let qNameData = DNSUtils.decodeName(qNameBytes, index);
 		index = qNameData.indexPosPostReading;
 		return qNameData.name.join('.');
-	}
+	};
 
     /**
      * @name getQtype
@@ -126,7 +126,7 @@ function DNSMesageQuestion () {
      */
 	function getQtype () {
 		return qtype;
-	}
+	};
 
     /**
      * @name setQtype
@@ -145,7 +145,7 @@ function DNSMesageQuestion () {
 			_qtype = Types.findTypeByValue(parseInt(_qtype));
 		}
 		qtype = _qtype;
-	}
+	};
 
     /**
      * @name getQclass
@@ -158,7 +158,7 @@ function DNSMesageQuestion () {
      */
 	function getQclass () {
 		return qclass;
-	}
+	};
 
     /**
      * @name setQclass
@@ -177,7 +177,7 @@ function DNSMesageQuestion () {
 			_qclass = Classes.findClassByValue(parseInt(_qclass));
 		}
 		qclass = _qclass;
-	}
+	};
 
     /**
      * @name getQuestionStartIndex
@@ -190,7 +190,7 @@ function DNSMesageQuestion () {
      */
 	function getQuestionStartIndex () {
 		return questionStartIndex;
-	}
+	};
 
     /**
      * @name setQuestionStartIndex
@@ -203,7 +203,7 @@ function DNSMesageQuestion () {
      */
 	function setQuestionStartIndex (index) {
 		questionStartIndex = index;
-	}
+	};
 
     /**
      * @name getQuestionLength
@@ -216,7 +216,7 @@ function DNSMesageQuestion () {
      */
 	function getQuestionLength () {
 		return questionLength;
-	}
+	};
 
     /**
      * @name setQuestionLength
@@ -229,7 +229,22 @@ function DNSMesageQuestion () {
      */
 	function setQuestionLength (length) {
 		questionLength = length;
-	}
+	};
+
+    /**
+     * @name setQuestionProperties
+     * @access public
+     * @function
+     *
+     * @description This function populates the question object with the properties on the object passed into the function.
+     *
+     * @param {Object} dnsQuestionInfo This is an object containing the properties for the DNS question.
+     */
+	function setQuestionProperties (dnsQuestionInfo) {
+		setQname(dnsQuestionInfo.qname);
+		setQtype(dnsQuestionInfo.qtype);
+		setQclass(dnsQuestionInfo.qclass);
+	};
 
     /**
      * @name decodeDNSQuestionFromMessage
@@ -248,7 +263,7 @@ function DNSMesageQuestion () {
 		setQtype(Utilities.decode16BitValue(data[index++], data[index++]));
 		setQclass(Utilities.decode16BitValue(data[index++], data[index++]));
 		setQuestionLength(index - offset);
-	}
+	};
 
     /**
      * @name encodeQuestionForMessage
@@ -290,7 +305,7 @@ function DNSMesageQuestion () {
 		setQuestionStartIndex(startIndex);
 
 		return questionBuffer;
-	}
+	};
 
 	return {
 		getQname: getQname,
@@ -301,6 +316,7 @@ function DNSMesageQuestion () {
 		setQclass: setQclass,
 		getQuestionLength: getQuestionLength,
 		getQuestionStartIndex: getQuestionStartIndex,
+		setQuestionProperties: setQuestionProperties,
 		decodeDNSQuestionFromMessage: decodeDNSQuestionFromMessage,
 		encodeQuestionForMessage: encodeQuestionForMessage
 	};

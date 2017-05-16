@@ -189,6 +189,64 @@ function DNSMessage () {
 	};
 
     /**
+	 * @name setMessageAsResponse
+	 * @access public
+	 * @function
+	 *
+	 * @description This function is used to set the appropriate header flags in the dns message to prepare it for returning to the client that sent it.
+	 *
+	 * @param {DNSMessage} dnsQuery The dns message to be modified for the return trip to the client.
+	 * @param {Number} aa A 1 or 0 value to set the AA flag.
+	 * @param {Number} tc A 1 or 0 value to set the TC flag.
+	 * @param {Number} ra A 1 or 0 value to set the RA flag.
+	 * @param {Number} rcode A valid rcode value.
+	 *
+	 * @return {DNSMessage} The modified message ready for the return trip!
+	 */
+	function setMessageAsResponse (aa = 0, tc = 0, ra = 0, rcode = 0) {
+		header.setQr(1); // Set header QR flag to 1 to indicate it is a response
+		header.setAa(aa); // Set header AA Flag
+		header.setTc(tc); // Set header TC Flag
+		header.setRa(ra); // Set header RA flag
+		header.setRcode(rcode); // Set header RCODE
+	};
+
+    /**
+     * @name validateMessageIsQuery
+     * @access public
+     * @function
+     *
+     * @description This function validates the message to make sure it is a valid query and the header flags are not set in a strange way.
+     *
+     * @returns {Boolean} returns true if it is a valid query and false if not.
+     */
+	function validateMessageIsQuery () {
+		let isValid = false;
+
+		if (header.getQr() === 0 &&
+            header.getAa() === 0 &&
+            header.getTc() === 0 &&
+            header.getZ() === 0 &&
+            header.getRa() === 0 &&
+            header.getRCode().value === 0 &&
+            header.getAncount() === 0 && // Check the header counts
+            header.getNscount() === 0 &&
+            header.getArcount() === 0 &&
+            answers.length === 0 && // And the actual fields in the message to ensure someone is not trying to mess with us :-).
+            nameservers.length === 0 &&
+            additionalResources.length === 0) {
+			isValid = true;
+		}
+
+		return isValid;
+	};
+
+	function setMessageProperties (messageProperties) {
+		header = new DNSHeader();
+		header.setHeaderProperties(messageProperties.header);
+	};
+
+    /**
      * @name parseRequest
      * @access public
      * @type {Function}
@@ -303,6 +361,9 @@ function DNSMessage () {
 		getNameserversCount: getNameserversCount,
 		getAdditionalResources: getAdditionalResources,
 		getAdditionalResourcesCount: getAdditionalResourcesCount,
+		setMessageAsResponse: setMessageAsResponse,
+		validateMessageIsQuery: validateMessageIsQuery,
+		setMessageProperties: setMessageProperties,
 		parseRequest: parseRequest,
 		encodeMessageToBuffer: encodeMessageToBuffer,
 		messageLength: messageLength

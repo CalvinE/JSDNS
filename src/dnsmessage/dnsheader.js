@@ -695,6 +695,32 @@ function DNSMesageHeader () {
 	}
 
     /**
+     * @name setHeaderProperties
+     * @access public
+     * @function
+     *
+     * @description This function populates the header object with the properties on the object passed into the function.
+     *
+     * @param {Object} dnsHeaderInfo This is an object containing the properties for the DNS header.
+     */
+	function setHeaderProperties (dnsHeaderInfo) {
+		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? generateRandomID() : dnsHeaderInfo.id;
+		setId(_id);
+		setQr(dnsHeaderInfo.qr);
+		setOpcode(dnsHeaderInfo.opcode);
+		setAa(dnsHeaderInfo.aa);
+		setTc(dnsHeaderInfo.tc);
+		setRd(dnsHeaderInfo.rd);
+		setRa(dnsHeaderInfo.ra);
+		// Z value because it is always 0 per RFC 1035 4.1.1
+		setRcode(dnsHeaderInfo.rcode);
+		setQdcount(dnsHeaderInfo.qdcount);
+		setAncount(dnsHeaderInfo.ancount);
+		setNscount(dnsHeaderInfo.nscount);
+		setArcount(dnsHeaderInfo.arcount);
+	};
+
+    /**
      * @name encodeHeaderForMessage
      * @access public
      * @type {Function}
@@ -783,6 +809,7 @@ function DNSMesageHeader () {
 		setArcount: setArcount,
 		getHeaderLength: getHeaderLength,
 		decodeDNSHeaderFromMessage: decodeDNSHeaderFromMessage,
+		setHeaderProperties: setHeaderProperties,
 		encodeHeaderForMessage: encodeHeaderForMessage,
 		generateRandomID: generateRandomID
 	};

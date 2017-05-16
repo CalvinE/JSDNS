@@ -47,10 +47,28 @@ function Resolver () {
 			case 2:
 				resolve(resolveStatusQuery(dnsQuery));
 				break;
-			default:
-				return Promise.resolve(ResolverUtilities.setMessageAsResponse(dnsQuery, 0, 0, recursionAvailable, RCodes.RESPONSE_CODES[4].value));
+			default: // OPCODE is not a recognized value, so we return a query format error code?
+				return Promise.resolve(dnsQuery.setMessageAsResponse(0, 0, recursionAvailable, RCodes.RESPONSE_CODES[1].value));
 			};
 		});
+	};
+
+	/**
+	 * @name handleCNameResponse
+	 * @access private
+	 * @function
+	 */
+	function handleCNameResponse () {
+
+	};
+
+	/**
+	 * @name handleNSResponse
+	 * @access private
+	 * @function
+	 */
+	function handleNSResponse () {
+
 	};
 
 	/**
@@ -58,7 +76,7 @@ function Resolver () {
 	 * @access private
 	 * @function
 	 *
-	 * @description This is the method for resolving standard queries
+	 * @description This is the method for resolving standard queries. For recursive resolution this method is called recursivly.
 	 *
 	 * @param {DNSMessage} dnsQuery
 	 *

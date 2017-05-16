@@ -571,7 +571,27 @@ function DNSResourceRecord () {
      */
 	function isExpired () {
 		return getCacheExpiration() < new Date();
-	}
+	};
+
+    /**
+     * @name setResourceRecordProperties
+     * @access public
+     * @function
+     *
+     * @description This function populates the resource record object with the properties on the object passed into the function.
+     *
+     * @param {Object} dnsResourceRecordInfo This is an object containing the properties for the DNS resource record.
+     */
+	function setResourceRecordProperties (dnsResourceRecordInfo) {
+		setName(dnsResourceRecordInfo.name);
+		setType(dnsResourceRecordInfo.type);
+		setRRclass(dnsResourceRecordInfo.rrclass);
+		setTtl(dnsResourceRecordInfo.ttl);
+		setCacheExpiration(dnsResourceRecordInfo.ttl);
+		setIsAuthoritative(Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? false : dnsResourceRecordInfo.isAuthoritative);
+		setRDLength(dnsResourceRecordInfo.rdlength);
+		setRData(dnsResourceRecordInfo.rdata);
+	};
 
     /**
      * @name decodeDNSResourceRecordFromMessage
@@ -621,7 +641,6 @@ function DNSResourceRecord () {
 		setIsAuthoritative(_isAuthoritative);
 		setRDLength(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? getRDLength() : dnsResourceRecordInfo.rdlength);
 		setRData(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? getRData() : dnsResourceRecordInfo.rdata);
-		setIsAuthoritative(Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? getIsAuthoritative() : dnsResourceRecordInfo.isAuthoritative);
 
 		let rrLength = 0;
 		let offset = 0;
@@ -679,6 +698,7 @@ function DNSResourceRecord () {
 		getCacheExpiration: getCacheExpiration,
 		setCacheExpiration: setCacheExpiration,
 		isExpired: isExpired,
+		setResourceRecordProperties: setResourceRecordProperties,
 		decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage,
 		encodeResourceRecordForMessage: encodeResourceRecordForMessage
 	};
