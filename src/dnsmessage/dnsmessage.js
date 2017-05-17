@@ -7,6 +7,7 @@
 let DNSHeader = require('./dnsheader');
 let DNSQuestion = require('./dnsquestion');
 let DNSResourceRecord = require('./dnsresourcerecord');
+let Utilities = require('../utilities');
 
 /**
  * @name DNSMessage
@@ -244,6 +245,37 @@ function DNSMessage () {
 	function setMessageProperties (messageProperties) {
 		header = new DNSHeader();
 		header.setHeaderProperties(messageProperties.header);
+		if (Utilities.isNullOrUndefined(messageProperties.questions) === false) {
+			for (let i = 0; i < messageProperties.questions.length; i++) { // There should only be one question unless the issues around multiple questions in a single query are resolved in later spec documents.
+				let q = new DNSQuestion();
+				q.setQuestionProperties(messageProperties.questions[i]);
+				questions.push(q);
+			}
+		}
+
+		if (Utilities.isNullOrUndefined(messageProperties.answers) === false) {
+			for (let i = 0; i < messageProperties.answers.length; i++) {
+				let rr = new DNSResourceRecord();
+				rr.setResourceRecordProperties(messageProperties.answers[i]);
+				answers.push(rr);
+			}
+		}
+
+		if (Utilities.isNullOrUndefined(messageProperties.nameservers) === false) {
+			for (let i = 0; i < messageProperties.nameservers.length; i++) {
+				let rr = new DNSResourceRecord();
+				rr.setResourceRecordProperties(messageProperties.nameservers[i]);
+				nameservers.push(rr);
+			}
+		}
+
+		if (Utilities.isNullOrUndefined(messageProperties.additionalResources) === false) {
+			for (let i = 0; i < messageProperties.additionalResources.length; i++) {
+				let rr = new DNSResourceRecord();
+				rr.setResourceRecordProperties(messageProperties.additionalResources[i]);
+				additionalResources.push(rr);
+			}
+		}
 	};
 
     /**
