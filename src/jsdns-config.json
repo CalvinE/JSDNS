@@ -16,6 +16,7 @@
 		},
 		"recursion": {
 			"recursionAvailable": false,
+			"maxRecursionAttempts": 30,
 			"namedRootFile": "named.root"			
 		},
 		"forwarding": {

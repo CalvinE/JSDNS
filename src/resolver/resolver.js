@@ -21,6 +21,8 @@ function Resolver () {
 
 	let recursionAvailable = 0;
 
+	let maxRecursionAttempts = 0;
+
 	let forwarders = [];
 
 	/**
@@ -54,6 +56,55 @@ function Resolver () {
 	};
 
 	/**
+	 * @name resolveStandardQuery
+	 * @access private
+	 * @function
+	 *
+	 * @description This is the method for resolving standard queries. For recursive resolution this method is called recursivly.
+	 *
+	 * @param {DNSMessage} dnsQuery
+	 * @param {String} fullDomainName
+	 *
+	 * @return {DNSMessage} A response to your query.
+	 */
+	function resolveStandardQuery (dnsQuery, fullQNamePartsReversed = null, recursiveIteration = 0, recursiveServerAddress = null) { // TODO: Think about this last parameter... may need to re think this... could make this an array of DNSMessages that are in the order they were received?
+		let recursionDesired = dnsQuery.getHeader().getRd();
+		let question = dnsQuery.getQuestions[0];
+		// Step 1 search cache.
+		let cacheSearchResults = standardSearchCache(question);
+		if (cacheSearchResults === null) {
+			// Step 2 search zone files.
+			let zoneSearchResults = standardSearchZoneFiles(question);
+			if (zoneSearchResults === null) {
+				if (recursionAvailable === 1 && recursionDesired === 1 && recursiveIteration <= maxRecursionAttempts) {
+					// Step 3 recursivly search.
+					let recursionQName = '';
+					if (fullQNamePartsReversed === null) {
+						fullQNamePartsReversed = question.getQname().split('.').reverse();
+					}
+					let noMoreRecursion = recursiveIteration >= fullQNamePartsReversed.length;
+					if (noMoreRecursion === false) {
+						// Still working through the domain name labels so we will need to query to see the name server for the current recursionQName.
+						for (let i = 0; i <= recursiveIteration; i++) {
+							recursionQName = fullQNamePartsReversed[i] + '.' + recursionQName;
+						}
+						// if (recursionQName.endsWith('.') === false) { // Be sure to add out trailing . to signify the root!
+						// 	recursionQName += '.';
+						// }
+						recursiveIteration++;
+					} else {
+						// At the end of the query lables, so we do our final query. This is our exit condition!
+					}
+				} else if (config.forwarding.enabled === true) {
+					// Step 3 forward query.
+				} else {
+					// No answer found.
+				}
+			}
+		}
+	};
+
+	/**
 	 * @name handleCNameResponse
 	 * @access private
 	 * @function
@@ -71,21 +122,16 @@ function Resolver () {
 
 	};
 
-	/**
-	 * @name resolveStandardQuery
-	 * @access private
-	 * @function
-	 *
-	 * @description This is the method for resolving standard queries. For recursive resolution this method is called recursivly.
-	 *
-	 * @param {DNSMessage} dnsQuery
-	 *
-	 * @return {DNSMessage} A response to your query.
-	 */
-	function resolveStandardQuery (dnsQuery) {
-		// Step 1 search cache.
-		// Setp 2 search zone files.
-		// Step 3 either recursive resolution or forwarding based on config.
+	function standardSearchZoneFiles (question) {
+		return null;
+	};
+
+	function standardSearchCache (question) {
+		return null;
+	};
+
+	function isMatchingRecord (question) {
+		return false;
 	};
 
 	/**
@@ -151,6 +197,7 @@ function Resolver () {
 
 	function handleConfigUpdate () {
 		recursionAvailable = (config.recursion.recursionAvailable === true) ? 1 : 0;
+		maxRecursionAttempts = config.recursion.maxRecursionAttempts;
 		if (recursionAvailable === 1) { // Cache local root server file.
 
 		} else {
