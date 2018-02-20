@@ -60,13 +60,7 @@ function RCodes () {
 	 * @returns {object} returns the response code associated with the value passed into the function. If no match is found null is returned.
 	 */
 	function findRCodeByValue (value) {
-		for (var i = 0; i < RESPONSE_CODES.length; i++) {
-			if (RESPONSE_CODES[i].value === value) {
-				return RESPONSE_CODES[i];
-			}
-		}
-
-		return null;
+		return RESPONSE_CODES.find(r => r.value === value);
 	};
 
 	return {

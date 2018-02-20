@@ -63,13 +63,7 @@ function Classes () {
 	 * @returns {object} returns the class or qclass associated with the value passed into the function. If no match is found null is returned.
 	 */
 	function findClassByValue (value) {
-		for (var i = 0; i < CLASSES.length; i++) {
-			if (CLASSES[i].value === value) {
-				return CLASSES[i];
-			}
-		}
-
-		return null;
+		return CLASSES.find(c => c.value === value);
 	};
 
 	/**
@@ -80,13 +74,7 @@ function Classes () {
 	 * @returns {object} returns the class or qclass associated with the name passed into the function. If no match is found null is returned.
 	 */
 	function findClassByName (name) {
-		for (var i = 0; i < CLASSES.length; i++) {
-			if (CLASSES[i].name === name) {
-				return CLASSES[i];
-			}
-		}
-
-		return null;
+		return CLASSES.find(c => c.name === name);
 	};
 
 	return {

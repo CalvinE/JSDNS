@@ -153,13 +153,7 @@ function Types () {
 	 * @returns {object} returns the type or qtype associated with the value passed into the function. If no match is found null is returned.
 	 */
 	function findTypeByValue (value) {
-		for (var i = 0; i < TYPES.length; i++) {
-			if (TYPES[i].value === value) {
-				return TYPES[i];
-			}
-		}
-
-		return null;
+		return TYPES.find(t => t.value === value);s
 	};
 
 	/**
@@ -170,13 +164,7 @@ function Types () {
 	 * @returns {object} returns the type or qtype associated with the name passed into the function. If no match is found null is returned.
 	 */
 	function findTypeByName (name) {
-		for (var i = 0; i < TYPES.length; i++) {
-			if (TYPES[i].name === name) {
-				return TYPES[i];
-			}
-		}
-
-		return null;
+		return TYPES.find(t => t.name === name);
 	};
 
 	return {

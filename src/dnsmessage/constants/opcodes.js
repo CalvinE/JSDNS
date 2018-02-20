@@ -44,13 +44,7 @@ function OPCodes () {
 	 * @returns {object} returns the response code associated with the value passed into the function. If no match is found null is returned.
 	 */
 	function findOPCodeByValue (value) {
-		for (var i = 0; i < OPCODES.length; i++) {
-			if (OPCODES[i].value === value) {
-				return OPCODES[i];
-			}
-		}
-
-		return null;
+		return OPCODES.find(o => o.value === value);
 	};
 
 	return {
