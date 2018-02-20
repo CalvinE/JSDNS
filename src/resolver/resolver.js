@@ -165,6 +165,27 @@ function Resolver () {
 	};
 
 	/**
+	 * @name forward
+	 * @access private
+	 * @function
+	 *
+	 * @description This is one of the third steps in the resolution process. This only happens if recursion available is set and recursion is desired.
+	 *
+	 * @param {Buffer} queryBuffer A buffer containing the raw byte stream of the dns request.
+	 *
+	 * @returns {Promise} A promise with the results from the forwarding.
+	 */
+	function forward (queryBuffer) {
+		return new Promise(function (resolve, reject) {
+			ResolverUtilities.sendDNSUDPDatagram(queryBuffer, forwarders[0]).then(function (response) {
+				resolve(response);
+			}, function (err) {
+				reject(err);
+			});
+		});
+	};
+
+	/**
 	 * @name init
 	 * @access public
 	 * @function
