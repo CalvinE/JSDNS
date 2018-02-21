@@ -10,8 +10,8 @@ let Logger = require('../../src/logging/logger');
 
 /* global describe it:true */
 
-describe('logger', function () {
-	it('Logger should be able to log string messages.', function () {
+describe('logger', () => {
+	it('Logger should be able to log string messages.', () => {
 		let errorOccurred = false;
 		try {
 			Logger.log('This is a logging test', Logger.logTypes.debug);
@@ -23,7 +23,7 @@ describe('logger', function () {
 		}
 		expect(errorOccurred).to.equal(false);
 	});
-	it('Logger should be able to log JSON object messages.', function () {
+	it('Logger should be able to log JSON object messages.', () => {
 		let errorOccurred = false;
 		try {
 			Logger.log({'code': 1, 'msg': 'this is a test'}, Logger.logTypes.debug);

@@ -12,16 +12,43 @@
  *
  * @description This class contains all valid classes and qclasses and search functions
  */
-function Classes () {
+class Classes {
 	/**
+	 * @name findClassByValue
+	 * @function
+	 * @static
+	 * @param {number} value The numeric value of the class or qclass to search by.
+	 *
+	 * @returns {object} returns the class or qclass associated with the value passed into the function. If no match is found null is returned.
+	 */
+	static findClassByValue (value) {
+		return Classes.CLASSES.find(c => c.value === value);
+	}
+
+	/**
+	 * @name findClassByName
+	 * @function
+	 * @static
+	 * @param {string} name The string name of the class or qclass to search by.
+	 *
+	 * @returns {object} returns the class or qclass associated with the name passed into the function. If no match is found null is returned.
+	 */
+	static findClassByName (name) {
+		return Classes.CLASSES.find(c => c.name === name);
+	}
+};
+
+/**
 	 * @name CLASSES
 	 * @access public
+	 * @static
 	 * @const
 	 *
 	 * @description This is an array of all classes and qclasses in the form of objects with 4 properties. value, name, description, and isQClass.
 	 */
-	let CLASSES = [
-    // CLASS values
+Object.defineProperty(Classes, 'CLASSES', {
+	value: [
+		// CLASS values
 		{
 			'value': 1,
 			'name': 'IN',
@@ -53,34 +80,10 @@ function Classes () {
 			'description': 'any class',
 			'isQClass': true
 		}
-	];
+	],
+	writable: false,
+	enumerable: true,
+	configurable: false
+});
 
-	/**
-	 * @name findClassByValue
-	 * @function
-	 * @param {number} value The numeric value of the class or qclass to search by.
-	 *
-	 * @returns {object} returns the class or qclass associated with the value passed into the function. If no match is found null is returned.
-	 */
-	function findClassByValue (value) {
-		return CLASSES.find(c => c.value === value);
-	};
-
-	/**
-	 * @name findClassByName
-	 * @function
-	 * @param {string} name The string name of the class or qclass to search by.
-	 *
-	 * @returns {object} returns the class or qclass associated with the name passed into the function. If no match is found null is returned.
-	 */
-	function findClassByName (name) {
-		return CLASSES.find(c => c.name === name);
-	};
-
-	return {
-		CLASSES: CLASSES,
-		findClassByName: findClassByName,
-		findClassByValue: findClassByValue
-	};
-};
-module.exports = new Classes();
+module.exports = Classes;

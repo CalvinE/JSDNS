@@ -12,15 +12,43 @@
  *
  * @description This class contains all valid types and qtypes and search functions
  */
-function Types () {
+class Types {
 	/**
-	 * @name TYPES
-	 * @access public
-	 * @const
+	 * @name findTypeByValue
+	 * @function
+	 * @public
+	 * @static
+	 * @param {number} value The numeric value of the type or qtype to search by.
 	 *
-	 * @description This is an array of all types and qtypes in the form of objects with 4 properties. value, name, description, isQType.
+	 * @returns {object} returns the type or qtype associated with the value passed into the function. If no match is found null is returned.
 	 */
-	let TYPES = [
+	static findTypeByValue (value) {
+		return Types.TYPES.find(t => t.value === value);
+	}
+
+	/**
+	 * @name findTypeByName
+	 * @function
+	 * @public
+	 * @static
+	 * @param {string} name The string name of the type or qtype to search by.
+	 *
+	 * @returns {object} returns the type or qtype associated with the name passed into the function. If no match is found null is returned.
+	 */
+	static findTypeByName (name) {
+		return Types.TYPES.find(t => t.name === name);
+	}
+}
+
+/**
+ * @name TYPES
+ * @access public
+ * @const
+ *
+ * @description This is an array of all types and qtypes in the form of objects with 4 properties. value, name, description, isQType.
+ */
+Object.defineProperty(Types, 'TYPES', {
+	value: [
 		// TYPE values
 		{
 			'value': 1,
@@ -118,7 +146,7 @@ function Types () {
 			'description': 'text strings',
 			'isQType': false
 		},
-    // QTYPE values
+		// QTYPE values
 		{
 			'value': 252,
 			'name': 'AXFR',
@@ -143,35 +171,10 @@ function Types () {
 			'description': 'A request for all records',
 			'isQType': true
 		}
-	];
+	],
+	writable: false,
+	enumerable: true,
+	configurable: false
+});
 
-	/**
-	 * @name findTypeByValue
-	 * @function
-	 * @param {number} value The numeric value of the type or qtype to search by.
-	 *
-	 * @returns {object} returns the type or qtype associated with the value passed into the function. If no match is found null is returned.
-	 */
-	function findTypeByValue (value) {
-		return TYPES.find(t => t.value === value);s
-	};
-
-	/**
-	 * @name findTypeByName
-	 * @function
-	 * @param {string} name The string name of the type or qtype to search by.
-	 *
-	 * @returns {object} returns the type or qtype associated with the name passed into the function. If no match is found null is returned.
-	 */
-	function findTypeByName (name) {
-		return TYPES.find(t => t.name === name);
-	};
-
-	return {
-		TYPES: TYPES,
-		findTypeByName: findTypeByName,
-		findTypeByValue: findTypeByValue
-	};
-};
-
-module.exports = new Types();
+module.exports = Types;

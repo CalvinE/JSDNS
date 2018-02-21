@@ -32,14 +32,14 @@ function getTestQuestionDNSPacketBuffer () {
 
 /* global describe it:true */
 
-describe('dns-utilities', function () {
-	it('When decoding names from the test data above all names should be present and correctly returned from the DNSUtilities class.', function () {
+describe('dns-utilities', () => {
+	it('When decoding names from the test data above all names should be present and correctly returned from the DNSUtilities class.', () => {
 		let offset = 12;
 		let data = getTestQuestionDNSPacketBuffer();
 		let name1 = DNSUtilities.decodeName(data, offset);
 		expect(name1.name.join('.')).to.equal('www.google.com');
 	});
-	it('When decoding names from the test data above the name that is just a compression pointer to another label should be present and correctly returned from the DNSUtilities class.', function () {
+	it('When decoding names from the test data above the name that is just a compression pointer to another label should be present and correctly returned from the DNSUtilities class.', () => {
 		let offset = 12;
 		let data = getTestQuestionDNSPacketBuffer();
 		let name1 = DNSUtilities.decodeName(data, offset);
@@ -47,7 +47,7 @@ describe('dns-utilities', function () {
 		let name2 = DNSUtilities.decodeName(data, offset);
 		expect(name2.name.join('.')).to.equal('www.google.com');
 	});
-	it('When decoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', function () {
+	it('When decoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', () => {
 		let offset = 12;
 		let data = getTestQuestionDNSPacketBuffer();
 		let name1 = DNSUtilities.decodeName(data, offset);
@@ -57,7 +57,7 @@ describe('dns-utilities', function () {
 		let name3 = DNSUtilities.decodeName(data, offset);
 		expect(name3.name.join('.')).to.equal('sweet.www.google.com');
 	});
-	it('When encoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', function () {
+	it('When encoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', () => {
 		let otherNameData = [];
 		let offset = 0;
 		let data = [];
@@ -90,7 +90,7 @@ describe('dns-utilities', function () {
 		offset = data.length;
 		expect(DNSUtilities.decodeName(data, otherNameData[1].startingIndex).name.join('.')).to.equal('www.google.com');
 	});
-	it('When encoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', function () {
+	it('When encoding names from the test data above the name that is a combination of a label and a compression pointer should be present and correctly returned from the DNSUtilities class.', () => {
 		let otherNameData = [];
 		let offset = 0;
 		let data = [];

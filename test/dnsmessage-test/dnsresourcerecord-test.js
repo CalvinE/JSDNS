@@ -28,8 +28,8 @@ function getTestResponseDNSPacketBuffer () {
 
 /* global describe it:true */
 
-describe('dns-resourcerecord', function () {
-	it('When decoding the test response above using the DNSResourceRecord class the getResourceRecordLength method should return that when added together with the lengths of the DHSHeader and DHSQuestion the value should be equal to testResponseDNSPacket.length because that is the entire message.', function () {
+describe('dns-resourcerecord', () => {
+	it('When decoding the test response above using the DNSResourceRecord class the getResourceRecordLength method should return that when added together with the lengths of the DHSHeader and DHSQuestion the value should be equal to testResponseDNSPacket.length because that is the entire message.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -43,7 +43,7 @@ describe('dns-resourcerecord', function () {
 		offset += resourceRecord.getResourceRecordLength();
 		expect(offset).to.equal(testResponseDNSPacket.length);
 	});
-	it('When decoding the test response above using the DNSResourceRecord class the name in the answer section should equal the name in the question section of the message..', function () {
+	it('When decoding the test response above using the DNSResourceRecord class the name in the answer section should equal the name in the question section of the message..', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -57,7 +57,7 @@ describe('dns-resourcerecord', function () {
 		offset += resourceRecord.getResourceRecordLength();
 		expect(question.getQname()).to.equal(resourceRecord.getName());
 	});
-	it('When decoding the test response above using the DNSResourceRecord class the type in the answer should equal the type in the query.', function () {
+	it('When decoding the test response above using the DNSResourceRecord class the type in the answer should equal the type in the query.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -71,7 +71,7 @@ describe('dns-resourcerecord', function () {
 		offset += resourceRecord.getResourceRecordLength();
 		expect(question.getQtype()).to.equal(resourceRecord.getType());
 	});
-	it('When decoding the test response above using the DNSResourceRecord class the class in the answer should equal the class in the query.', function () {
+	it('When decoding the test response above using the DNSResourceRecord class the class in the answer should equal the class in the query.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -85,7 +85,7 @@ describe('dns-resourcerecord', function () {
 		offset += resourceRecord.getResourceRecordLength();
 		expect(question.getQclass()).to.equal(resourceRecord.getRRclass());
 	});
-	it('When decoding the test response above using the DNSResourceRecord class the ttl should be parsed properly.', function () {
+	it('When decoding the test response above using the DNSResourceRecord class the ttl should be parsed properly.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -99,7 +99,7 @@ describe('dns-resourcerecord', function () {
 		offset += resourceRecord.getResourceRecordLength();
 		expect(resourceRecord.getTtl()).to.equal(0x9A);
 	});
-	it('When encoding a test response using the DNSResourceRecord class the Name should be encoded properly to match the Name in the test response above.', function () {
+	it('When encoding a test response using the DNSResourceRecord class the Name should be encoded properly to match the Name in the test response above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -122,7 +122,7 @@ describe('dns-resourcerecord', function () {
 		});
 		expect(resourceRecord.getName()).to.equal(encodedResourceRecord.getName());
 	});
-	it('When encoding a test response using the DNSResourceRecord class the Type should be encoded properly to match the Type in the test response above.', function () {
+	it('When encoding a test response using the DNSResourceRecord class the Type should be encoded properly to match the Type in the test response above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -145,7 +145,7 @@ describe('dns-resourcerecord', function () {
 		});
 		expect(resourceRecord.getType()).to.equal(encodedResourceRecord.getType());
 	});
-	it('When encoding a test response using the DNSResourceRecord class the RRclass should be encoded properly to match the RRclass in the test response above.', function () {
+	it('When encoding a test response using the DNSResourceRecord class the RRclass should be encoded properly to match the RRclass in the test response above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -168,7 +168,7 @@ describe('dns-resourcerecord', function () {
 		});
 		expect(resourceRecord.getRRclass()).to.equal(encodedResourceRecord.getRRclass());
 	});
-	it('When encoding a test response using the DNSResourceRecord class the RDLength should be encoded properly to match the RDLength in the test response above.', function () {
+	it('When encoding a test response using the DNSResourceRecord class the RDLength should be encoded properly to match the RDLength in the test response above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();
@@ -191,7 +191,7 @@ describe('dns-resourcerecord', function () {
 		});
 		expect(resourceRecord.getRDLength()).to.equal(encodedResourceRecord.getRDLength());
 	});
-	it('When encoding a test response using the DNSResourceRecord class the RData should be encoded properly to match the RData in the test response above.', function () {
+	it('When encoding a test response using the DNSResourceRecord class the RData should be encoded properly to match the RData in the test response above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let resourceRecord = new DNSResourceRecord();

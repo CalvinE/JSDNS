@@ -33,7 +33,7 @@ function ResolverUtilities () {
 		return new Promise(function (resolve, reject) {
 			let response = null;
 			let client = dgram.createSocket('udp4');
-			// client.on('listening', function () {
+			// client.on('listening', () => {
 			// 	let address = client.address();
 			// 	console.log('UDP Server listening on ' + address.address + ':' + address.port);
 			// });

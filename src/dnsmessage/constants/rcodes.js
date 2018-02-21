@@ -10,15 +10,23 @@
  *
  * @description This class contains all response codes and search functions
  */
-function RCodes () {
+class RCodes {
 	/**
-	 * @name RESPONSE_CODES
-	 * @access public
-	 * @const
+	 * @name findRCodeByValue
+	 * @function
+	 * @public
+	 * @static
+	 * @param {number} value The numeric value of the response code to search by.
 	 *
-	 * @description This is an array of all response codes in the form of objects with 3 properties. value, title, description.
+	 * @returns {object} returns the response code associated with the value passed into the function. If no match is found null is returned.
 	 */
-	let RESPONSE_CODES = [
+	static findRCodeByValue (value) {
+		return RCodes.RESPONSE_CODES.find(r => r.value === value);
+	}
+}
+
+Object.defineProperty(RCodes, 'RESPONSE_CODES', {
+	value: [
 		{
 			'value': 0,
 			'title': 'Success',
@@ -50,22 +58,10 @@ function RCodes () {
 			'description': 'The name server refuses to perform the specified operation for policy reasons.  For example, a name server may not wish to provide the information to the particular requester, or a name server may not wish to perform a particular operation (e.g., zone transfer) for particular data.'
 		}
 		// 6-15 are reserved for future use per RFC 1035
-	];
+	],
+	writable: false,
+	enumerable: true,
+	configurable: false
+});
 
-	/**
-	 * @name findRCodeByValue
-	 * @function
-	 * @param {number} value The numeric value of the response code to search by.
-	 *
-	 * @returns {object} returns the response code associated with the value passed into the function. If no match is found null is returned.
-	 */
-	function findRCodeByValue (value) {
-		return RESPONSE_CODES.find(r => r.value === value);
-	};
-
-	return {
-		RESPONSE_CODES: RESPONSE_CODES,
-		findRCodeByValue: findRCodeByValue
-	};
-}
-module.exports = new RCodes();
+module.exports = RCodes;

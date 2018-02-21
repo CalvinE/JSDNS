@@ -12,30 +12,7 @@
  *
  * @description This class contains all operation  codes and search functions
  */
-function OPCodes () {
-	/**
-	 * @name OPCODES
-	 * @access public
-	 * @const
-	 *
-	 * @description This is an array of all operation codes in the form of objects with 2 properties. value and description.
-	 */
-	let OPCODES = [
-		{
-			'value': 0,
-			'description': 'a standard query (QUERY)'
-		},
-		{
-			'value': 1,
-			'description': 'an inverse query (IQUERY)'
-		},
-		{
-			'value': 2,
-			'description': 'a server status request (STATUS)'
-		}
-		// 3-15 are reserved for future use per RFC 1035.
-	];
-
+class OPCodes {
 	/**
 	 * @name findOPCodeByValue
 	 * @function
@@ -43,14 +20,41 @@ function OPCodes () {
 	 *
 	 * @returns {object} returns the response code associated with the value passed into the function. If no match is found null is returned.
 	 */
-	function findOPCodeByValue (value) {
-		return OPCODES.find(o => o.value === value);
-	};
-
-	return {
-		OPCODES: OPCODES,
-		findOPCodeByValue: findOPCodeByValue
-	};
+	static findOPCodeByValue (value) {
+		return OPCodes.CODES.find(o => o.value === value);
+	}
 }
 
-module.exports = new OPCodes();
+/**
+	 * @name OPCODES
+	 * @access public
+	 * @static
+	 * @const
+	 *
+	 * @description This is an array of all operation codes in the form of objects with 2 properties. value and description.
+	 */
+Object.defineProperty(OPCodes, 'CODES', {
+	value: [
+		{
+			'name': 'QUERY',
+			'value': 0,
+			'description': 'a standard query (QUERY)'
+		},
+		{
+			'name': 'IQUERY',
+			'value': 1,
+			'description': 'an inverse query (IQUERY)'
+		},
+		{
+			'name': 'STATUS',
+			'value': 2,
+			'description': 'a server status request (STATUS)'
+		}
+		// 3-15 are reserved for future use per RFC 1035.
+	],
+	writable: false,
+	enumerable: true,
+	configurable: false
+});
+
+module.exports = OPCodes;
