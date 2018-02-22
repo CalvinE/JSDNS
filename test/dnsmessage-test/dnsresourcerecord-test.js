@@ -40,7 +40,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		expect(offset).to.equal(testResponseDNSPacket.length);
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the name in the answer section should equal the name in the question section of the message..', () => {
@@ -54,8 +54,8 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
-		expect(question.qname).to.equal(resourceRecord.getName());
+		offset += resourceRecord.resourceRecordLength;
+		expect(question.qname).to.equal(resourceRecord.name);
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the type in the answer should equal the type in the query.', () => {
 		let header = new DNSHeader();
@@ -68,8 +68,8 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
-		expect(question.qtype).to.equal(resourceRecord.getType());
+		offset += resourceRecord.resourceRecordLength;
+		expect(question.qtype).to.equal(resourceRecord.type);
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the class in the answer should equal the class in the query.', () => {
 		let header = new DNSHeader();
@@ -82,8 +82,8 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
-		expect(question.qclass).to.equal(resourceRecord.getRRclass());
+		offset += resourceRecord.resourceRecordLength;
+		expect(question.qclass).to.equal(resourceRecord.rrclass);
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the ttl should be parsed properly.', () => {
 		let header = new DNSHeader();
@@ -96,8 +96,8 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
-		expect(resourceRecord.getTtl()).to.equal(0x9A);
+		offset += resourceRecord.resourceRecordLength;
+		expect(resourceRecord.ttl).to.equal(0x9A);
 	});
 	it('When encoding a test response using the DNSResourceRecord class the Name should be encoded properly to match the Name in the test response above.', () => {
 		let header = new DNSHeader();
@@ -110,7 +110,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		let encodedResourceRecord = new DNSResourceRecord();
 		encodedResourceRecord.encodeResourceRecordForMessage({
 			name: 'www.google.com',
@@ -120,7 +120,7 @@ describe('dns-resourcerecord', () => {
 			rdlength: 4,
 			rdata: '172.217.0.4'
 		});
-		expect(resourceRecord.getName()).to.equal(encodedResourceRecord.getName());
+		expect(resourceRecord.name).to.equal(encodedResourceRecord.name);
 	});
 	it('When encoding a test response using the DNSResourceRecord class the Type should be encoded properly to match the Type in the test response above.', () => {
 		let header = new DNSHeader();
@@ -133,7 +133,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		let encodedResourceRecord = new DNSResourceRecord();
 		encodedResourceRecord.encodeResourceRecordForMessage({
 			name: 'www.google.com',
@@ -143,7 +143,7 @@ describe('dns-resourcerecord', () => {
 			rdlength: 4,
 			rdata: '172.217.0.4'
 		});
-		expect(resourceRecord.getType()).to.equal(encodedResourceRecord.getType());
+		expect(resourceRecord.type).to.equal(encodedResourceRecord.type);
 	});
 	it('When encoding a test response using the DNSResourceRecord class the RRclass should be encoded properly to match the RRclass in the test response above.', () => {
 		let header = new DNSHeader();
@@ -156,7 +156,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		let encodedResourceRecord = new DNSResourceRecord();
 		encodedResourceRecord.encodeResourceRecordForMessage({
 			name: 'www.google.com',
@@ -166,7 +166,7 @@ describe('dns-resourcerecord', () => {
 			rdlength: 4,
 			rdata: '172.217.0.4'
 		});
-		expect(resourceRecord.getRRclass()).to.equal(encodedResourceRecord.getRRclass());
+		expect(resourceRecord.rrclass).to.equal(encodedResourceRecord.rrclass);
 	});
 	it('When encoding a test response using the DNSResourceRecord class the RDLength should be encoded properly to match the RDLength in the test response above.', () => {
 		let header = new DNSHeader();
@@ -179,7 +179,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		let encodedResourceRecord = new DNSResourceRecord();
 		encodedResourceRecord.encodeResourceRecordForMessage({
 			name: 'www.google.com',
@@ -189,7 +189,7 @@ describe('dns-resourcerecord', () => {
 			rdlength: 4,
 			rdata: '172.217.0.4'
 		});
-		expect(resourceRecord.getRDLength()).to.equal(encodedResourceRecord.getRDLength());
+		expect(resourceRecord.rdlength).to.equal(encodedResourceRecord.rdlength);
 	});
 	it('When encoding a test response using the DNSResourceRecord class the RData should be encoded properly to match the RData in the test response above.', () => {
 		let header = new DNSHeader();
@@ -202,7 +202,7 @@ describe('dns-resourcerecord', () => {
 		question.decodeDNSQuestionFromMessage(data, offset);
 		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
-		offset += resourceRecord.getResourceRecordLength();
+		offset += resourceRecord.resourceRecordLength;
 		let encodedResourceRecord = new DNSResourceRecord();
 		encodedResourceRecord.encodeResourceRecordForMessage({
 			name: 'www.google.com',
@@ -212,6 +212,6 @@ describe('dns-resourcerecord', () => {
 			rdlength: 4,
 			rdata: '172.217.0.4'
 		});
-		expect(resourceRecord.getRData()).to.equal(encodedResourceRecord.getRData());
+		expect(resourceRecord.rdata).to.equal(encodedResourceRecord.rdata);
 	});
 });

@@ -51,7 +51,7 @@ class DNSMesageQuestion {
 	}
 
     /**
-     * @name decodeQname
+     * @name _decodeQname
      * @access private
      * @type {Function}
      *
@@ -61,7 +61,7 @@ class DNSMesageQuestion {
      *
      * @returns {String} A period delimited list of labels with the TLD in the last index.
      */
-	decodeQname (qNameBytes) {
+	_decodeQname (qNameBytes) {
 		let qNameData = DNSUtils.decodeName(qNameBytes, this.index);
 		this.index = qNameData.indexPosPostReading;
 		return qNameData.name.join('.');
@@ -226,7 +226,7 @@ class DNSMesageQuestion {
 	decodeDNSQuestionFromMessage (data, offset) {
 		this.index = offset;
 		this.questionStartIndex = this.index;
-		this.qname = this.decodeQname(data);
+		this.qname = this._decodeQname(data);
 		this.qtype = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
 		this.qclass = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
 		this.questionLength = this.index - offset;

@@ -17,134 +17,46 @@ const ErrorFactory = require('../error');
  *
  * @description A representation of a DNS message resource record (RR) and functions for encoding this data for reading and decoding this data for transmission.
  */
-function DNSResourceRecord () {
+class DNSResourceRecord {
+    DNSResourceRecord () {
+        this._name = null;
+        this._type = null;
+        this._rrClass = null;
+        this._ttl = null;
+        this._rdLength = null;
+        this._rData = null;
+        this._resourceRecordStartIndex = null;
+        this._resourceRecordLength = null;
+        this._index = 0;
+        this._isAuthoritative = false;
+        this._cacheExpiration = null;
+    }
     /**
-     * @name name
-     * @access private
+     * @name name Getter
+     * @access public
      * @type {String}
      *
      * @description an owner name, i.e., the name of the node to which this resource record pertains.
      */
-	let name = null;
+	get name () {
+        return this._name;
+    }
 
     /**
-     * @name type
-     * @access private
-     * @type {Object}
-     *
-     * @description A two octet code which specifies the type of the resource record. The values for this field include all codes valid for a TYPE field, together with some more general codes which can match more than one type of RR.
-     */
-	let type = null;
-
-    /**
-     * @name rrClass
-     * @access private
-     * @type {Object}
-     *
-     * @description A two octet code that specifies the class of the resource record. For example, the QCLASS field is IN for the Internet.
-     */
-	let rrClass = null;
-
-    /**
-     * @name ttl
-     * @access private
-     * @type {Number}
-     *
-     * @description a 32 bit signed integer that specifies the time interval that the resource record may be cached before the source of the information should again be consulted. Zero values are interpreted to mean that the RR can only be used for the transaction in progress, and should not be cached. For example, SOA records are always distributed with a zero TTL to prohibit caching. Zero values can also be used for extremely volatile data.
-     */
-	let ttl = null;
-
-    /**
-     * @name rdLength
-     * @access private
-     * @type {Number}
-     *
-     * @description an unsigned 16 bit integer that specifies the length in octets of the RDATA field.
-     */
-	let rdLength = null;
-
-    /**
-     * @name rData
-     * @access private
-     * @type {object}
-     *
-     * @description a variable length string of octets that describes the resource. The format of this information varies according to the TYPE and CLASS of the resource record.
-     */
-	let rData = null;
-
-    /**
-     * @name resourceRecordStartIndex
-     * @access private
-     * @type {Number}
-     *
-     * @description This is the absolute position in the byte array where this resource record begins.
-     */
-	let resourceRecordStartIndex = null;
-
-    /**
-     * @name resourceRecordLength
-     * @access private
-     * @type {Number}
-     *
-     * @description This is the length of the resource record in bytes.
-     */
-	let resourceRecordLength = null;
-
-    /**
-     * @name index
-     * @access private
-     * @type {Number}
-     *
-     * @description This variable is used to keep track of the current index as we parse the resource record data.
-     */
-	let index = 0;
-
-    /**
-     * @name isAuthoritative
-     * @access private
-     * @type {boolean}
-     *
-     * @description This variable indicates if the resource record is from an authoritative source.
-     */
-	let isAuthoritative = false;
-
-    /**
-     * @name cacheExpiration
-     * @access private
-     * @type {Date}
-     *
-     * @description This field is populated before it is stored in cache. The value of this property is
-     */
-	let cacheExpiration = null;
-
-    /**
-     * @name getName
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return name.
-     *
-     * @returns {String} The current value of the name variable.
-     */
-	function getName () {
-		return name;
-	}
-
-    /**
-     * @name setName
+     * @name name Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for name.
      *
-     * @param {String} _name A string of labels delimited by a . character.
+     * @param {String} _n A string of labels delimited by a . character.
      */
-	function setName (_name) {
-		name = _name;
+	set name (_n) {
+		this._name = _n;
 	}
 
     /**
-     * @name decodeName
+     * @name _decodeName
      * @access private
      * @type {Function}
      *
@@ -152,104 +64,98 @@ function DNSResourceRecord () {
      *
      * @param {String} nameBytes This is the array of bytes that represent the entire DNS message.
      */
-	function decodeName (nameBytes) {
-		let nameData = DNSUtils.decodeName(nameBytes, index);
-		index = nameData.indexPosPostReading;
+	_decodeName (nameBytes) {
+		let nameData = DNSUtils.decodeName(nameBytes, this.index);
+		this.index = nameData.indexPosPostReading;
 		return nameData.name.join('.');
 	}
 
     /**
-     * @name getType
+     * @name type Getter
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return qtype.
-     *
-     * @returns {Object} The current value of the qtype variable.
+     * @description A two octet code which specifies the type of the resource record. The values for this field include all codes valid for a TYPE field, together with some more general codes which can match more than one type of RR.
      */
-	function getType () {
-		return type;
-	}
+	get type () {
+        return this._type;
+    }
 
     /**
-     * @name setType
+     * @name type Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for type.
      *
-     * @param {Object | Number} _type An object representing the Type from the QTypes module.
+     * @param {Object | Number} _t An object representing the Type from the QTypes module.
      */
-	function setType (_type) {
-		if (Utilities.isNullOrUndefined(_type) === true) {
+	set type (_t) {
+		if (Utilities.isNullOrUndefined(_t) === true) {
 			throw ErrorFactory('DNS Resource Record type cannot be null', null);
 		}
-		if (_type.value === undefined) {
-			_type = Types.findTypeByValue(parseInt(_type));
+		if (_t.value === undefined) {
+			_t = Types.findTypeByValue(parseInt(_t));
 		}
-		type = _type;
+		this._type = _t;
 	}
 
     /**
-     * @name getRRclass
+     * @name rrclass Getter
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return rrClass.
-     *
-     * @returns {Object} The current value of the qclass variable.
+     * @description A two octet code that specifies the class of the resource record. For example, the QCLASS field is IN for the Internet.
      */
-	function getRRclass () {
-		return rrClass;
-	}
+	get rrclass () {
+        return this._rrClass;
+    }
 
     /**
-     * @name setRRclass
+     * @name rrclass Setter
      * @access public
      * @type {Function}
      *
-     * @description This is the setter method for rrClass.
+     * @description This is the setter method for rrclass.
      *
-     * @param {Object | Number} _rclass An object representing the Class from the Classes module.
+     * @param {Object | Number} _r An object representing the Class from the Classes module.
      */
-	function setRRclass (_rclass) {
-		if (Utilities.isNullOrUndefined(_rclass) === true) {
+	set rrclass (_r) {
+		if (Utilities.isNullOrUndefined(_r) === true) {
 			throw ErrorFactory('DNS Resource Record class cannot be null', null);
 		}
-		if (_rclass.value === undefined) {
-			_rclass = Classes.findClassByValue(parseInt(_rclass));
+		if (_r.value === undefined) {
+			_r = Classes.findClassByValue(parseInt(_r));
 		}
-		rrClass = _rclass;
+		this._rrClass = _r;
 	}
 
     /**
-     * @name getTtl
+     * @name ttl Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return ttl.
-     *
-     * @returns {Number} The current value of the ttl variable.
+     * @description a 32 bit signed integer that specifies the time interval that the resource record may be cached before the source of the information should again be consulted. Zero values are interpreted to mean that the RR can only be used for the transaction in progress, and should not be cached. For example, SOA records are always distributed with a zero TTL to prohibit caching. Zero values can also be used for extremely volatile data.
      */
-	function getTtl () {
-		return ttl;
-	}
+	get ttl () {
+        return this._ttl;
+    }
 
     /**
-     * @name setTtl
+     * @name ttl Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for ttl.
      *
-     * @param {Number} _ttl An object representing the ttl.
+     * @param {Number} _t An object representing the ttl.
      */
-	function setTtl (_ttl) {
-		ttl = _ttl;
+	set ttl (_t) {
+		this._ttl = _t;
 	}
 
     /**
-     * @name decodeTtl
+     * @name _decodeTtl
      * @access private
      * @type {Function}
      *
@@ -260,79 +166,75 @@ function DNSResourceRecord () {
      * @param {Number} byte3 Low word high byte of the 32 bits representing the ttl in the resource record.
      * @param {Number} byte4 Low word low byte of the 32 bits representing the ttl in the resource record.
      */
-	function decodeTtl (byte1, byte2, byte3, byte4) {
+	_decodeTtl (byte1, byte2, byte3, byte4) {
 		return (byte1 << 24) | (byte2 << 16) | (byte3 << 16) | (byte4);
 	}
 
     /**
-     * @name getRDLength
+     * @name rdlength Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description an unsigned 16 bit integer that specifies the length in octets of the RDATA field.
+     */
+	get rdlength () {
+        return this._rdLength;
+    }
+
+    /**
+     * @name rdlength
      * @access public
      * @type {Function}
      *
-     * @description This is the getter method to return rdLength.
+     * @description This is the setter method for rdlength.
      *
-     * @returns {Number} The current value of the rdLength variable.
+     * @param {Number} _r An object representing the RDataLength.
      */
-	function getRDLength () {
-		return rdLength;
+	set rdlength (_r) {
+		this._rdLength = _r;
 	}
 
     /**
-     * @name setRDLength
+     * @name rdata Getter
+     * @access public
+     * @type {object}
+     *
+     * @description a variable length string of octets that describes the resource. The format of this information varies according to the TYPE and CLASS of the resource record.
+     */
+	get rdata () {
+        return this._rData;
+    }
+
+    /**
+     * @name rdata Setter
      * @access public
      * @type {Function}
      *
-     * @description This is the setter method for rdLength.
+     * @description This is the setter method for rdata.
      *
-     * @param {Number} _rdLength An object representing the RDataLength.
+     * @param {Object} _r An object representing the rdata.
      */
-	function setRDLength (_rdLength) {
-		rdLength = _rdLength;
+	set rdata (_r) {
+		this._rData = _r;
 	}
 
     /**
-     * @name getRData
-     * @access public
+     * @name _decodeRdata
+     * @access private
      * @type {Function}
      *
-     * @description This is the getter method to return rData.
-     *
-     * @returns {Object} The current value of the rData variable.
-     */
-	function getRData () {
-		return rData;
-	}
-
-    /**
-     * @name setRRclass
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for rData.
-     *
-     * @param {Object} _rdata An object representing the rdata.
-     */
-	function setRData (_rdata) {
-		rData = _rdata;
-	}
-
-    /**
-     * @name decodeRdata
-     * @access public
-     * @type {Function}
-     *
-     * @description Decodes the rData from the resource record data.
+     * @description Decodes the rdata from the resource record data.
      *
      * @param {Array} data
      *
      * @returns {any} Whatever the RR data is.
      */
-	function decodeRdata (data) {
-		let rrtypeValue = getType().value;
+	_decodeRdata (data) {
+		let rrtypeValue = this.type.value;
 		let rdata = null;
 		switch (rrtypeValue) {
 		case 1: // A record
-			rdata = decodeARecordRData(data);
+			rdata = this._decodeARecordRData(data);
 			break;
 		case 2: // NS Record
 			throw ErrorFactory('NS Records not implemented yet.', null);
@@ -366,40 +268,22 @@ function DNSResourceRecord () {
 	}
 
     /**
-     * @name decodeARecordRData
-     * @access public
+     * @name _encodeRdata
+     * @access private
      * @type {Function}
      *
-     * @description Decodes the rData from an A type resource record.
-     *
-     * @param {Array} data
-     */
-	function decodeARecordRData (data) {
-		let totalLength = index + getRDLength();
-		let hostAddress = [];
-		while (index < totalLength) {
-			hostAddress.push(data[index++].toString());
-		}
-		return hostAddress.join('.');
-	}
-
-    /**
-     * @name encodeRdata
-     * @access public
-     * @type {Function}
-     *
-     * @description Decodes the rData from the resource record data.
+     * @description Decodes the rdata from the resource record data.
      *
      * @param {any} data The RData in what ever format is comes in.
      *
      * @returns {Array} An array of bytes representing the encoded form of the data.
      */
-	function encodeRdata (data) {
-		let rrtypeValue = getType().value;
+	_encodeRdata (data) {
+		let rrtypeValue = this.type.value;
 		let rdata = null;
 		switch (rrtypeValue) {
 		case 1: // A record
-			rdata = encodeARecordRData(data);
+			rdata = this._encodeARecordRData(data);
 			break;
 		case 2: // NS Record
 			throw ErrorFactory('NS Records not implemented yet.', null);
@@ -433,39 +317,18 @@ function DNSResourceRecord () {
 	}
 
     /**
-     * @name encodeARecordRData
+     * @name resourceRecordStartIndex Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description Decodes the rData from an A type resource record.
-     *
-     * @param {String} data The 32 bit host address as a tring delimited with periods.
-     *
-     * @returns {Array} Array of bytes representing the 32 bit host address with the MSB in the 0 index of the array.
+     * @description This is the absolute position in the byte array where this resource record begins.
      */
-	function encodeARecordRData (data) {
-		let result = [];
-		data.split('.').forEach(function (octet) {
-			result.push(octet & 0xFF);
-		}, this);
-		return result;
-	}
+	get resourceRecordStartIndex () {
+        return this._resourceRecordStartIndex;
+    }
 
     /**
-     * @name getResourceRecordStartIndex
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return resource recordStartIndex.
-     *
-     * @returns {Number} The current value of the resource recordStartIndex variable.
-     */
-	function getResourceRecordStartIndex () {
-		return resourceRecordStartIndex;
-	}
-
-    /**
-     * @name setResourceRecordStartIndex
+     * @name resourceRecordStartIndex Setter
      * @access public
      * @type {Function}
      *
@@ -473,25 +336,23 @@ function DNSResourceRecord () {
      *
      * @param {Number} index An integer representing the starting index of this resource record relative to the whole message.
      */
-	function setResourceRecordStartIndex (index) {
-		resourceRecordStartIndex = index;
+	set resourceRecordStartIndex (index) {
+		this._resourceRecordStartIndex = index;
 	}
 
     /**
-     * @name getResourceRecordLength
+     * @name resourceRecordLength Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return resourceRecordLength.
-     *
-     * @returns {Number} The current value of the resourceRecordLength variable.
+     * @description This is the length of the resource record in bytes.
      */
-	function getResourceRecordLength () {
-		return resourceRecordLength;
-	}
+	get resourceRecordLength () {
+        return this._resourceRecordLength;
+    }
 
     /**
-     * @name setResourceRecordLength
+     * @name resourceRecordLength Setter
      * @access public
      * @type {Function}
      *
@@ -499,51 +360,71 @@ function DNSResourceRecord () {
      *
      * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
-	function setResourceRecordLength (length) {
-		resourceRecordLength = length;
+	set resourceRecordLength (length) {
+		this._resourceRecordLength = length;
 	};
 
     /**
-     * @name getName
+     * @name index Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description This variable is used to keep track of the current index as we parse the resource record data.
+     */
+	get index () {
+        return this._index;
+    }
+
+    /**
+     * @name index Setter
      * @access public
      * @type {Function}
      *
-     * @description This is the getter method to return isAuthoritative.
+     * @description This is the setter method for index.
      *
-     * @returns {String} The current value of the isAuthoritative variable.
+     * @param {Number} _i the value of the index.
      */
-	function getIsAuthoritative () {
-		return isAuthoritative;
+	set index (_i) {
+		this._index = _i;
 	};
 
     /**
-     * @name setIsAuthoritative
+     * @name isAuthoritative Getter
+     * @access public
+     * @type {boolean}
+     *
+     * @description This variable indicates if the resource record is from an authoritative source.
+     */
+	get isAuthoritative () {
+        return this._isAuthoritative;
+    }
+
+    /**
+     * @name setIsAuthoritative Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for isAuthoritative.
      *
-     * @param {boolean} _isAuthoritative A boolean value specifying if this record is from and authoritative source.
+     * @param {boolean} _i A boolean value specifying if this record is from and authoritative source.
      */
-	function setIsAuthoritative (_isAuthoritative) {
-		isAuthoritative = _isAuthoritative;
+	set isAuthoritative (_i) {
+		this._isAuthoritative = _i;
 	};
 
     /**
-     * @name getName
+     * @name cacheExpiration Getter
      * @access public
-     * @type {Function}
+     * @type {Date}
      *
-     * @description This is the getter method to return cacheExpiration.
-     *
-     * @returns {Date} The current value of the cacheExpiration variable, or a null value if there is no known expiration.
+     * @description This field is populated before it is stored in cache. The value of this property is
      */
-	function getCacheExpiration () {
-		return cacheExpiration;
-	};
+	get cacheExpiration () {
+        return this._cacheExpiration;
+    }
 
     /**
-     * @name setCacheExpiration
+     * @name cacheExpiration Setter
      * @access public
      * @type {Function}
      *
@@ -551,14 +432,51 @@ function DNSResourceRecord () {
      *
      * @param {Number} seconds A number in seconds that is the TTL for this record.
      */
-	function setCacheExpiration (seconds) {
+	set cacheExpiration (seconds) {
 		seconds = parseInt(seconds);
 		if (Utilities.isNullOrUndefined(seconds) === false && isNaN(seconds) === false) {
-			cacheExpiration = new Date(Date.now() + (seconds * 1000));
+			this._cacheExpiration = new Date(Date.now() + (seconds * 1000));
 		} else {
-			cacheExpiration = null;
+			this._cacheExpiration = null;
 		}
 	};
+
+    /**
+     * @name _decodeARecordRData
+     * @access private
+     * @type {Function}
+     *
+     * @description Decodes the rdata from an A type resource record.
+     *
+     * @param {Array} data
+     */
+	_decodeARecordRData (data) {
+		let totalLength = this.index + this.rdlength;
+		let hostAddress = [];
+		while (this.index < totalLength) {
+			hostAddress.push(data[this.index++].toString());
+		}
+		return hostAddress.join('.');
+	}
+
+    /**
+     * @name _encodeARecordRData
+     * @access private
+     * @type {Function}
+     *
+     * @description Decodes the rdata from an A type resource record.
+     *
+     * @param {String} data The 32 bit host address as a tring delimited with periods.
+     *
+     * @returns {Array} Array of bytes representing the 32 bit host address with the MSB in the 0 index of the array.
+     */
+	_encodeARecordRData (data) {
+		let result = [];
+		data.split('.').forEach(function (octet) {
+			result.push(octet & 0xFF);
+		}, this);
+		return result;
+	}
 
     /**
      * @name isExpired
@@ -569,8 +487,8 @@ function DNSResourceRecord () {
      *
      * @returns {Boolean}
      */
-	function isExpired () {
-		return getCacheExpiration() < new Date();
+	isExpired () {
+		return this.cacheExpiration < new Date();
 	};
 
     /**
@@ -582,15 +500,15 @@ function DNSResourceRecord () {
      *
      * @param {Object} dnsResourceRecordInfo This is an object containing the properties for the DNS resource record.
      */
-	function setResourceRecordProperties (dnsResourceRecordInfo) {
-		setName(dnsResourceRecordInfo.name);
-		setType(dnsResourceRecordInfo.type);
-		setRRclass(dnsResourceRecordInfo.rrclass);
-		setTtl(dnsResourceRecordInfo.ttl);
-		setCacheExpiration(dnsResourceRecordInfo.ttl);
-		setIsAuthoritative(Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? false : dnsResourceRecordInfo.isAuthoritative);
-		setRDLength(dnsResourceRecordInfo.rdlength);
-		setRData(dnsResourceRecordInfo.rdata);
+	setResourceRecordProperties (dnsResourceRecordInfo) {
+		this.name = dnsResourceRecordInfo.name;
+		this.typednsResourceRecordInfo.type;
+		this.rrclass = dnsResourceRecordInfo.rrclass;
+		this.ttl = dnsResourceRecordInfo.ttl;
+		this.cacheExpiration = dnsResourceRecordInfo.ttl;
+		this.isAuthoritative = Utilities.isNullOrUndefined(dnsResourceRecordInfo.isAuthoritative) ? false : dnsResourceRecordInfo.isAuthoritative;
+		this.rdlength = dnsResourceRecordInfo.rdlength;
+		this.rdata = dnsResourceRecordInfo.rdata;
 	};
 
     /**
@@ -604,18 +522,18 @@ function DNSResourceRecord () {
      * @param {Number} offset This is an integer representing the offset to be used for parsing the resource record data.
      * @param {Boolean} _isAuthoritative Boolean value that sets if the resource is from an authoritative source.
      */
-	function decodeDNSResourceRecordFromMessage (data, offset = 0, _isAuthoritative = false) {
-		index = offset;
-		setResourceRecordStartIndex(index);
-		setName(decodeName(data));
-		setType(Utilities.decode16BitValue(data[index++], data[index++]));
-		setRRclass(Utilities.decode16BitValue(data[index++], data[index++]));
-		setTtl(decodeTtl(data[index++], data[index++], data[index++], data[index++]));
-		setCacheExpiration(getTtl());
-		setIsAuthoritative(_isAuthoritative);
-		setRDLength(Utilities.decode16BitValue(data[index++], data[index++]));
-		setRData(decodeRdata(data));
-		setResourceRecordLength(index - offset);
+	decodeDNSResourceRecordFromMessage (data, offset = 0, _isAuthoritative = false) {
+		this.index = offset;
+		this.resourceRecordStartIndex = this.index;
+		this.name = this._decodeName(data);
+		this.type = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
+		this.rrclass = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
+		this.ttl = this._decodeTtl(data[this.index++], data[this.index++], data[this.index++], data[this.index++]);
+		this.cacheExpiration = this.ttl;
+		this.isAuthoritative = _isAuthoritative;
+		this.rdlength = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
+		this.rdata = this._decodeRdata(data);
+		this.resourceRecordLength = this.index - offset;
 	}
 
     /**
@@ -631,30 +549,30 @@ function DNSResourceRecord () {
      *
      * @returns {Uint8Array} An array of bytes representing the DNS Resource Record.
      */
-	function encodeResourceRecordForMessage (dnsResourceRecordInfo, startIndex = 0, _isAuthoritative = false) {
+	encodeResourceRecordForMessage (dnsResourceRecordInfo, startIndex = 0, _isAuthoritative = false) {
 		dnsResourceRecordInfo = dnsResourceRecordInfo || {};
-		setName(Utilities.isNullOrUndefined(dnsResourceRecordInfo.name) ? getName() : dnsResourceRecordInfo.name);
-		setType(Utilities.isNullOrUndefined(dnsResourceRecordInfo.type) ? getType() : dnsResourceRecordInfo.type);
-		setRRclass(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rrclass) ? getRRclass() : dnsResourceRecordInfo.rrclass);
-		setTtl(Utilities.isNullOrUndefined(dnsResourceRecordInfo.ttl) ? getTtl() : dnsResourceRecordInfo.ttl);
-		setCacheExpiration(getTtl());
-		setIsAuthoritative(_isAuthoritative);
-		setRDLength(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? getRDLength() : dnsResourceRecordInfo.rdlength);
-		setRData(Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? getRData() : dnsResourceRecordInfo.rdata);
+		this.name = Utilities.isNullOrUndefined(dnsResourceRecordInfo.name) ? this.name : dnsResourceRecordInfo.name;
+		this.type = Utilities.isNullOrUndefined(dnsResourceRecordInfo.type) ? this.type : dnsResourceRecordInfo.type;
+		this.rrclass = Utilities.isNullOrUndefined(dnsResourceRecordInfo.rrclass) ? this.rrclass : dnsResourceRecordInfo.rrclass;
+		this.ttl = Utilities.isNullOrUndefined(dnsResourceRecordInfo.ttl) ? this.ttl : dnsResourceRecordInfo.ttl;
+		this.cacheExpiration = this.ttl;
+		this.isAuthoritative = _isAuthoritative;
+		this.rdlength = Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdlength) ? this.rdlength : dnsResourceRecordInfo.rdlength;
+		this.rdata = Utilities.isNullOrUndefined(dnsResourceRecordInfo.rdata) ? this.rdata : dnsResourceRecordInfo.rdata;
 
 		let rrLength = 0;
 		let offset = 0;
-		let name = DNSUtils.encodeName(getName());
+		let name = DNSUtils.encodeName(this.name);
 		rrLength += name.length;
-		let type = Utilities.encode16BitValue(getType().value);
+		let type = Utilities.encode16BitValue(this.type.value);
 		rrLength += type.length;
-		let rrclass = Utilities.encode16BitValue(getRRclass().value);
+		let rrclass = Utilities.encode16BitValue(this.rrclass.value);
 		rrLength += rrclass.length;
-		let ttl = Utilities.encode32BitValue(getTtl());
+		let ttl = Utilities.encode32BitValue(this.ttl);
 		rrLength += ttl.length;
-		let rdlength = Utilities.encode16BitValue(getRDLength());
+		let rdlength = Utilities.encode16BitValue(this.rdlength);
 		rrLength += rdlength.length;
-		let rdata = encodeRdata(getRData());
+		let rdata = this._encodeRdata(this.rdata);
 		rrLength += rdata.length;
 
 		let rrBuffer = new Uint8Array(rrLength);
@@ -672,36 +590,11 @@ function DNSResourceRecord () {
 		rrBuffer.set(rdata, offset);
 		offset += rdata.length;
 
-		setResourceRecordLength(rrBuffer.length);
-		setResourceRecordStartIndex(startIndex);
+		this.resourceRecordLength = rrBuffer.length;
+		this.resourceRecordStartIndex = startIndex;
 
 		return rrBuffer;
 	}
-
-	return {
-		getName: getName,
-		setName: setName,
-		getType: getType,
-		setType: setType,
-		getRRclass: getRRclass,
-		setRRclass: setRRclass,
-		getTtl: getTtl,
-		setTtl: setTtl,
-		getRDLength: getRDLength,
-		setRDLength: setRDLength,
-		getRData: getRData,
-		setRData: setRData,
-		getResourceRecordLength: getResourceRecordLength,
-		getResourceRecordStartIndex: getResourceRecordStartIndex,
-		getIsAuthoritative: getIsAuthoritative,
-		setIsAuthoritative: setIsAuthoritative,
-		getCacheExpiration: getCacheExpiration,
-		setCacheExpiration: setCacheExpiration,
-		isExpired: isExpired,
-		setResourceRecordProperties: setResourceRecordProperties,
-		decodeDNSResourceRecordFromMessage: decodeDNSResourceRecordFromMessage,
-		encodeResourceRecordForMessage: encodeResourceRecordForMessage
-	};
 }
 
 module.exports = DNSResourceRecord;
