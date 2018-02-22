@@ -27,9 +27,9 @@ describe('dns-question', () => {
 		let data = getTestQuestionDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		offset += question.questionLength;
 		expect(offset).to.equal(testQuestionDNSPacket.length);
 	});
 	it('When decoding the test question above using the DNSQuestion class should decode the byte array of the question above and populate the QClass field.', () => {
@@ -37,29 +37,29 @@ describe('dns-question', () => {
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		expect(question.getQclass().value).to.equal(0x01);
+		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		expect(question.qclass.value).to.equal(0x01);
 	});
 	it('When decoding the test question above using the DNSQuestion class should decode the byte array of the question above and populate the QType field.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		expect(question.getQtype().value).to.equal(0x01);
+		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		expect(question.qtype.value).to.equal(0x01);
 	});
 	it('When encoding a test question using the DNSQuestion class the name should be encoded properly to match the name in the test question above.', () => {
 		let header = new DNSHeader();
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
+		question.decodeDNSQuestionFromMessage(data, header.headerLength);
 		let encodedQuestion = new DNSQuestion();
 		encodedQuestion.encodeQuestionForMessage({
 			qname: 'www.google.com',
 			qtype: 1,
 			qclass: 1
 		});
-		expect(question.getQname()).to.equal(encodedQuestion.getQname());
+		expect(question.qname).to.equal(encodedQuestion.qname);
 	});
 });

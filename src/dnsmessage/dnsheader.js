@@ -16,193 +16,78 @@ const ErrorFactory = require('../error');
  *
  * @description A representation of a DNS message header and functions for encoding this data for reading and decoding this data for transmission.
  */
-function DNSMesageHeader () {
+class DNSMesageHeader {
+	DNSMesageHeader () {
+		this._id = null;
+		this._qr = null;
+		this._opcode = null;
+		this._aa = null;
+		this._tc = null;
+		this._rd = null;
+		this._ra = null;
+		// this._z = 0;
+		this._qdcount = null;
+		this._ancount = null;
+		this._nscount = null;
+		this._arcount = null;
+		this._headerLength = null;
+	}
     /**
-     * @name id
-     * @access private
+     * @name id Getter
+     * @access public
      * @type {Number}
      *
      * @description A 16 bit identifier assigned by the program that generates any kind of query.  This identifier is copied the corresponding reply and can be used by the requester to match up replies to outstanding queries.
      */
-	let id = null;
-
-    /**
-     * @name qr
-     * @access private
-     * @type {Number}
-     *
-     * @description A one bit field that specifies whether this message is a query (0), or a response (1).
-     */
-	let qr = null;
-
-    /**
-     * @name opcode
-     * @access private
-     * @type {Object}
-     *
-     * @description A four bit field that specifies kind of query in this message.  This value is set by the originator of a query and copied into the response.
-     */
-	let opcode = null;
-
-    /**
-     * @name aa
-     * @access private
-     * @type {Number}
-     *
-     * @description Authoritative Answer - this bit is valid in responses, and specifies that the responding name server is an authority for the domain name in question section. Note that the contents of the answer section may have multiple owner names because of aliases.  The AA bitcorresponds to the name which matches the query name, or the first owner name in the answer section.
-     */
-	let aa = null;
-
-    /**
-     * @name tc
-     * @access private
-     * @type {Number}
-     *
-     * @description TrunCation - specifies that this message was truncated due to length greater than that permitted on the transmission channel.
-     */
-	let tc = null;
-
-    /**
-     * @name rd
-     * @access private
-     * @type {Number}
-     *
-     * @description Recursion Desired - this bit may be set in a query and is copied into the response.  If RD is set, it directs the name server to pursue the query recursively. Recursive query support is optional.
-     */
-	let rd = null;
-
-    /**
-     * @name ra
-     * @access private
-     * @type {Number}
-     *
-     * @description Recursion Available - this be is set or cleared in a response, and denotes whether recursive query support is available in the name server.
-     */
-	let ra = null;
-
-    /**
-     * @name z
-     * @access private
-     * @type {Number}
-     *
-     * @description Reserved for future use. Must be zero in all queries and responses.
-     */
-	let z = 0;
-
-    /**
-     * @name rcode
-     * @access private
-     * @type {Object}
-     *
-     * @description Response code - this 4 bit field is set as part of responses.
-     */
-	let rcode = null;
-
-    /**
-     * @name qdcount
-     * @access private
-     * @type {Number}
-     *
-     * @description An unsigned 16 bit integer specifying the number of entries in the question section.
-     */
-	let qdcount = null;
-
-    /**
-     * @name ancount
-     * @access private
-     * @type {Number}
-     *
-     * @description An unsigned 16 bit integer specifying the number of resource records in the answer section.
-     */
-	let ancount = null;
-
-    /**
-     * @name nscount
-     * @access private
-     * @type {Number}
-     *
-     * @description An unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
-     */
-	let nscount = null;
-
-    /**
-     * @name arcount
-     * @access private
-     * @type {Number}
-     *
-     * @description An unsigned 16 bit integer specifying the number of resource records in the additional records section.
-     */
-	let arcount = null;
-
-    /**
-     * @name headerLength
-     * @access private
-     * @type {Number}
-     *
-     * @description This is the length in bytes of the header.
-     */
-	let headerLength = null;
-
-    /**
-     * @name getId
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return id.
-     *
-     * @returns {Number} The current value of the id variable.
-     */
-	function getId () {
-		return id;
+	get id () {
+		return this._id;
 	}
 
     /**
-     * @name setId
+     * @name id Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for id.
      *
-     * @param {Number} _id An integer to store as the ID of the DNS message.
+     * @param {Number} _i An integer to store as the ID of the DNS message.
      */
-	function setId (_id) {
-		if (_id === null) {
+	set id (_i) {
+		if (_i === null) {
 			throw ErrorFactory('DNS Header id cannot be null', null);
 		}
-		id = _id;
+		this._id = _i;
 	}
 
     /**
-     * @name getQr
+     * @name qr Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return qr.
-     *
-     * @returns {Number} The current value of the qr variable.
+     * @description A one bit field that specifies whether this message is a query (0), or a response (1).
      */
-	function getQr () {
-		return qr;
+	get qr () {
+		return this._qr;
 	}
 
     /**
-     * @name setQr
+     * @name qr Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for qr.
      *
-     * @param {Number} _qr A value representing whether this is a query or a response. 0 is query 1 is response.
+     * @param {Number} _q A value representing whether this is a query or a response. 0 is query 1 is response.
      */
-	function setQr (_qr) {
-		if (_qr === null) {
+	set qr (_q) {
+		if (_q === null) {
 			throw ErrorFactory('DNS Header qr cannot be null', null);
 		}
-		qr = _qr;
+		this._qr = _q;
 	}
 
     /**
-     * @name decodeQr
+     * @name _decodeQr
      * @access private
      * @type {Function}
      *
@@ -210,44 +95,42 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeQr (byte) {
+	_decodeQr (byte) {
 		return (byte & 0x80) !== 0x00 ? 0x01 : 0x00;
 	}
 
     /**
-     * @name getOpcode
+     * @name opcode
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return opcode.
-     *
-     * @returns {Object} The current value of the opcode variable.
+     * @description A four bit field that specifies kind of query in this message.  This value is set by the originator of a query and copied into the response.
      */
-	function getOpcode () {
-		return opcode;
+	get opcode () {
+		return this._opcode;
 	}
 
     /**
-     * @name setOpcode
+     * @name opcode Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for opcode.
      *
-     * @param {Object | Number} _opcode An object representing the Opcode from the OperationCodes module.
+     * @param {Object | Number} _o An object representing the Opcode from the OperationCodes module.
      */
-	function setOpcode (_opcode) {
-		if (_opcode === null) {
+	set opcode (_o) {
+		if (_o === null) {
 			throw ErrorFactory('DNS Header opcode cannot be null', null);
 		}
-		if (_opcode.value === undefined) {
-			_opcode = OperationCodes.findOPCodeByValue(parseInt(_opcode));
+		if (_o.value === undefined) {
+			_o = OperationCodes.findOPCodeByValue(parseInt(_o));
 		}
-		opcode = _opcode;
+		this._opcode = _o;
 	}
 
     /**
-     * @name decodeOpcode
+     * @name _decodeOpcode
      * @access private
      * @type {Function}
      *
@@ -255,41 +138,39 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeOpcode (byte) {
+	_decodeOpcode (byte) {
 		return ((byte & 0x78) << 3);
 	}
 
     /**
-     * @name getAa
+     * @name aa Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return aa.
-     *
-     * @returns {Number} The current value of the aa variable..
+     * @description Authoritative Answer - this bit is valid in responses, and specifies that the responding name server is an authority for the domain name in question section. Note that the contents of the answer section may have multiple owner names because of aliases.  The AA bitcorresponds to the name which matches the query name, or the first owner name in the answer section.
      */
-	function getAa () {
-		return aa;
+	get aa () {
+		return this._aa;
 	}
 
     /**
-     * @name setAa
+     * @name aa Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for aa.
      *
-     * @param {Number} _aa A value representing if the responding DNS server is an authority for the domain name in question 1 is true 0 is false;
+     * @param {Number} _a A value representing if the responding DNS server is an authority for the domain name in question 1 is true 0 is false;
      */
-	function setAa (_aa) {
-		if (_aa === null) {
+	set aa (_a) {
+		if (_a === null) {
 			throw ErrorFactory('DNS Header aa cannot be null', null);
 		}
-		aa = _aa;
+		this._aa = _a;
 	}
 
     /**
-     * @name decodeAa
+     * @name _decodeAa
      * @access private
      * @type {Function}
      *
@@ -297,41 +178,39 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeAa (byte) {
+	_decodeAa (byte) {
 		return (byte & 0x04) !== 0x00 ? 0x01 : 0x00;
 	}
 
     /**
-     * @name getTc
+     * @name tc Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return tc.
-     *
-     * @returns {Number} A value representing if the mesage was truncated bue to length 1 is true 0 is false.
+     * @description TrunCation - specifies that this message was truncated due to length greater than that permitted on the transmission channel.
      */
-	function getTc () {
-		return tc;
+	get tc () {
+		return this._tc;
 	}
 
     /**
-     * @name setTc
+     * @name tc Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for tc.
      *
-     * @param {Number} _tc An object representing the QType from the QTypes module.
+     * @param {Number} _t An object representing the QType from the QTypes module.
      */
-	function setTc (_tc) {
-		if (_tc === null) {
+	set tc (_t) {
+		if (_t === null) {
 			throw ErrorFactory('DNS Header tc cannot be null', null);
 		}
-		tc = _tc;
+		this._tc = _t;
 	}
 
     /**
-     * @name decodeTc
+     * @name _decodeTc
      * @access private
      * @type {Function}
      *
@@ -339,41 +218,39 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeTc (byte) {
+	_decodeTc (byte) {
 		return (byte & 0x02) !== 0x00 ? 0x01 : 0x00;
 	}
 
     /**
-     * @name getRd
+     * @name rd Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return rd.
-     *
-     * @returns {Number} The current value of the rd variable.
+     * @description Recursion Desired - this bit may be set in a query and is copied into the response.  If RD is set, it directs the name server to pursue the query recursively. Recursive query support is optional.
      */
-	function getRd () {
-		return rd;
+	get rd () {
+		return this._rd;
 	}
 
     /**
-     * @name setRd
+     * @name rd Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for rd.
      *
-     * @param {Object} _rd An integer representing is recursion is desired 1 is true 0 is false.
+     * @param {Object} _r An integer representing is recursion is desired 1 is true 0 is false.
      */
-	function setRd (_rd) {
-		if (_rd === null) {
+	set rd (_r) {
+		if (_r === null) {
 			throw ErrorFactory('DNS Header rd cannot be null', null);
 		}
-		rd = _rd;
+		this._rd = _r;
 	}
 
     /**
-     * @name decodeRd
+     * @name _decodeRd
      * @access private
      * @type {Function}
      *
@@ -381,41 +258,39 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeRd (byte) {
+	_decodeRd (byte) {
 		return (byte & 0x01) !== 0x00 ? 0x01 : 0x00;
 	}
 
     /**
-     * @name getRa
+     * @name ra Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return ra.
-     *
-     * @returns {Number} The current value of the ra variable.
+     * @description Recursion Available - this be is set or cleared in a response, and denotes whether recursive query support is available in the name server.
      */
-	function getRa () {
-		return ra;
+	get ra () {
+		return this._ra;
 	}
 
     /**
-     * @name setQtype
+     * @name ra Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for qtype.
      *
-     * @param {Number} _ra An integer representing is recursion is available 1 is true 0 is false.
+     * @param {Number} _r An integer representing is recursion is available 1 is true 0 is false.
      */
-	function setRa (_ra) {
-		if (_ra === null) {
+	set ra (_r) {
+		if (_r === null) {
 			throw ErrorFactory('DNS Header ra cannot be null', null);
 		}
-		ra = _ra;
+		this._ra = _r;
 	}
 
     /**
-     * @name decodeRa
+     * @name _decodeRa
      * @access private
      * @type {Function}
      *
@@ -423,71 +298,67 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeRa (byte) {
+	_decodeRa (byte) {
 		return (byte & 0x80) !== 0x00 ? 0x01 : 0x00;
 	}
 
     /**
-     * @name getZ
+     * @name z Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return z.
-     *
-     * @returns {Number} The current value of the z variable.
+     * @description Reserved for future use. Must be zero in all queries and responses.
      */
-	function getZ () {
-		return z;
+	get z () {
+		return 0; // this._z;
 	}
 
     /**
-     * @name setZ
+     * @name z Setter
      * @access public
      * @type {Function}
      *
      * @description DO NOT USE THIS METHOD!!!!! z must always be zero per RFC 1035. This is the setter method for z.
      *
-     * @param {Number} _z sets the value of the z variable.
+     * @param {Number} _ sets the value of the z variable.
      */
-	// function setZ (_z) {
-	// 	z = _z;
+	// set z (_) {
+	// 	z = _;
 	// 	throw ErrorFactory('z cannot be set. it must always be 0 per RFC 1035', null);
 	// }
 
     /**
-     * @name getRcode
+     * @name rcode Getter
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return rcode.
-     *
-     * @returns {Object} The current value of the rcode variable.
+     * @description Response code - this 4 bit field is set as part of responses.
      */
-	function getRcode () {
-		return rcode;
+	get rcode () {
+		return this._rcode;
 	}
 
     /**
-     * @name setRcode
+     * @name rcode Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for rcode.
      *
-     * @param {Object | Number} _rcode An object representing the RCode from the ResponseCodes module.
+     * @param {Object | Number} _r An object representing the RCode from the ResponseCodes module.
      */
-	function setRcode (_rcode) {
-		if (_rcode === null) {
+	set rcode (_r) {
+		if (_r === null) {
 			throw ErrorFactory('DNS Header rcode cannot be null', null);
 		}
-		if (_rcode.value === undefined) {
-			_rcode = ResponseCodes.findRCodeByValue(parseInt(_rcode));
+		if (_r.value === undefined) {
+			_r = ResponseCodes.findRCodeByValue(parseInt(_r));
 		}
-		rcode = _rcode;
+		this._rcode = _r;
 	}
 
     /**
-     * @name decodeRcode
+     * @name _decodeRcode
      * @access private
      * @type {Function}
      *
@@ -495,8 +366,140 @@ function DNSMesageHeader () {
      *
      * @param {Number} byte
      */
-	function decodeRcode (byte) {
+	_decodeRcode (byte) {
 		return 0x0F & byte;
+	}
+
+    /**
+     * @name qdcount Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description An unsigned 16 bit integer specifying the number of entries in the question section.
+     */
+	get qdcount () {
+		return this._qdcount;
+	}
+
+    /**
+     * @name qdcount Setter
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for qdcount.
+     *
+     * @param {Number} _q The number of questions for the DNS message.
+     */
+	set qdcount (_q) {
+		if (_q === null) {
+			throw ErrorFactory('DNS Header qdcount cannot be null', null);
+		}
+		this._qdcount = _q;
+	}
+
+    /**
+     * @name ancount Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description An unsigned 16 bit integer specifying the number of resource records in the answer section.
+     */
+	get ancount () {
+		return this._ancount;
+	}
+
+    /**
+     * @name ancount Setter
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for ancount.
+     *
+     * @param {Number} _a The number of answer records for the DNS message.
+     */
+	set ancount (_a) {
+		if (_a === null) {
+			throw ErrorFactory('DNS Header ancount cannot be null', null);
+		}
+		this._ancount = _a;
+	}
+
+    /**
+     * @name nscount Getter
+     * @access private
+     * @type {Number}
+     *
+     * @description An unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
+     */
+	get nscount () {
+		return this._nscount;
+	}
+
+    /**
+     * @name nscount Setter
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for nscount.
+     *
+     * @param {Number} _n The number of nameserver records for the DNS message.
+     */
+	set nscount (_n) {
+		if (_n === null) {
+			throw ErrorFactory('DNS Header nscount cannot be null', null);
+		}
+		this._nscount = _n;
+	}
+
+    /**
+     * @name arcount Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description An unsigned 16 bit integer specifying the number of resource records in the additional records section.
+     */
+	get arcount () {
+		return this._arcount;
+	}
+
+    /**
+     * @name arcount Setter
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for arcount.
+     *
+     * @param {Number} _a The number of additional records for the DNS message.
+     */
+	set arcount (_a) {
+		if (_a === null) {
+			throw ErrorFactory('DNS Header arcount cannot be null', null);
+		}
+		this._arcount = _a;
+	}
+
+    /**
+     * @name headerLength Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description This is the length in bytes of the header.
+     */
+	get headerLength () {
+		return this._headerLength;
+	}
+
+    /**
+     * @name headerLength
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for headerLength.
+     *
+     * @param {Number} length The length of the header for the DNS message. (Per RFC 1035 this could always be 12)
+     */
+	set headerLength (length) {
+		this._headerLength = length;
 	}
 
     /**
@@ -517,152 +520,10 @@ function DNSMesageHeader () {
      *
      * @returns {Array} An array of bytes representing the dns header flag bytes with the high byte being at index 0.
      */
-	function encodeFlagBytes (_qr, _opcode, _aa, _tc, _rd, _ra, _z, _rcode) {
+	_encodeFlagBytes (_qr, _opcode, _aa, _tc, _rd, _ra, _z, _rcode) {
         // get your bits in a row :-)
 		let flagValue = (((_qr << 15) | (_opcode << 11) | (_aa << 10) | (_tc << 9) | (_rd << 8) | (_ra << 7) | (_z << 4) | (_rcode << 0)) & 0xFFFF);
 		return [((flagValue >> 8)), (flagValue & 0xFF)];
-	}
-
-    /**
-     * @name getQdcount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return qdcount.
-     *
-     * @returns {Number} The current value of the qdcount variable..
-     */
-	function getQdcount () {
-		return qdcount;
-	}
-
-    /**
-     * @name setQdcount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for qdcount.
-     *
-     * @param {Number} _qdcount The number of questions for the DNS message.
-     */
-	function setQdcount (_qdcount) {
-		if (_qdcount === null) {
-			throw ErrorFactory('DNS Header qdcount cannot be null', null);
-		}
-		qdcount = _qdcount;
-	}
-
-    /**
-     * @name getAncount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return ancount.
-     *
-     * @returns {Number} The current value of the ancount variable..
-     */
-	function getAncount () {
-		return ancount;
-	}
-
-    /**
-     * @name setAncount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for ancount.
-     *
-     * @param {Number} _ancount The number of answer records for the DNS message.
-     */
-	function setAncount (_ancount) {
-		if (_ancount === null) {
-			throw ErrorFactory('DNS Header ancount cannot be null', null);
-		}
-		ancount = _ancount;
-	}
-
-    /**
-     * @name getNscount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return nscount.
-     *
-     * @returns {Number} The current value of the nscount variable..
-     */
-	function getNscount () {
-		return nscount;
-	}
-
-    /**
-     * @name setNscount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for nscount.
-     *
-     * @param {Number} _nscount The number of nameserver records for the DNS message.
-     */
-	function setNscount (_nscount) {
-		if (_nscount === null) {
-			throw ErrorFactory('DNS Header nscount cannot be null', null);
-		}
-		nscount = _nscount;
-	}
-
-    /**
-     * @name getArcount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return arcount.
-     *
-     * @returns {Number} The current value of the arcount variable..
-     */
-	function getArcount () {
-		return arcount;
-	}
-
-    /**
-     * @name setArcount
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for arcount.
-     *
-     * @param {Number} _arcount The number of additional records for the DNS message.
-     */
-	function setArcount (_arcount) {
-		if (_arcount === null) {
-			throw ErrorFactory('DNS Header arcount cannot be null', null);
-		}
-		arcount = _arcount;
-	}
-
-    /**
-     * @name getHeaderLength
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return headerLength.
-     *
-     * @returns {Number} The current value of the headerLength variable..
-     */
-	function getHeaderLength () {
-		return headerLength;
-	}
-
-    /**
-     * @name setHeaderLength
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the setter method for headerLength.
-     *
-     * @param {Number} length The length of the header for the DNS message. (Per RFC 1035 this could always be 12)
-     */
-	function setHeaderLength (length) {
-		headerLength = length;
 	}
 
     /**
@@ -674,24 +535,24 @@ function DNSMesageHeader () {
      *
      * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
      */
-	function decodeDNSHeaderFromMessage (data) {
+	decodeDNSHeaderFromMessage (data) {
 		let index = 0;
-		setId(Utilities.decode16BitValue(data[index++], data[index++]));
+		this.id = Utilities.decode16BitValue(data[index++], data[index++]);
 		let flagHighByte = data[index++];
 		let flagLowByte = data[index++];
-		setQr(decodeQr(flagHighByte));
-		setOpcode(decodeOpcode(flagHighByte));
-		setAa(decodeAa(flagHighByte));
-		setTc(decodeTc(flagHighByte));
-		setRd(decodeRd(flagHighByte));
-		setRa(decodeRa(flagLowByte));
+		this.qr = this._decodeQr(flagHighByte);
+		this.opcode = this._decodeOpcode(flagHighByte);
+		this.aa = this._decodeAa(flagHighByte);
+		this.tc = this._decodeTc(flagHighByte);
+		this.rd = this._decodeRd(flagHighByte);
+		this.ra = this._decodeRa(flagLowByte);
         // We do not decode the Z value because it is always 0 per RFC 1035 4.1.1
-		setRcode(decodeRcode(flagLowByte));
-		setQdcount(Utilities.decode16BitValue(data[index++], data[index++]));
-		setAncount(Utilities.decode16BitValue(data[index++], data[index++]));
-		setNscount(Utilities.decode16BitValue(data[index++], data[index++]));
-		setArcount(Utilities.decode16BitValue(data[index++], data[index++]));
-		setHeaderLength(index);
+		this.rcode = this._decodeRcode(flagLowByte);
+		this.qdcount = Utilities.decode16BitValue(data[index++], data[index++]);
+		this.ancount = Utilities.decode16BitValue(data[index++], data[index++]);
+		this.nscount = Utilities.decode16BitValue(data[index++], data[index++]);
+		this.arcount = Utilities.decode16BitValue(data[index++], data[index++]);
+		this.headerLength = index;
 	}
 
     /**
@@ -703,21 +564,21 @@ function DNSMesageHeader () {
      *
      * @param {Object} dnsHeaderInfo This is an object containing the properties for the DNS header.
      */
-	function setHeaderProperties (dnsHeaderInfo) {
-		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? generateRandomID() : dnsHeaderInfo.id;
-		setId(_id);
-		setQr(dnsHeaderInfo.qr);
-		setOpcode(dnsHeaderInfo.opcode);
-		setAa(dnsHeaderInfo.aa);
-		setTc(dnsHeaderInfo.tc);
-		setRd(dnsHeaderInfo.rd);
-		setRa(dnsHeaderInfo.ra);
+	setHeaderProperties (dnsHeaderInfo) {
+		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? DNSMesageHeader.generateRandomID() : dnsHeaderInfo.id;
+		this.id = (_id);
+		this.qr = (dnsHeaderInfo.qr);
+		this.opcode = (dnsHeaderInfo.opcode);
+		this.aa = (dnsHeaderInfo.aa);
+		this.tc = (dnsHeaderInfo.tc);
+		this.rd = (dnsHeaderInfo.rd);
+		this.ra = (dnsHeaderInfo.ra);
 		// Z value because it is always 0 per RFC 1035 4.1.1
-		setRcode(dnsHeaderInfo.rcode);
-		setQdcount(dnsHeaderInfo.qdcount);
-		setAncount(dnsHeaderInfo.ancount);
-		setNscount(dnsHeaderInfo.nscount);
-		setArcount(dnsHeaderInfo.arcount);
+		this.rcode = dnsHeaderInfo.rcode;
+		this.qdcount = dnsHeaderInfo.qdcount;
+		this.ancount = dnsHeaderInfo.ancount;
+		this.nscount = dnsHeaderInfo.nscount;
+		this.arcount = dnsHeaderInfo.arcount;
 	};
 
     /**
@@ -731,88 +592,54 @@ function DNSMesageHeader () {
      *
      * @returns {Uint8Array} An array of bytes representing the DNS Header.
      */
-	function encodeHeaderForMessage (dnsHeaderInfo) {
+	encodeHeaderForMessage (dnsHeaderInfo) {
 		dnsHeaderInfo = dnsHeaderInfo || {};
-		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? getId() : dnsHeaderInfo.id;
+		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? this.id : dnsHeaderInfo.id;
 		if (Utilities.isNullOrUndefined(_id)) {
-			_id = generateRandomID();
+			_id = DNSMesageHeader.generateRandomID();
 		}
-		setId(_id);
-		setQr(Utilities.isNullOrUndefined(dnsHeaderInfo.qr) ? getQr() : dnsHeaderInfo.qr);
-		setOpcode(Utilities.isNullOrUndefined(dnsHeaderInfo.opcode) ? getOpcode() : dnsHeaderInfo.opcode);
-		setAa(Utilities.isNullOrUndefined(dnsHeaderInfo.aa) ? getAa() : dnsHeaderInfo.aa);
-		setTc(Utilities.isNullOrUndefined(dnsHeaderInfo.tc) ? getTc() : dnsHeaderInfo.tc);
-		setRd(Utilities.isNullOrUndefined(dnsHeaderInfo.rd) ? getRd() : dnsHeaderInfo.rd);
-		setRa(Utilities.isNullOrUndefined(dnsHeaderInfo.ra) ? getRa() : dnsHeaderInfo.ra);
+		this.id = _id;
+		this.qr = (Utilities.isNullOrUndefined(dnsHeaderInfo.qr) ? this.qr : dnsHeaderInfo.qr);
+		this.opcode = (Utilities.isNullOrUndefined(dnsHeaderInfo.opcode) ? this.opcode : dnsHeaderInfo.opcode);
+		this.aa = (Utilities.isNullOrUndefined(dnsHeaderInfo.aa) ? this.aa : dnsHeaderInfo.aa);
+		this.tc = (Utilities.isNullOrUndefined(dnsHeaderInfo.tc) ? this.tc : dnsHeaderInfo.tc);
+		this.rd = (Utilities.isNullOrUndefined(dnsHeaderInfo.rd) ? this.rd : dnsHeaderInfo.rd);
+		this.ra = (Utilities.isNullOrUndefined(dnsHeaderInfo.ra) ? this.ra : dnsHeaderInfo.ra);
 		// Z value because it is always 0 per RFC 1035 4.1.1
-		setRcode(Utilities.isNullOrUndefined(dnsHeaderInfo.rcode) ? getRcode() : dnsHeaderInfo.rcode);
-		setQdcount(Utilities.isNullOrUndefined(dnsHeaderInfo.qdcount) ? getQdcount() : dnsHeaderInfo.qdcount);
-		setAncount(Utilities.isNullOrUndefined(dnsHeaderInfo.ancount) ? getAncount() : dnsHeaderInfo.ancount);
-		setNscount(Utilities.isNullOrUndefined(dnsHeaderInfo.nscount) ? getNscount() : dnsHeaderInfo.nscount);
-		setArcount(Utilities.isNullOrUndefined(dnsHeaderInfo.arcount) ? getArcount() : dnsHeaderInfo.arcount);
+		this.rcode = (Utilities.isNullOrUndefined(dnsHeaderInfo.rcode) ? this.rcode : dnsHeaderInfo.rcode);
+		this.qdcount = (Utilities.isNullOrUndefined(dnsHeaderInfo.qdcount) ? this.qdcount : dnsHeaderInfo.qdcount);
+		this.ancount = (Utilities.isNullOrUndefined(dnsHeaderInfo.ancount) ? this.ancount : dnsHeaderInfo.ancount);
+		this.nscount = (Utilities.isNullOrUndefined(dnsHeaderInfo.nscount) ? this.nscount : dnsHeaderInfo.nscount);
+		this.arcount = (Utilities.isNullOrUndefined(dnsHeaderInfo.arcount) ? this.arcount : dnsHeaderInfo.arcount);
 
 		let headerBuffer = new Uint8Array(12);
-		let idBytes = Utilities.encode16BitValue(getId());
+		let idBytes = Utilities.encode16BitValue(this.id);
 		let offset = 0;
 		headerBuffer.set(idBytes, offset);
 		offset += idBytes.length;
-		let flagBytes = encodeFlagBytes(getQr(), getOpcode().value, getAa(), getTc(), getRd(), getRa(), getZ(), getRcode().value);
+		let flagBytes = this._encodeFlagBytes(this.qr, this.opcode.value, this.aa, this.tc, this.rd, this.ra, this.z, this.rcode.value);
 		headerBuffer.set(flagBytes, offset);
 		offset += flagBytes.length;
-		let qdBytes = Utilities.encode16BitValue(getQdcount());
+		let qdBytes = Utilities.encode16BitValue(this.qdcount);
 		headerBuffer.set(qdBytes, offset);
 		offset += qdBytes.length;
-		let anBytes = Utilities.encode16BitValue(getAncount());
+		let anBytes = Utilities.encode16BitValue(this.ancount);
 		headerBuffer.set(anBytes, offset);
 		offset += anBytes.length;
-		let nsBytes = Utilities.encode16BitValue(getNscount());
+		let nsBytes = Utilities.encode16BitValue(this.nscount);
 		headerBuffer.set(nsBytes, offset);
 		offset += nsBytes.length;
-		let arBytes = Utilities.encode16BitValue(getArcount());
+		let arBytes = Utilities.encode16BitValue(this.arcount);
 		headerBuffer.set(arBytes, offset);
 		offset += arBytes.length;
-		setHeaderLength(headerBuffer.length);
+		this.headerLength = headerBuffer.length;
 
 		return headerBuffer;
 	}
 
-	function generateRandomID () {
+	static generateRandomID () {
 		return Math.floor(Math.random() * (0xFFFF - 0x0001)) + 0x0001;
 	}
-
-	return {
-		getId: getId,
-		setId: setId,
-		getQr: getQr,
-		setQr: setQr,
-		getOpcode: getOpcode,
-		setOpcode: setOpcode,
-		getAa: getAa,
-		setAa: setAa,
-		getTc: getTc,
-		setTc: setTc,
-		getRd: getRd,
-		setRd: setRd,
-		getRa: getRa,
-		setRa: setRa,
-		getZ: getZ,
-        // setZ: setZ,
-		getRcode: getRcode,
-		setRcode: setRcode,
-		getQdcount: getQdcount,
-		setQdcount: setQdcount,
-		getAncount: getAncount,
-		setAncount: setAncount,
-		getNscount: getNscount,
-		setNscount: setNscount,
-		getArcount: getArcount,
-		setArcount: setArcount,
-		getHeaderLength: getHeaderLength,
-		decodeDNSHeaderFromMessage: decodeDNSHeaderFromMessage,
-		setHeaderProperties: setHeaderProperties,
-		encodeHeaderForMessage: encodeHeaderForMessage,
-		generateRandomID: generateRandomID
-	};
 }
 
 module.exports = DNSMesageHeader;

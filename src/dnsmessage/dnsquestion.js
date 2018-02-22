@@ -17,86 +17,38 @@ const ErrorFactory = require('../error');
  *
  * @description A representation of a DNS message question and functions for encoding this data for reading and decoding this data for transmission.
  */
-function DNSMesageQuestion () {
+class DNSMesageQuestion {
+	DNSMesageQuestion () {
+		this._qname = null;
+		this._qtype = null;
+		this._qclass = null;
+		this._questionStartIndex = null;
+		this._questionLength = null;
+		this._index = 0;
+	}
     /**
-     * @name qname
-     * @access private
+     * @name qname Getter
+     * @access public
      * @type {String}
      *
      * @description A domain name represented as a sequence of labels, where each label consists of a length octet followed by that number of octets. The domain name terminates with the zero length octet for the null label of the root. Note that this field may be an odd number of octets; no padding is used.
      */
-	let qname = null;
+	get qname () {
+		return this._qname;
+	}
 
     /**
-     * @name qtype
-     * @access private
-     * @type {Object}
-     *
-     * @description A two octet code which specifies the type of the query. The values for this field include all codes valid for a TYPE field, together with some more general codes which can match more than one type of RR.
-     */
-	let qtype = null;
-
-    /**
-     * @name qclass
-     * @access private
-     * @type {Object}
-     *
-     * @description A two octet code that specifies the class of the query. For example, the QCLASS field is IN for the Internet.
-     */
-	let qclass = null;
-
-    /**
-     * @name questionStartIndex
-     * @access private
-     * @type {Number}
-     *
-     * @description This is the absolute position in the byte array where this question begins.
-     */
-	let questionStartIndex = null;
-
-    /**
-     * @name questionLength
-     * @access private
-     * @type {Number}
-     *
-     * @description This is the length of the question in bytes.
-     */
-	let questionLength = null;
-
-    /**
-     * @name index
-     * @access private
-     * @type {Number}
-     *
-     * @description This variable is used to keep track of the current index as we parse the question data.
-     */
-	let index = 0;
-
-    /**
-     * @name getQname
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method to return qname.
-     *
-     * @returns {String} The current value of the qname variable..
-     */
-	function getQname () {
-		return qname;
-	};
-
-    /**
-     * @name setQname
+     * @name qname Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for qname.
      *
-     * @param {String} _qname A string of labels delimited by a . character.
+     * @param {String} _q A string of labels delimited by a . character.
      */
-	function setQname (_qname) {
-		qname = _qname;
-	};
+	set qname (_q) {
+		this._qname = _q;
+	}
 
     /**
      * @name decodeQname
@@ -109,88 +61,82 @@ function DNSMesageQuestion () {
      *
      * @returns {String} A period delimited list of labels with the TLD in the last index.
      */
-	function decodeQname (qNameBytes) {
-		let qNameData = DNSUtils.decodeName(qNameBytes, index);
-		index = qNameData.indexPosPostReading;
+	decodeQname (qNameBytes) {
+		let qNameData = DNSUtils.decodeName(qNameBytes, this.index);
+		this.index = qNameData.indexPosPostReading;
 		return qNameData.name.join('.');
 	};
 
     /**
-     * @name getQtype
+     * @name qtype Getter
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return qtype.
-     *
-     * @returns {Object} The current value of the qtype variable.
+     * @description A two octet code which specifies the type of the query. The values for this field include all codes valid for a TYPE field, together with some more general codes which can match more than one type of RR.
      */
-	function getQtype () {
-		return qtype;
-	};
+	get qtype () {
+		return this._qtype;
+	}
 
     /**
-     * @name setQtype
+     * @name qtype Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for qtype.
      *
-     * @param {Object | Number} _qtype An object representing the QType from the QTypes module.
+     * @param {Object | Number} _q An object representing the QType from the QTypes module.
      */
-	function setQtype (_qtype) {
-		if (Utilities.isNullOrUndefined(_qtype) === true) {
+	set qtype (_q) {
+		if (Utilities.isNullOrUndefined(_q) === true) {
 			throw ErrorFactory('DNS Question type cannot be null', null);
 		}
-		if (_qtype.value === undefined) {
-			_qtype = Types.findTypeByValue(parseInt(_qtype));
+		if (_q.value === undefined) {
+			_q = Types.findTypeByValue(parseInt(_q));
 		}
-		qtype = _qtype;
+		this._qtype = _q;
 	};
 
     /**
-     * @name getQclass
+     * @name qclass Getter
      * @access public
-     * @type {Function}
+     * @type {Object}
      *
-     * @description This is the getter method to return qclass.
-     *
-     * @returns {Object} The current value of the qclass variable.
+     * @description A two octet code that specifies the class of the query. For example, the QCLASS field is IN for the Internet.
      */
-	function getQclass () {
-		return qclass;
-	};
+	get qclass () {
+		return this._qclass;
+	}
 
     /**
-     * @name setQclass
+     * @name qclass Setter
      * @access public
      * @type {Function}
      *
      * @description This is the setter method for qclass.
      *
-     * @param {Object | Number} _qclass An object representing the QClass from the QClasses module.
+     * @param {Object | Number} _q An object representing the QClass from the QClasses module.
      */
-	function setQclass (_qclass) {
-		if (Utilities.isNullOrUndefined(_qclass) === true) {
+	set qclass (_q) {
+		if (Utilities.isNullOrUndefined(_q) === true) {
 			throw ErrorFactory('DNS Question class cannot be null', null);
 		}
-		if (_qclass.value === undefined) {
-			_qclass = Classes.findClassByValue(parseInt(_qclass));
+		if (_q.value === undefined) {
+			_q = Classes.findClassByValue(parseInt(_q));
 		}
-		qclass = _qclass;
+		this._qclass = _q;
 	};
 
     /**
-     * @name getQuestionStartIndex
+     * @name questionStartIndex Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return questionStartIndex.
-     *
-     * @returns {Number} The current value of the questionStartIndex variable.
+     * @description This is the absolute position in the byte array where this question begins.
      */
-	function getQuestionStartIndex () {
-		return questionStartIndex;
-	};
+	get questionStartIndex () {
+		return this._questionStartIndex;
+	}
 
     /**
      * @name setQuestionStartIndex
@@ -201,22 +147,20 @@ function DNSMesageQuestion () {
      *
      * @param {Number} index An integer representing the starting index of this question relative to the whole message.
      */
-	function setQuestionStartIndex (index) {
-		questionStartIndex = index;
+	set questionStartIndex (index) {
+		this._questionStartIndex = index;
 	};
 
     /**
-     * @name getQuestionLength
+     * @name questionLength Getter
      * @access public
-     * @type {Function}
+     * @type {Number}
      *
-     * @description This is the getter method to return questionLength.
-     *
-     * @returns {Number} The current value of the questionLength variable.
+     * @description This is the length of the question in bytes.
      */
-	function getQuestionLength () {
-		return questionLength;
-	};
+	get questionLength () {
+		return this._questionLength;
+	}
 
     /**
      * @name setQuestionLength
@@ -227,9 +171,32 @@ function DNSMesageQuestion () {
      *
      * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
-	function setQuestionLength (length) {
-		questionLength = length;
+	set questionLength (length) {
+		this._questionLength = length;
 	};
+
+    /**
+     * @name index Getter
+     * @access public
+     * @type {Number}
+     *
+     * @description This variable is used to keep track of the current index as we parse the question data.
+     */
+	get index () {
+		return this._index;
+	}
+
+    /**
+     * @name index Setter
+     * @access public
+     * @type {Number}
+     *
+     * @description This variable is used to keep track of the current index as we parse the question data.
+     * @param {Number} index is the current index of the DNS Question, used for parsing.
+     */
+	set index (index) {
+		this._index = index;
+	}
 
     /**
      * @name setQuestionProperties
@@ -240,11 +207,11 @@ function DNSMesageQuestion () {
      *
      * @param {Object} dnsQuestionInfo This is an object containing the properties for the DNS question.
      */
-	function setQuestionProperties (dnsQuestionInfo) {
-		setQname(dnsQuestionInfo.qname);
-		setQtype(dnsQuestionInfo.qtype);
-		setQclass(dnsQuestionInfo.qclass);
-	};
+	setQuestionProperties (dnsQuestionInfo) {
+		this.qname = dnsQuestionInfo.qname;
+		this.qtype = dnsQuestionInfo.qtype;
+		this.qclass = dnsQuestionInfo.qclass;
+	}
 
     /**
      * @name decodeDNSQuestionFromMessage
@@ -256,13 +223,13 @@ function DNSMesageQuestion () {
      * @param {Uint8Array} data This is an array containing the bytes of the complete DNS message.
      * @param {Number} offset This is an integer representing the offset to be used for parsing the question data.
      */
-	function decodeDNSQuestionFromMessage (data, offset) {
-		index = offset;
-		setQuestionStartIndex(index);
-		setQname(decodeQname(data));
-		setQtype(Utilities.decode16BitValue(data[index++], data[index++]));
-		setQclass(Utilities.decode16BitValue(data[index++], data[index++]));
-		setQuestionLength(index - offset);
+	decodeDNSQuestionFromMessage (data, offset) {
+		this.index = offset;
+		this.questionStartIndex = this.index;
+		this.qname = this.decodeQname(data);
+		this.qtype = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
+		this.qclass = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
+		this.questionLength = this.index - offset;
 	};
 
     /**
@@ -277,19 +244,19 @@ function DNSMesageQuestion () {
      *
      * @returns {Uint8Array} An array of bytes representing the DNS Question.
      */
-	function encodeQuestionForMessage (dnsQuestionInfo, startIndex) {
+	encodeQuestionForMessage (dnsQuestionInfo, startIndex) {
 		dnsQuestionInfo = dnsQuestionInfo || {};
-		setQname(Utilities.isNullOrUndefined(dnsQuestionInfo.qname) ? getQname() : dnsQuestionInfo.qname);
-		setQtype(Utilities.isNullOrUndefined(dnsQuestionInfo.qtype) ? getQtype() : dnsQuestionInfo.qtype);
-		setQclass(Utilities.isNullOrUndefined(dnsQuestionInfo.qclass) ? getQclass() : dnsQuestionInfo.qclass);
+		this.qname = (Utilities.isNullOrUndefined(dnsQuestionInfo.qname) ? this.qname : dnsQuestionInfo.qname);
+		this.qtype = (Utilities.isNullOrUndefined(dnsQuestionInfo.qtype) ? this.qtype : dnsQuestionInfo.qtype);
+		this.qclass = (Utilities.isNullOrUndefined(dnsQuestionInfo.qclass) ? this.qclass : dnsQuestionInfo.qclass);
 
 		let qLength = 0;
 		let offset = 0;
-		let qname = DNSUtils.encodeName(getQname());
+		let qname = DNSUtils.encodeName(this.qname);
 		qLength += qname.length;
-		let qtype = Utilities.encode16BitValue(getQtype().value);
+		let qtype = Utilities.encode16BitValue(this.qtype.value);
 		qLength += qtype.length;
-		let qclass = Utilities.encode16BitValue(getQclass().value);
+		let qclass = Utilities.encode16BitValue(this.qclass.value);
 		qLength += qclass.length;
 
 		let questionBuffer = new Uint8Array(qLength);
@@ -301,25 +268,11 @@ function DNSMesageQuestion () {
 		questionBuffer.set(qclass, offset);
 		offset += qclass.length;
 
-		setQuestionLength(questionBuffer.length);
-		setQuestionStartIndex(startIndex);
+		this.questionLength = questionBuffer.length;
+		this.questionStartIndex = startIndex;
 
 		return questionBuffer;
-	};
-
-	return {
-		getQname: getQname,
-		setQname: setQname,
-		getQtype: getQtype,
-		setQtype: setQtype,
-		getQclass: getQclass,
-		setQclass: setQclass,
-		getQuestionLength: getQuestionLength,
-		getQuestionStartIndex: getQuestionStartIndex,
-		setQuestionProperties: setQuestionProperties,
-		decodeDNSQuestionFromMessage: decodeDNSQuestionFromMessage,
-		encodeQuestionForMessage: encodeQuestionForMessage
-	};
+	}
 }
 
 module.exports = DNSMesageQuestion;

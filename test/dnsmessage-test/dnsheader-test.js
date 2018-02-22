@@ -45,12 +45,11 @@ describe('dns-header', () => {
 	it('When decoding the test question above using the DNSHeader class should set the header length to the length of a DNS header section.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getHeaderLength()).to.equal(0x0C);
+		expect(header.headerLength).to.equal(0x0C);
 	});
 	it('The DNSHeader class should generate a random id less than or equal to 0xFFFF and greater than or equal to 0x0001', () => {
-		let header = new DNSHeader();
 		for (let i = 0; i < 1000000; i++) {
-			var id = header.generateRandomID();
+			var id = DNSHeader.generateRandomID();
 			expect(id).to.be.at.least(0x0001);
 			expect(id).to.be.at.most(0xFFFF);
 		}
@@ -59,138 +58,138 @@ describe('dns-header', () => {
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ID field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getId()).to.equal(0xb16a);
+		expect(header.id).to.equal(0xb16a);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the QR field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getQr()).to.equal(0x00);
+		expect(header.qr).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Opcode field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getOpcode().value).to.equal(0x00);
+		expect(header.opcode.value).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the AA field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getAa()).to.equal(0x00);
+		expect(header.aa).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the TC field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getTc()).to.equal(0x00);
+		expect(header.tc).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the RD field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getRd()).to.equal(0x01);
+		expect(header.rd).to.equal(0x01);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the RA field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getRa()).to.equal(0x00);
+		expect(header.ra).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Z field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getZ()).to.equal(0x00);
+		expect(header.z).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the Rcode field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getRcode().value).to.equal(0x00);
+		expect(header.rcode.value).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the QDcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getQdcount()).to.equal(0x01);
+		expect(header.qdcount).to.equal(0x01);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ANcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getAncount()).to.equal(0x00);
+		expect(header.ancount).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the NScount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getNscount()).to.equal(0x00);
+		expect(header.nscount).to.equal(0x00);
 	});
 	it('When decoding the test question above using the DNSHeader class should decode the byte array of the question above and populate the ARcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.getArcount()).to.equal(0x00);
+		expect(header.arcount).to.equal(0x00);
 	});
   // Response
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ID field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getId()).to.equal(0xb16a);
+		expect(header.id).to.equal(0xb16a);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the QR field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getQr()).to.equal(0x01);
+		expect(header.qr).to.equal(0x01);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Opcode field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getOpcode().value).to.equal(0x00);
+		expect(header.opcode.value).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the AA field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getAa()).to.equal(0x00);
+		expect(header.aa).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the TC field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getTc()).to.equal(0x00);
+		expect(header.tc).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the RD field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getRd()).to.equal(0x01);
+		expect(header.rd).to.equal(0x01);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the RA field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getRa()).to.equal(0x01);
+		expect(header.ra).to.equal(0x01);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Z field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getZ()).to.equal(0x00);
+		expect(header.z).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the Rcode field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getRcode().value).to.equal(0x00);
+		expect(header.rcode.value).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the QDcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getQdcount()).to.equal(0x01);
+		expect(header.qdcount).to.equal(0x01);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ANcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getAncount()).to.equal(0x01);
+		expect(header.ancount).to.equal(0x01);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the NScount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getNscount()).to.equal(0x00);
+		expect(header.nscount).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and populate the ARcount field.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getArcount()).to.equal(0x00);
+		expect(header.arcount).to.equal(0x00);
 	});
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.getHeaderLength()).to.equal(12);
+		expect(header.headerLength).to.equal(12);
 	});
 	it('When encoding the test response above using the DNSHeader class should encode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.', () => {
 		let encodedHeader = new DNSHeader();
@@ -210,7 +209,7 @@ describe('dns-header', () => {
 			arcount: 0
 		};
 		encodedHeader.encodeHeaderForMessage(headerData);
-		expect(encodedHeader.getHeaderLength()).to.equal(12);
+		expect(encodedHeader.headerLength).to.equal(12);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical id values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -232,7 +231,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getId()).to.equal(decodedHeader.getId());
+		expect(encodedHeader.id).to.equal(decodedHeader.id);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical qr values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -254,7 +253,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getQr()).to.equal(decodedHeader.getQr());
+		expect(encodedHeader.qr).to.equal(decodedHeader.qr);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical opcode values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -276,7 +275,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getOpcode()).to.equal(decodedHeader.getOpcode());
+		expect(encodedHeader.opcode).to.equal(decodedHeader.opcode);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical aa values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -298,7 +297,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getAa()).to.equal(decodedHeader.getAa());
+		expect(encodedHeader.aa).to.equal(decodedHeader.aa);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical tc values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -320,7 +319,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getTc()).to.equal(decodedHeader.getTc());
+		expect(encodedHeader.tc).to.equal(decodedHeader.tc);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical rd values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -342,7 +341,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getRd()).to.equal(decodedHeader.getRd());
+		expect(encodedHeader.rd).to.equal(decodedHeader.rd);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical ra values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -364,7 +363,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getRa()).to.equal(decodedHeader.getRa());
+		expect(encodedHeader.ra).to.equal(decodedHeader.ra);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical z values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -386,7 +385,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getZ()).to.equal(decodedHeader.getZ());
+		expect(encodedHeader.z).to.equal(decodedHeader.z);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical rcode values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -408,7 +407,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getRcode()).to.equal(decodedHeader.getRcode());
+		expect(encodedHeader.rcode).to.equal(decodedHeader.rcode);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical qdcount values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -430,7 +429,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getQdcount()).to.equal(decodedHeader.getQdcount());
+		expect(encodedHeader.qdcount).to.equal(decodedHeader.qdcount);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical ancount values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -452,7 +451,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getAncount()).to.equal(decodedHeader.getAncount());
+		expect(encodedHeader.ancount).to.equal(decodedHeader.ancount);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical nscount values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -474,7 +473,7 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getNscount()).to.equal(decodedHeader.getNscount());
+		expect(encodedHeader.nscount).to.equal(decodedHeader.nscount);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical arcount values.", () => {
 		let encodedHeader = new DNSHeader();
@@ -496,6 +495,6 @@ describe('dns-header', () => {
 		encodedHeader.encodeHeaderForMessage(headerData);
 		let decodedHeader = new DNSHeader();
 		decodedHeader.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(encodedHeader.getArcount()).to.equal(decodedHeader.getArcount());
+		expect(encodedHeader.arcount).to.equal(decodedHeader.arcount);
 	});
 });

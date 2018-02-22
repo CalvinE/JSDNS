@@ -36,9 +36,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, offset);
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		expect(offset).to.equal(testResponseDNSPacket.length);
@@ -50,12 +50,12 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, offset);
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
-		expect(question.getQname()).to.equal(resourceRecord.getName());
+		expect(question.qname).to.equal(resourceRecord.getName());
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the type in the answer should equal the type in the query.', () => {
 		let header = new DNSHeader();
@@ -64,12 +64,12 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, offset);
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
-		expect(question.getQtype()).to.equal(resourceRecord.getType());
+		expect(question.qtype).to.equal(resourceRecord.getType());
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the class in the answer should equal the class in the query.', () => {
 		let header = new DNSHeader();
@@ -78,12 +78,12 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, offset);
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
-		expect(question.getQclass()).to.equal(resourceRecord.getRRclass());
+		expect(question.qclass).to.equal(resourceRecord.getRRclass());
 	});
 	it('When decoding the test response above using the DNSResourceRecord class the ttl should be parsed properly.', () => {
 		let header = new DNSHeader();
@@ -92,9 +92,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
-		question.decodeDNSQuestionFromMessage(data, header.getHeaderLength());
-		offset += question.getQuestionLength();
+		offset += header.headerLength;
+		question.decodeDNSQuestionFromMessage(data, offset);
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		expect(resourceRecord.getTtl()).to.equal(0x9A);
@@ -106,9 +106,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		let offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
+		offset += header.headerLength;
 		question.decodeDNSQuestionFromMessage(data, offset);
-		offset += question.getQuestionLength();
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		let encodedResourceRecord = new DNSResourceRecord();
@@ -129,9 +129,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		let offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
+		offset += header.headerLength;
 		question.decodeDNSQuestionFromMessage(data, offset);
-		offset += question.getQuestionLength();
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		let encodedResourceRecord = new DNSResourceRecord();
@@ -152,9 +152,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		let offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
+		offset += header.headerLength;
 		question.decodeDNSQuestionFromMessage(data, offset);
-		offset += question.getQuestionLength();
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		let encodedResourceRecord = new DNSResourceRecord();
@@ -175,9 +175,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		let offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
+		offset += header.headerLength;
 		question.decodeDNSQuestionFromMessage(data, offset);
-		offset += question.getQuestionLength();
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		let encodedResourceRecord = new DNSResourceRecord();
@@ -198,9 +198,9 @@ describe('dns-resourcerecord', () => {
 		let data = getTestResponseDNSPacketBuffer();
 		let offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.getHeaderLength();
+		offset += header.headerLength;
 		question.decodeDNSQuestionFromMessage(data, offset);
-		offset += question.getQuestionLength();
+		offset += question.questionLength;
 		resourceRecord.decodeDNSResourceRecordFromMessage(data, offset);
 		offset += resourceRecord.getResourceRecordLength();
 		let encodedResourceRecord = new DNSResourceRecord();

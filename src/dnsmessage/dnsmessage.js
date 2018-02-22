@@ -218,6 +218,8 @@ function DNSMessage () {
      * @function
      *
      * @description This function validates the message to make sure it is a valid query and the header flags are not set in a strange way.
+	 * 
+	 * TODO: WTF is this doing?
      *
      * @returns {Boolean} returns true if it is a valid query and false if not.
      */
