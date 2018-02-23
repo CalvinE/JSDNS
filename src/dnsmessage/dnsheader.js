@@ -10,14 +10,14 @@ const Utilities = require('../utilities');
 const ErrorFactory = require('../error');
 
 /**
- * @name DNSMesageHeader
- * @class {DNSMesageHeader} DNSMesageHeader
+ * @name DNSHeader
+ * @class {DNSHeader} DNSHeader
  * @access public
  *
  * @description A representation of a DNS message header and functions for encoding this data for reading and decoding this data for transmission.
  */
-class DNSMesageHeader {
-	DNSMesageHeader () {
+class DNSHeader {
+	constructor () {
 		this._id = null;
 		this._qr = null;
 		this._opcode = null;
@@ -30,7 +30,7 @@ class DNSMesageHeader {
 		this._ancount = null;
 		this._nscount = null;
 		this._arcount = null;
-		this._headerLength = null;
+		this._length = null;
 	}
     /**
      * @name id Getter
@@ -479,27 +479,27 @@ class DNSMesageHeader {
 	}
 
     /**
-     * @name headerLength Getter
+     * @name length Getter
      * @access public
      * @type {Number}
      *
      * @description This is the length in bytes of the header.
      */
-	get headerLength () {
-		return this._headerLength;
+	get length () {
+		return this._length;
 	}
 
     /**
-     * @name headerLength
+     * @name length
      * @access public
      * @type {Function}
      *
-     * @description This is the setter method for headerLength.
+     * @description This is the setter method for length.
      *
      * @param {Number} length The length of the header for the DNS message. (Per RFC 1035 this could always be 12)
      */
-	set headerLength (length) {
-		this._headerLength = length;
+	set length (length) {
+		this._length = length;
 	}
 
     /**
@@ -552,7 +552,7 @@ class DNSMesageHeader {
 		this.ancount = Utilities.decode16BitValue(data[index++], data[index++]);
 		this.nscount = Utilities.decode16BitValue(data[index++], data[index++]);
 		this.arcount = Utilities.decode16BitValue(data[index++], data[index++]);
-		this.headerLength = index;
+		this.length = index;
 	}
 
     /**
@@ -565,7 +565,7 @@ class DNSMesageHeader {
      * @param {Object} dnsHeaderInfo This is an object containing the properties for the DNS header.
      */
 	setHeaderProperties (dnsHeaderInfo) {
-		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? DNSMesageHeader.generateRandomID() : dnsHeaderInfo.id;
+		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? DNSHeader.generateRandomID() : dnsHeaderInfo.id;
 		this.id = (_id);
 		this.qr = (dnsHeaderInfo.qr);
 		this.opcode = (dnsHeaderInfo.opcode);
@@ -596,7 +596,7 @@ class DNSMesageHeader {
 		dnsHeaderInfo = dnsHeaderInfo || {};
 		let _id = Utilities.isNullOrUndefined(dnsHeaderInfo.id) ? this.id : dnsHeaderInfo.id;
 		if (Utilities.isNullOrUndefined(_id)) {
-			_id = DNSMesageHeader.generateRandomID();
+			_id = DNSHeader.generateRandomID();
 		}
 		this.id = _id;
 		this.qr = (Utilities.isNullOrUndefined(dnsHeaderInfo.qr) ? this.qr : dnsHeaderInfo.qr);
@@ -632,7 +632,7 @@ class DNSMesageHeader {
 		let arBytes = Utilities.encode16BitValue(this.arcount);
 		headerBuffer.set(arBytes, offset);
 		offset += arBytes.length;
-		this.headerLength = headerBuffer.length;
+		this.length = headerBuffer.length;
 
 		return headerBuffer;
 	}
@@ -642,4 +642,4 @@ class DNSMesageHeader {
 	}
 }
 
-module.exports = DNSMesageHeader;
+module.exports = DNSHeader;

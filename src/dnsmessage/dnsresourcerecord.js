@@ -18,19 +18,19 @@ const ErrorFactory = require('../error');
  * @description A representation of a DNS message resource record (RR) and functions for encoding this data for reading and decoding this data for transmission.
  */
 class DNSResourceRecord {
-    DNSResourceRecord () {
-        this._name = null;
-        this._type = null;
-        this._rrClass = null;
-        this._ttl = null;
-        this._rdLength = null;
-        this._rData = null;
-        this._resourceRecordStartIndex = null;
-        this._resourceRecordLength = null;
-        this._index = 0;
-        this._isAuthoritative = false;
-        this._cacheExpiration = null;
-    }
+	constructor () {
+		this._name = null;
+		this._type = null;
+		this._rrClass = null;
+		this._ttl = null;
+		this._rdLength = null;
+		this._rData = null;
+		this._resourceRecordStartIndex = null;
+		this._length = null;
+		this._index = 0;
+		this._isAuthoritative = false;
+		this._cacheExpiration = null;
+	}
     /**
      * @name name Getter
      * @access public
@@ -39,8 +39,8 @@ class DNSResourceRecord {
      * @description an owner name, i.e., the name of the node to which this resource record pertains.
      */
 	get name () {
-        return this._name;
-    }
+		return this._name;
+	}
 
     /**
      * @name name Setter
@@ -78,8 +78,8 @@ class DNSResourceRecord {
      * @description A two octet code which specifies the type of the resource record. The values for this field include all codes valid for a TYPE field, together with some more general codes which can match more than one type of RR.
      */
 	get type () {
-        return this._type;
-    }
+		return this._type;
+	}
 
     /**
      * @name type Setter
@@ -108,8 +108,8 @@ class DNSResourceRecord {
      * @description A two octet code that specifies the class of the resource record. For example, the QCLASS field is IN for the Internet.
      */
 	get rrclass () {
-        return this._rrClass;
-    }
+		return this._rrClass;
+	}
 
     /**
      * @name rrclass Setter
@@ -138,8 +138,8 @@ class DNSResourceRecord {
      * @description a 32 bit signed integer that specifies the time interval that the resource record may be cached before the source of the information should again be consulted. Zero values are interpreted to mean that the RR can only be used for the transaction in progress, and should not be cached. For example, SOA records are always distributed with a zero TTL to prohibit caching. Zero values can also be used for extremely volatile data.
      */
 	get ttl () {
-        return this._ttl;
-    }
+		return this._ttl;
+	}
 
     /**
      * @name ttl Setter
@@ -178,8 +178,8 @@ class DNSResourceRecord {
      * @description an unsigned 16 bit integer that specifies the length in octets of the RDATA field.
      */
 	get rdlength () {
-        return this._rdLength;
-    }
+		return this._rdLength;
+	}
 
     /**
      * @name rdlength
@@ -202,8 +202,8 @@ class DNSResourceRecord {
      * @description a variable length string of octets that describes the resource. The format of this information varies according to the TYPE and CLASS of the resource record.
      */
 	get rdata () {
-        return this._rData;
-    }
+		return this._rData;
+	}
 
     /**
      * @name rdata Setter
@@ -324,8 +324,8 @@ class DNSResourceRecord {
      * @description This is the absolute position in the byte array where this resource record begins.
      */
 	get resourceRecordStartIndex () {
-        return this._resourceRecordStartIndex;
-    }
+		return this._resourceRecordStartIndex;
+	}
 
     /**
      * @name resourceRecordStartIndex Setter
@@ -341,27 +341,27 @@ class DNSResourceRecord {
 	}
 
     /**
-     * @name resourceRecordLength Getter
+     * @name length Getter
      * @access public
      * @type {Number}
      *
      * @description This is the length of the resource record in bytes.
      */
-	get resourceRecordLength () {
-        return this._resourceRecordLength;
-    }
+	get length () {
+		return this._length;
+	}
 
     /**
-     * @name resourceRecordLength Setter
+     * @name length Setter
      * @access public
      * @type {Function}
      *
-     * @description This is the setter method for resourceRecordLength.
+     * @description This is the setter method for length.
      *
      * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
-	set resourceRecordLength (length) {
-		this._resourceRecordLength = length;
+	set length (length) {
+		this._length = length;
 	};
 
     /**
@@ -372,8 +372,8 @@ class DNSResourceRecord {
      * @description This variable is used to keep track of the current index as we parse the resource record data.
      */
 	get index () {
-        return this._index;
-    }
+		return this._index;
+	}
 
     /**
      * @name index Setter
@@ -396,8 +396,8 @@ class DNSResourceRecord {
      * @description This variable indicates if the resource record is from an authoritative source.
      */
 	get isAuthoritative () {
-        return this._isAuthoritative;
-    }
+		return this._isAuthoritative;
+	}
 
     /**
      * @name setIsAuthoritative Setter
@@ -420,8 +420,8 @@ class DNSResourceRecord {
      * @description This field is populated before it is stored in cache. The value of this property is
      */
 	get cacheExpiration () {
-        return this._cacheExpiration;
-    }
+		return this._cacheExpiration;
+	}
 
     /**
      * @name cacheExpiration Setter
@@ -502,7 +502,7 @@ class DNSResourceRecord {
      */
 	setResourceRecordProperties (dnsResourceRecordInfo) {
 		this.name = dnsResourceRecordInfo.name;
-		this.typednsResourceRecordInfo.type;
+		this.type = dnsResourceRecordInfo.type;
 		this.rrclass = dnsResourceRecordInfo.rrclass;
 		this.ttl = dnsResourceRecordInfo.ttl;
 		this.cacheExpiration = dnsResourceRecordInfo.ttl;
@@ -533,7 +533,7 @@ class DNSResourceRecord {
 		this.isAuthoritative = _isAuthoritative;
 		this.rdlength = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
 		this.rdata = this._decodeRdata(data);
-		this.resourceRecordLength = this.index - offset;
+		this.length = this.index - offset;
 	}
 
     /**
@@ -590,7 +590,7 @@ class DNSResourceRecord {
 		rrBuffer.set(rdata, offset);
 		offset += rdata.length;
 
-		this.resourceRecordLength = rrBuffer.length;
+		this.length = rrBuffer.length;
 		this.resourceRecordStartIndex = startIndex;
 
 		return rrBuffer;

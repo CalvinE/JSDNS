@@ -16,90 +16,110 @@ let Utilities = require('../utilities');
  *
  * @description A representation of an entire DNS message complete with all of its sections.
  */
-function DNSMessage () {
+class DNSMessage {
+	constructor () {
+		this._header = null;
+		this._questions = [];
+		this._answers = [];
+		this._nameservers = [];
+		this._additionalResources = [];
+		this._length = 0;
+	}
     /**
-     * @name id
-     * @access private
+     * @name header Getter
+     * @access public
      * @type {DNSHeader}
      * @function
      *
      * @description The header of the DNS message.
      */
-	let header = null;
+	get header () {
+		return this._header;
+	}
 
     /**
-     * @name questions
-     * @access private
+     * @name header Setter
+     * @access public
+     * @type {Function}
+     *
+     * @description This is the setter method for qname.
+     *
+     * @param {DNSHeader} _h A DNSHeader object.
+     */
+	set header (_h) {
+		this._header = _h;
+	}
+
+    /**
+     * @name questions Getter
+     * @access public
      * @type {Array.<DNSQuestion>}
      *
      * @description An array of questions for this message.
      */
-	let questions = [];
+	get questions () {
+		return this._questions;
+	}
 
     /**
-     * @name answers
-     * @access private
+     * @name answers Getter
+     * @access public
      * @type {Array.<DNSResourceRecord>}
      *
      * @description An array of answers for this message.
      */
-	let answers = [];
+	get answers () {
+		return this._answers;
+	}
 
     /**
-     * @name nameservers
-     * @access private
+     * @name nameservers Getter
+     * @access public
      * @type {Array.<DNSResourceRecord>}
      *
      * @description An array of nameservers for this message.
      */
-	let nameservers = [];
+	get nameservers () {
+		return this._nameservers;
+	}
 
     /**
-     * @name additionalResources
-     * @access private
+     * @name additionalResources Getter
+     * @access public
      * @type {Array.<DNSResourceRecord>}
      *
      * @description An array of additional records for this message.
      */
-	let additionalResources = [];
+	get additionalResources () {
+		return this._additionalResources;
+	}
 
     /**
-     * @name messageLength
-     * @access private
+     * @name length Getter
+     * @access public
      * @type {number}
      *
      * @description This is the length of the DNS message in bytes.
      */
-	let messageLength = 0;
+	get length () {
+		return this._length;
+	}
 
     /**
-     * @name getHeader
+     * @name length Setter
      * @access public
      * @type {Function}
      *
-     * @description This is the getter method for the dns message header.
+     * @description This is the setter method for qname.
      *
-     * @returns {DNSHeader} The current value of the header variable.
+     * @param {Integer} _length The length of the message in bytes.
      */
-	function getHeader () {
-		return header;
-	};
+	set length (_length) {
+		this._length = _length;
+	}
 
     /**
-     * @name getQuestions
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method for the dns message questions.
-     *
-     * @returns {Array.<DNSQuestion>} The current value of the questions variable.
-     */
-	function getQuestions () {
-		return questions;
-	};
-
-    /**
-     * @name getQuestionsCount
+     * @name questionsCount Getter
      * @access public
      * @function
      *
@@ -107,25 +127,12 @@ function DNSMessage () {
      *
      * @returns {Number}
      */
-	function getQuestionsCount () {
-		return questions.length;
+	get questionsCount () {
+		return this._questions.length;
 	};
 
     /**
-     * @name getAnswers
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method for the dns message answers.
-     *
-     * @returns {Array.<DNSResourceRecord>} The current value of the answers variable.
-     */
-	function getAnswers () {
-		return answers;
-	};
-
-    /**
-     * @name getAnswersCount
+     * @name answersCount Getter
      * @access public
      * @function
      *
@@ -133,25 +140,12 @@ function DNSMessage () {
      *
      * @returns {Number}
      */
-	function getAnswersCount () {
-		return answers.length;
+	get answersCount () {
+		return this._answers.length;
 	};
 
     /**
-     * @name getNameservers
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method for the dns message answers.
-     *
-     * @returns {Array.<DNSResourceRecord>} The current value of the nameservers variable.
-     */
-	function getNameservers () {
-		return nameservers;
-	};
-
-    /**
-     * @name getNameserversCount
+     * @name nameserversCount Getter
      * @access public
      * @function
      *
@@ -159,25 +153,12 @@ function DNSMessage () {
      *
      * @returns {Number}
      */
-	function getNameserversCount () {
-		return nameservers.length;
-	};
+	get nameserversCount () {
+		return this._nameservers.length;
+	}
 
     /**
-     * @name getAdditionalResources
-     * @access public
-     * @type {Function}
-     *
-     * @description This is the getter method for the dns message additional resources.
-     *
-     * @returns {Array.<DNSResourceRecord>} The current value of the additionalResources variable.
-     */
-	function getAdditionalResources () {
-		return additionalResources;
-	};
-
-    /**
-     * @name getAdditionalResourcesCount
+     * @name additionalResourcesCount Getter
      * @access public
      * @function
      *
@@ -185,8 +166,8 @@ function DNSMessage () {
      *
      * @returns {Number}
      */
-	function getAdditionalResourcesCount () {
-		return additionalResources.length;
+	get additionalResourcesCount () {
+		return this._additionalResources.length;
 	};
 
     /**
@@ -204,12 +185,12 @@ function DNSMessage () {
 	 *
 	 * @return {DNSMessage} The modified message ready for the return trip!
 	 */
-	function setMessageAsResponse (aa = 0, tc = 0, ra = 0, rcode = 0) {
-		header.setQr(1); // Set header QR flag to 1 to indicate it is a response
-		header.setAa(aa); // Set header AA Flag
-		header.setTc(tc); // Set header TC Flag
-		header.setRa(ra); // Set header RA flag
-		header.setRcode(rcode); // Set header RCODE
+	setMessageAsResponse (aa = 0, tc = 0, ra = 0, rcode = 0) {
+		this.header.qr = 1; // Set header QR flag to 1 to indicate it is a response
+		this.header.aa = aa; // Set header AA Flag
+		this.header.tc = tc; // Set header TC Flag
+		this.header.ra = ra; // Set header RA flag
+		this.header.rcode = rcode; // Set header RCODE
 	};
 
     /**
@@ -218,40 +199,38 @@ function DNSMessage () {
      * @function
      *
      * @description This function validates the message to make sure it is a valid query and the header flags are not set in a strange way.
-	 * 
-	 * TODO: WTF is this doing?
      *
      * @returns {Boolean} returns true if it is a valid query and false if not.
      */
-	function validateMessageIsQuery () {
+	validateMessageIsQuery () {
 		let isValid = false;
 
-		if (header.getQr() === 0 &&
-            header.getAa() === 0 &&
-            header.getTc() === 0 &&
-            header.getZ() === 0 &&
-            header.getRa() === 0 &&
-            header.getRCode().value === 0 &&
-            header.getAncount() === 0 && // Check the header counts
-            header.getNscount() === 0 &&
-            header.getArcount() === 0 &&
-            answers.length === 0 && // And the actual fields in the message to ensure someone is not trying to mess with us :-).
-            nameservers.length === 0 &&
-            additionalResources.length === 0) {
+		if (this.header.qr === 0 &&
+            this.header.aa === 0 &&
+            this.header.tc === 0 &&
+            this.header.z === 0 &&
+            this.header.ra === 0 &&
+            this.header.rcode.value === 0 &&
+            this.header.ancount === 0 && // Check the header counts
+            this.header.nscount === 0 &&
+            this.header.arcount === 0 &&
+            this.answersCount === 0 && // And the actual fields in the message to ensure someone is not trying to mess with us :-).
+            this.nameserversCount === 0 &&
+            this.additionalResourcesCount === 0) {
 			isValid = true;
 		}
 
 		return isValid;
 	};
 
-	function setMessageProperties (messageProperties) {
-		header = new DNSHeader();
-		header.setHeaderProperties(messageProperties.header);
+	setMessageProperties (messageProperties) {
+		this.header = new DNSHeader();
+		this.header.setHeaderProperties(messageProperties.header);
 		if (Utilities.isNullOrUndefined(messageProperties.questions) === false) {
 			for (let i = 0; i < messageProperties.questions.length; i++) { // There should only be one question unless the issues around multiple questions in a single query are resolved in later spec documents.
 				let q = new DNSQuestion();
 				q.setQuestionProperties(messageProperties.questions[i]);
-				questions.push(q);
+				this.questions.push(q);
 			}
 		}
 
@@ -259,7 +238,7 @@ function DNSMessage () {
 			for (let i = 0; i < messageProperties.answers.length; i++) {
 				let rr = new DNSResourceRecord();
 				rr.setResourceRecordProperties(messageProperties.answers[i]);
-				answers.push(rr);
+				this.answers.push(rr);
 			}
 		}
 
@@ -267,7 +246,7 @@ function DNSMessage () {
 			for (let i = 0; i < messageProperties.nameservers.length; i++) {
 				let rr = new DNSResourceRecord();
 				rr.setResourceRecordProperties(messageProperties.nameservers[i]);
-				nameservers.push(rr);
+				this.nameservers.push(rr);
 			}
 		}
 
@@ -275,7 +254,7 @@ function DNSMessage () {
 			for (let i = 0; i < messageProperties.additionalResources.length; i++) {
 				let rr = new DNSResourceRecord();
 				rr.setResourceRecordProperties(messageProperties.additionalResources[i]);
-				additionalResources.push(rr);
+				this.additionalResources.push(rr);
 			}
 		}
 	};
@@ -289,41 +268,41 @@ function DNSMessage () {
      *
      * @param {UInt8Array} messageData This is the raw message data in bytes
      */
-	function parseRequest (messageData) {
+	parseRequest (messageData) {
 		let offset = 0;
-		header = new DNSHeader();
-		header.decodeDNSHeaderFromMessage(messageData);
-		offset = header.getHeaderLength();
+		this.header = new DNSHeader();
+		this.header.decodeDNSHeaderFromMessage(messageData);
+		offset = this.header.length;
         // Parse Questions
-		for (let i = 0; i < header.getQdcount(); i++) {
+		for (let i = 0; i < this.header.qdcount; i++) {
 			let q = new DNSQuestion();
 			q.decodeDNSQuestionFromMessage(messageData, offset);
-			offset += q.getQuestionLength();
-			questions.push(q);
+			offset += q.length;
+			this.questions.push(q);
 		}
         // Parse Answers
-		for (let i = 0; i < header.getAncount(); i++) {
+		for (let i = 0; i < this.header.ancount; i++) {
 			let rr = new DNSResourceRecord();
 			rr.decodeDNSResourceRecordFromMessage(messageData, offset);
-			offset += rr.getResourceRecordLength();
-			answers.push(rr);
+			offset += rr.length;
+			this.answers.push(rr);
 		}
         // Parse Nameservers
-		for (let i = 0; i < header.getNscount(); i++) {
+		for (let i = 0; i < this.header.nscount; i++) {
 			let rr = new DNSResourceRecord();
 			rr.decodeDNSResourceRecordFromMessage(messageData, offset);
-			offset += rr.getResourceRecordLength();
-			nameservers.push(rr);
+			offset += rr.length;
+			this.nameservers.push(rr);
 		}
         // Parse Additional Resources
-		for (let i = 0; i < header.getArcount(); i++) {
+		for (let i = 0; i < this.header.arcount; i++) {
 			let rr = new DNSResourceRecord();
 			rr.decodeDNSResourceRecordFromMessage(messageData, offset);
-			offset += rr.getResourceRecordLength();
-			additionalResources.push(rr);
+			offset += rr.length;
+			this.additionalResources.push(rr);
 		}
 
-		messageLength = offset;
+		this.length = offset;
 	};
 
     /**
@@ -337,8 +316,8 @@ function DNSMessage () {
      *
      * @returns {Buffer} A Buffer containing the raw bytes of the DNS message.
      */
-	function encodeMessageToBuffer () { // TODO: make this use name compression.
-		let headerData = header.encodeHeaderForMessage();
+	encodeMessageToBuffer () { // TODO: make this use name compression.
+		let headerData = this.header.encodeHeaderForMessage();
 		let offset = headerData.length;
 		// let questionData = [];
 		// let answerData = [];
@@ -346,35 +325,35 @@ function DNSMessage () {
 		// let additionalresourcesData = [];
 		let messageData = [].concat(headerData);
         // Parse Questions
-		for (let i = 0; i < questions.length; i++) {
-			let qData = questions[i].encodeQuestionForMessage({}, offset);
+		for (let i = 0; i < this.questions.length; i++) {
+			let qData = this.questions[i].encodeQuestionForMessage({}, offset);
 			offset += qData.length;
 			messageData = messageData.concat(qData);
 			// questionData.push(qData);
 		}
         // Parse Answers
-		for (let i = 0; i < answers.length; i++) {
-			let rrData = answers[i].encodeResourceRecordForMessage({}, offset);
+		for (let i = 0; i < this.answers.length; i++) {
+			let rrData = this.answers[i].encodeResourceRecordForMessage({}, offset);
 			offset += rrData.length;
 			messageData = messageData.concat(rrData);
 			// answerData.push(rrData);
 		}
         // Parse Nameservers
-		for (let i = 0; i < nameservers.length; i++) {
-			let rrData = nameservers[i].encodeResourceRecordForMessage({}, offset);
+		for (let i = 0; i < this.nameservers.length; i++) {
+			let rrData = this.nameservers[i].encodeResourceRecordForMessage({}, offset);
 			offset += rrData.length;
 			messageData = messageData.concat(rrData);
 			// nameserverData.push(rrData);
 		}
         // Parse Additional Resources
-		for (let i = 0; i < additionalResources.length; i++) {
-			let rrData = additionalResources[i].encodeResourceRecordForMessage({}, offset);
+		for (let i = 0; i < this.additionalResources.length; i++) {
+			let rrData = this.additionalResources[i].encodeResourceRecordForMessage({}, offset);
 			offset += rrData.length;
 			messageData = messageData.concat(rrData);
 			// additionalresourcesData.push(rrData);
 		}
 
-		messageLength = offset;
+		this.length = offset;
 
 		let data = [];
 
@@ -383,25 +362,7 @@ function DNSMessage () {
 		}
 
 		return Buffer.from(data);
-	};
-
-	return {
-		getHeader: getHeader,
-		getQuestions: getQuestions,
-		getQuestionsCount: getQuestionsCount,
-		getAnswers: getAnswers,
-		getAnswersCount: getAnswersCount,
-		getNameservers: getNameservers,
-		getNameserversCount: getNameserversCount,
-		getAdditionalResources: getAdditionalResources,
-		getAdditionalResourcesCount: getAdditionalResourcesCount,
-		setMessageAsResponse: setMessageAsResponse,
-		validateMessageIsQuery: validateMessageIsQuery,
-		setMessageProperties: setMessageProperties,
-		parseRequest: parseRequest,
-		encodeMessageToBuffer: encodeMessageToBuffer,
-		messageLength: messageLength
-	};
-};
+	}
+}
 
 module.exports = DNSMessage;

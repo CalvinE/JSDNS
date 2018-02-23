@@ -11,19 +11,19 @@ const Utilities = require('../utilities');
 const ErrorFactory = require('../error');
 
 /**
- * @name DNSMesageQuestion
- * @class {DNSMesageQuestion} DNSMesageQuestion
+ * @name DNSQuestion
+ * @class {DNSQuestion} DNSQuestion
  * @access public
  *
  * @description A representation of a DNS message question and functions for encoding this data for reading and decoding this data for transmission.
  */
-class DNSMesageQuestion {
-	DNSMesageQuestion () {
+class DNSQuestion {
+	constructor () {
 		this._qname = null;
 		this._qtype = null;
 		this._qclass = null;
 		this._questionStartIndex = null;
-		this._questionLength = null;
+		this._length = null;
 		this._index = 0;
 	}
     /**
@@ -152,14 +152,14 @@ class DNSMesageQuestion {
 	};
 
     /**
-     * @name questionLength Getter
+     * @name length Getter
      * @access public
      * @type {Number}
      *
      * @description This is the length of the question in bytes.
      */
-	get questionLength () {
-		return this._questionLength;
+	get length () {
+		return this._length;
 	}
 
     /**
@@ -167,12 +167,12 @@ class DNSMesageQuestion {
      * @access public
      * @type {Function}
      *
-     * @description This is the setter method for questionLength.
+     * @description This is the setter method for length.
      *
      * @param {Number} length An the length of this message as a part of the whole DNS message.
      */
-	set questionLength (length) {
-		this._questionLength = length;
+	set length (length) {
+		this._length = length;
 	};
 
     /**
@@ -229,7 +229,7 @@ class DNSMesageQuestion {
 		this.qname = this._decodeQname(data);
 		this.qtype = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
 		this.qclass = Utilities.decode16BitValue(data[this.index++], data[this.index++]);
-		this.questionLength = this.index - offset;
+		this.length = this.index - offset;
 	};
 
     /**
@@ -268,11 +268,11 @@ class DNSMesageQuestion {
 		questionBuffer.set(qclass, offset);
 		offset += qclass.length;
 
-		this.questionLength = questionBuffer.length;
+		this.length = questionBuffer.length;
 		this.questionStartIndex = startIndex;
 
 		return questionBuffer;
 	}
 }
 
-module.exports = DNSMesageQuestion;
+module.exports = DNSQuestion;

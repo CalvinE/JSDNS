@@ -45,7 +45,7 @@ describe('dns-header', () => {
 	it('When decoding the test question above using the DNSHeader class should set the header length to the length of a DNS header section.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestQuestionDNSPacketBuffer());
-		expect(header.headerLength).to.equal(0x0C);
+		expect(header.length).to.equal(0x0C);
 	});
 	it('The DNSHeader class should generate a random id less than or equal to 0xFFFF and greater than or equal to 0x0001', () => {
 		for (let i = 0; i < 1000000; i++) {
@@ -189,7 +189,7 @@ describe('dns-header', () => {
 	it('When decoding the test response above using the DNSHeader class should decode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.', () => {
 		let header = new DNSHeader();
 		header.decodeDNSHeaderFromMessage(getTestResponseDNSPacketBuffer());
-		expect(header.headerLength).to.equal(12);
+		expect(header.length).to.equal(12);
 	});
 	it('When encoding the test response above using the DNSHeader class should encode the byte array of the response above and the resulting headers length should be 12 per the DNS RFC.', () => {
 		let encodedHeader = new DNSHeader();
@@ -209,7 +209,7 @@ describe('dns-header', () => {
 			arcount: 0
 		};
 		encodedHeader.encodeHeaderForMessage(headerData);
-		expect(encodedHeader.headerLength).to.equal(12);
+		expect(encodedHeader.length).to.equal(12);
 	});
 	it("Encoding message header with same parameters as the sample query's header above should result both having identical id values.", () => {
 		let encodedHeader = new DNSHeader();

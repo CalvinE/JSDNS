@@ -27,9 +27,9 @@ describe('dns-question', () => {
 		let data = getTestQuestionDNSPacketBuffer();
 		var offset = 0;
 		header.decodeDNSHeaderFromMessage(data);
-		offset += header.headerLength;
-		question.decodeDNSQuestionFromMessage(data, header.headerLength);
-		offset += question.questionLength;
+		offset += header.length;
+		question.decodeDNSQuestionFromMessage(data, header.length);
+		offset += question.length;
 		expect(offset).to.equal(testQuestionDNSPacket.length);
 	});
 	it('When decoding the test question above using the DNSQuestion class should decode the byte array of the question above and populate the QClass field.', () => {
@@ -37,7 +37,7 @@ describe('dns-question', () => {
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		question.decodeDNSQuestionFromMessage(data, header.length);
 		expect(question.qclass.value).to.equal(0x01);
 	});
 	it('When decoding the test question above using the DNSQuestion class should decode the byte array of the question above and populate the QType field.', () => {
@@ -45,7 +45,7 @@ describe('dns-question', () => {
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		question.decodeDNSQuestionFromMessage(data, header.length);
 		expect(question.qtype.value).to.equal(0x01);
 	});
 	it('When encoding a test question using the DNSQuestion class the name should be encoded properly to match the name in the test question above.', () => {
@@ -53,7 +53,7 @@ describe('dns-question', () => {
 		let question = new DNSQuestion();
 		let data = getTestQuestionDNSPacketBuffer();
 		header.decodeDNSHeaderFromMessage(data);
-		question.decodeDNSQuestionFromMessage(data, header.headerLength);
+		question.decodeDNSQuestionFromMessage(data, header.length);
 		let encodedQuestion = new DNSQuestion();
 		encodedQuestion.encodeQuestionForMessage({
 			qname: 'www.google.com',

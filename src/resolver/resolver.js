@@ -38,7 +38,7 @@ function Resolver () {
 	 */
 	function resolve (dnsQuery) {
 		return new Promise(function (resolve, reject) {
-			let opcode = dnsQuery.getHeader().getOpcode().value;
+			let opcode = dnsQuery.header.opcode.value;
 			switch (opcode) {
 			case 0:
 				resolve(resolveStandardQuery(dnsQuery));
@@ -68,8 +68,8 @@ function Resolver () {
 	 * @return {DNSMessage} A response to your query.
 	 */
 	function resolveStandardQuery (dnsQuery, fullQNamePartsReversed = null, recursiveIteration = 0, recursiveServerAddress = null) { // TODO: Think about this last parameter... may need to re think this... could make this an array of DNSMessages that are in the order they were received?
-		let recursionDesired = dnsQuery.getHeader().getRd();
-		let question = dnsQuery.getQuestions[0];
+		let recursionDesired = dnsQuery.header.rd;
+		let question = dnsQuery.questions[0];
 		// Step 1 search cache.
 		let cacheSearchResults = standardSearchCache(question);
 		if (cacheSearchResults === null) {
@@ -80,7 +80,7 @@ function Resolver () {
 					// Step 3 recursivly search.
 					let recursionQName = '';
 					if (fullQNamePartsReversed === null) {
-						fullQNamePartsReversed = question.getQname().split('.').reverse();
+						fullQNamePartsReversed = question.qname.split('.').reverse();
 					}
 					let noMoreRecursion = recursiveIteration >= fullQNamePartsReversed.length;
 					if (noMoreRecursion === false) {
